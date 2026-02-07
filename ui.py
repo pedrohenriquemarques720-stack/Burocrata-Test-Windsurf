@@ -773,3 +773,117 @@ def mostrar_tela_principal():
         """, unsafe_allow_html=True)
     
     mostrar_faq_rodape()
+
+# --------------------------------------------------
+# FAQ E RODAPÉ
+# --------------------------------------------------
+
+def mostrar_faq_rodape():
+    """Mostra seção de FAQ e rodapé"""
+    
+    st.markdown("---")
+    
+    # FAQ Section
+    st.markdown("""
+    <div class="faq-container">
+        <h3 style="color: #F8D96D; text-align: center; margin-bottom: 25px;">
+            ❓ PERGUNTAS FREQUENTES
+        </h3>
+    """, unsafe_allow_html=True)
+    
+    # FAQ 1
+    with st.expander("🔍 1. Que tipos de documentos o sistema analisa?"):
+        st.markdown("""
+        <div class="faq-answer">
+            Nosso sistema especializado analisa:
+            • <strong>Contratos de Trabalho</strong> (CLT, PJ, estágio)
+            • <strong>Contratos de Locação</strong> (residencial, comercial)
+            • <strong>Notas Fiscais</strong> (serviços, produtos)
+            • <strong>Documentos diversos</strong> com cláusulas contratuais
+        </div>
+        """, unsafe_allow_html=True)
+    
+    # FAQ 2
+    with st.expander("⚖️ 2. Como funciona a análise jurídica?"):
+        st.markdown("""
+        <div class="faq-answer">
+            Nossa IA utiliza:
+            • <strong>100+ padrões jurídicos</strong> atualizados
+            • <strong>Inteligência Artificial</strong> que aprende
+            • <strong>Análise profunda</strong> de cláusulas
+            • <strong>Base legal</strong> para cada problema
+            • <strong>Recomendações</strong> práticas e específicas
+        </div>
+        """, unsafe_allow_html=True)
+    
+    # FAQ 3 - CORRIGIDA
+    with st.expander("📄 3. Posso analisar vários documentos de uma vez?"):
+        st.markdown("""
+        <div class="faq-answer">
+            Atualmente, o sistema analisa um documento por vez.
+        </div>
+        """, unsafe_allow_html=True)
+    
+    # FAQ 4
+    with st.expander("🔒 4. Meus documentos são seguros?"):
+        st.markdown("""
+        <div class="faq-answer">
+            Sim! Suas informações estão protegidas:
+            • <strong>Privacidade total</strong> dos dados
+            • <strong>Armazenamento seguro</strong> local
+            • <strong>Compartilhamento opcional</strong> apenas com seu consentimento
+            • <strong>Conformidade</strong> com LGPD
+        </div>
+        """, unsafe_allow_html=True)
+    
+    # FAQ 5
+    with st.expander("⚡ 5. Quão rápida é a análise?"):
+        st.markdown("""
+        <div class="faq-answer">
+            Nossa análise é ultra-rápida:
+            • <strong>Segundos</strong> para documentos simples
+            • <strong>Menos de 1 minuto</strong> para contratos complexos
+            • <strong>Resultados detalhados</strong> instantâneos
+            • <strong>IA aprende</strong> e fica mais rápida com o tempo
+        </div>
+        """, unsafe_allow_html=True)
+    
+    st.markdown("</div>", unsafe_allow_html=True)
+    
+    # Footer
+    st.markdown("""
+    <div style="background: #10263D; 
+                padding: 30px 0; 
+                margin-top: 40px; 
+                text-align: center; 
+                border-top: 2px solid #F8D96D;">
+        
+        <div style="color: #F8D96D; font-size: 1.8em; font-weight: 900; margin-bottom: 15px;">
+            ⚖️ BUROCRATA DE BOLSO
+        </div>
+        
+        <div style="color: #FFFFFF; font-size: 1.1em; margin-bottom: 20px;">
+            IA de Análise Documental - Proteção Jurídica Inteligente
+        </div>
+        
+        <div style="color: #e2e8f0; font-size: 0.9em; margin-bottom: 25px;">
+            Análise automática de contratos e documentos com inteligência artificial brasileira
+        </div>
+        
+        <div class="social-links">
+            <a href="mailto:contatoburocrata@outlook.com" class="social-link">
+                📧 E-mail
+            </a>
+            <a href="#" class="social-link">
+                💬 WhatsApp
+            </a>
+            <a href="#" class="social-link">
+                🌐 Site
+            </a>
+        </div>
+        
+        <div style="color: #a0aec0; font-size: 0.8em; margin-top: 25px;">
+            © 2024 Burocrata de Bolso - Todos os direitos reservados
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
