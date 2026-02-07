@@ -648,116 +648,13 @@ class Detector:
             }
         }
         
-        # Análise genérica SUPER avançada - COBERTURA MÁXIMA
+        # Análise genérica SUPER avançada - COBERTURA MÁXIMA (SEM DUPLICAÇÃO)
+        # Padrões genéricos que NÃO estão cobertos na análise específica
         self.padroes_genericos = [
-            # SALÁRIO - CRÍTICOS
-            (r'\b900\b.*reais|\bR\$\s*900\b|\b800\b.*reais|\bR\$\s*800\b|\b1000\b.*reais|\bR\$\s*1000\b|\b1100\b.*reais|\bR\$\s*1100\b|\b1200\b.*reais|\bR\$\s*1200\b|\b1300\b.*reais|\bR\$\s*1300\b', 'SALARIO_ABAIXO_MINIMO', '🚨🚨 SALÁRIO ABAIXO DO MÍNIMO DETECTADO', 'CRÍTICA'),
+            # SALÁRIO - CRÍTICOS (VALORES EXTREMAMENTE BAIXOS NÃO COBERTOS NA ANÁLISE ESPECÍFICA)
+            (r'\b500\b.*reais|\bR\$\s*500\b|\b600\b.*reais|\bR\$\s*600\b|\b700\b.*reais|\bR\$\s*700\b|\b750\b.*reais|\bR\$\s*750\b', 'SALARIO_EXTREMO_BAIXO', '🚨🚨 SALÁRIO EXTREMAMENTE BAIXO - CRIME', 'CRÍTICA'),
             
-            # MULTAS - CRÍTICAS
-            (r'\b12\b.*meses.*multa|multa.*\b12\b.*meses|\bdoze\b.*meses.*multa|multa.*doze.*meses|12.*vezes.*aluguel', 'MULTA_12_MESES_DIRETO', '🚨🚨 MULTA DE 12 MESES ENCONTRADA', 'CRÍTICA'),
-            (r'\b3\b.*meses.*caução|caução.*\b3\b.*meses|\btrês\b.*meses.*caução|caução.*tres.*meses', 'CAUCAO_3_MESES_DIRETO', '🚨 CAUÇÃO DE 3 MESES ENCONTRADA', 'CRÍTICA'),
-            (r'multa.*superior.*2.*meses|multa.*maior.*2.*meses|multa.*acima.*2.*meses', 'MULTA_ACIMA_2_MESES', '🚨 MULTA ACIMA DE 2 MESES', 'CRÍTICA'),
-            
-            # JORNADA - CRÍTICAS
-            (r'\b60\b.*horas.*semanais|60.*horas.*semana|jornada.*\b60\b.*horas|60h.*semanais', 'JORNADA_60_HORAS', '🚨 JORNADA DE 60 HORAS SEMANAIS - ILEGAL!', 'CRÍTICA'),
-            (r'\b12\b.*horas.*diárias|12.*horas.*dia|jornada.*\b12\b.*horas|12h.*diárias', 'JORNADA_12_HORAS', '🚨 JORNADA DE 12 HORAS DIÁRIAS - ILEGAL!', 'CRÍTICA'),
-            (r'\b44\b.*horas.*semanais.*ultrapassada|44.*horas.*semana.*excedida', 'JORNADA_ACIMA_44_HORAS', '🚨 JORNADA ACIMA DE 44 HORAS SEMANAIS', 'CRÍTICA'),
-            
-            # INTERVALOS - CRÍTICOS
-            (r'\b7\b.*horas.*descanso|7.*horas.*intervalo|\b8\b.*horas.*descanso|8.*horas.*intervalo', 'INTERVALO_INTERJORNADA_CURTO', '🚨 INTERVALO INTERJORNADA DE 7-8 HORAS - ILEGAL!', 'CRÍTICA'),
-            (r'\b30\b.*minutos.*refeição|30.*minutos.*almoço|\b45\b.*minutos.*refeição|45.*minutos.*almoço', 'INTERVALO_REFEICAO_CURTO', '🚨 INTERVALO DE REFEIÇÃO DE 30-45 MINUTOS - ILEGAL!', 'CRÍTICA'),
-            (r'\b10\b.*minutos.*descanso|10.*minutos.*intervalo|\b15\b.*minutos.*descanso|15.*minutos.*intervalo', 'INTERVALO_MUITO_CURTO', '⚠️ INTERVALO MUITO CURTO - VERIFICAR', 'ALTA'),
-            
-            # FGTS - CRÍTICOS
-            (r'FGTS.*opcional|FGTS.*não.*obrigatório|sem.*FGTS|renúncia.*FGTS|FGTS.*renunciado', 'FGTS_IRREGULAR', '🚨🚨 FGTS ILEGAL OU OPCIONAL - CRIME!', 'CRÍTICA'),
-            (r'Vale.*Cultura.*substitui.*FGTS|Vale.*Cultura.*FGTS|Bolsa.*Família.*FGTS', 'FGTS_SUBSTITUIDO', '🚨🚨 FGTS SENDO SUBSTITUÍDO ILEGALMENTE!', 'CRÍTICA'),
-            
-            # HORAS EXTRAS - CRÍTICAS
-            (r'horas.*extras.*gratuitas|horas.*extras.*sem.*pagamento|horas.*extras.*não.*remuneradas', 'HORAS_EXTRAS_GRATUITAS', '🚨🚨 HORAS EXTRAS SEM PAGAMENTO - ILEGAL!', 'CRÍTICA'),
-            (r'horas.*extras.*sem.*adicional|adicional.*horas.*extras.*negado|50%.*horas.*extras.*negado', 'HORAS_EXTRAS_SEM_ADICIONAL', '🚨 HORAS EXTRAS SEM ADICIONAL - ILEGAL!', 'CRÍTICA'),
-            
-            # FÉRIAS - CRÍTICAS
-            (r'férias.*renunciadas|renúncia.*férias|férias.*não.*remuneradas|sem.*férias', 'FERIAS_IRREGULARES', '🚨 FÉRIAS ILEGAIS OU RENUNCIADAS', 'CRÍTICA'),
-            (r'férias.*vencidas.*não.*pagas|férias.*acumuladas|férias.*proporcionais.*negadas', 'FERIAS_NAO_PAGAS', '🚨 FÉRIAS NÃO PAGAS OU NEGADAS', 'CRÍTICA'),
-            
-            # DISCRIMINAÇÃO - CRÍTICOS
-            (r'gravidez.*demissão|demissão.*gestante|rescisão.*gravidez|gravidez.*contrato.*resciso', 'DISCRIMINACAO_GRAVIDEZ', '🚨🚨 DISCRIMINAÇÃO POR GRAVIDEZ - CRIME!', 'CRÍTICA'),
-            (r'discriminação.*gênero|discriminação.*raça|discriminação.*religião|discriminação.*idade', 'DISCRIMINACAO_ILEGAL', '🚨🚨 DISCRIMINAÇÃO ILEGAL - CRIME!', 'CRÍTICA'),
-            
-            # CTPS - CRÍTICOS
-            (r'CTPS.*retida|Carteira.*Trabalho.*retida|retenção.*CTPS|não.*entregar.*CTPS', 'CTPS_RETIDA', '🚨 RETENÇÃO DE CTPS - CRIME!', 'CRÍTICA'),
-            
-            # REAJUSTE - CRÍTICOS
-            (r'reajuste.*trimestral|reajuste.*mensal|reajuste.*bimestral|reajuste.*semestral', 'REAJUSTE_FREQUENTE', '🚨 REAJUSTE COM FREQUÊNCIA ILEGAL', 'CRÍTICA'),
-            (r'reajuste.*dólar|reajuste.*câmbio|reajuste.*variação.*dólar|dólar.*reajuste', 'REAJUSTE_DOLAR', '🚨🚨 REAJUSTE PELO DÓLAR - ILEGAL!', 'CRÍTICA'),
-            (r'reajuste.*sem.*índice.*oficial|reajuste.*livre|reajuste.*acordo|índice.*livre', 'REAJUSTE_SEM_INDICE', '🚨 REAJUSTE SEM ÍNDICE OFICIAL - ILEGAL!', 'CRÍTICA'),
-            
-            # VISITAS E PRIVACIDADE - CRÍTICOS
-            (r'visitas.*sem.*aviso|visitas.*qualquer.*momento|acesso.*livre.*imóvel|ingresso.*imediato', 'VISITAS_SEM_AVISO', '🚨🚨 VISITAS SEM AVISO - VIOLAÇÃO DE DOMICÍLIO!', 'CRÍTICA'),
-            (r'vistorias.*surpresa|vistorias.*sem.*aviso|inspeção.*surpresa', 'VISTORIAS_SURPRESA', '⚠️ VISTORIAS SURPRESA - ILEGAL', 'ALTA'),
-            
-            # BENFEITORIAS - CRÍTICAS
-            (r'benfeitorias.*não.*indenizáveis|renúncia.*benfeitorias|nenhuma.*indenização.*benfeitorias', 'BENFEITORIAS_SEM_INDENIZACAO', '🚨 BENFEITORIAS SEM INDENIZAÇÃO - ILEGAL!', 'CRÍTICA'),
-            
-            # RESPONSABILIDADE ESTRUTURAL - CRÍTICOS
-            (r'locatário.*responsável.*estrutura|estrutura.*locatário|dano.*estrutural.*locatário', 'RESPONSABILIDADE_ESTRUTURAL', '🚨 LOCATÁRIO RESPONSÁVEL POR ESTRUTURA - ILEGAL!', 'CRÍTICA'),
-            (r'locatário.*responsável.*vícios|vícios.*locatário|defeitos.*estrutura.*locatário', 'RESPONSABILIDADE_VICIOS', '🚨 LOCATÁRIO RESPONSÁVEL POR VÍCIOS - ILEGAL!', 'CRÍTICA'),
-            
-            # IMPOSTO DE RENDA - CRÍTICOS
-            (r'locatário.*pagar.*IR|imposto.*renda.*locatário|IR.*locatário.*responsável', 'IR_LOCATARIO', '🚨🚨 LOCATÁRIO PAGANDO IR DO LOCADOR - ILEGAL!', 'CRÍTICA'),
-            
-            # DESPEJO - CRÍTICOS
-            (r'despejo.*imediato.*atraso|despejo.*24.*horas|despejo.*48.*horas|trocar.*fechaduras.*atraso', 'DESPEJO_IMEDIATO', '🚨🚨 DESPEJO IMEDIATO POR ATRASO - ILEGAL!', 'CRÍTICA'),
-            
-            # PAGAMENTO ANTECIPADO - ALTOS
-            (r'pagamento.*adiantado.*obrigatório|aluguel.*primeiro.*dia|mês.*vencer.*adiantado', 'PAGAMENTO_ADIANTADO', '⚠️ PAGAMENTO ANTECIPADO OBRIGATÓRIO - ILEGAL', 'ALTA'),
-            
-            # CUMULAÇÃO DE GARANTIAS - ALTOS
-            (r'caução.*E.*fiador|seguro.*E.*caução|múltiplas.*garantias|garantias.*cumulativas', 'CUMULACAO_GARANTIAS', '⚠️ CUMULAÇÃO DE GARANTIAS - ILEGAL', 'ALTA'),
-            
-            # ANIMAIS - ALTOS
-            (r'proibido.*animais|animais.*proibidos|nenhum.*animal|proibição.*animais', 'PROIBICAO_ANIMAIS', '⚠️ PROIBIÇÃO DE ANIMAIS - ABUSIVA', 'ALTA'),
-            
-            # VENDA DO IMÓVEL - ALTOS
-            (r'contrato.*resciso.*venda|rescisão.*automática.*venda|desocupação.*imediata.*venda', 'VENDA_RESCISAO', '⚠️ RESCISÃO AUTOMÁTICA POR VENDA - ILEGAL', 'ALTA'),
-            
-            # DESCONTOS ILEGAIS - ALTOS
-            (r'desconto.*equipamentos|uniforme.*descontado|ferramentas.*descontadas|material.*descontado', 'DESCONTOS_EQUIPAMENTOS', '⚠️ DESCONTO ILEGAL POR EQUIPAMENTOS', 'ALTA'),
-            (r'desconto.*atraso.*excessivo|multa.*atraso.*salário|multa.*5%.*dia', 'DESCONTO_ATRASO', '⚠️ DESCONTO POR ATRASO EXCESSIVO', 'ALTA'),
-            
-            # JUSTA CAUSA - ALTOS
-            (r'justa.*causa.*genérica|justa.*causa.*vaga|erro.*técnico.*justa.*causa', 'JUSTA_CAUSA_ABUSIVA', '⚠️ JUSTA CAUSA ABUSIVA', 'ALTA'),
-            
-            # RESPONSABILIDADE CIVIL - CRÍTICOS
-            (r'funcionário.*responde.*patrimônio|responsabilidade.*civil.*patrimônio|bens.*pessoais.*garantia', 'RESPONSABILIDADE_CIVIL_ABUSIVA', '🚨 RESPONSABILIDADE CIVIL ABUSIVA', 'CRÍTICA'),
-            (r'responsabilidade.*ilimitada.*danos|indenização.*ilimitada|danos.*lucros.*cessantes.*ilimitados', 'RESPONSABILIDADE_ILIMITADA', '🚨 RESPONSABILIDADE ILIMITADA POR DANOS', 'CRÍTICA'),
-            
-            # NOTAS FISCAIS - CRÍTICAS
-            (r'data.*emissão.*futura|emissão.*futura|data.*futura|nota.*fiscal.*futura', 'NOTA_FISCAL_DATA_FUTURA', '🚨🚨 NOTA FISCAL COM DATA FUTURA - ILEGAL!', 'CRÍTICA'),
-            (r'nota.*fiscal.*cancelada|cancelamento.*indevido|duplo.*cancelamento', 'NOTA_FISCAL_CANCELADA', '🚨 NOTA FISCAL CANCELADA - VERIFICAR!', 'CRÍTICA'),
-            (r'valor.*zero.*serviço|R\$\s*0,00|base.*cálculo.*zero|valor.*nulo', 'NOTA_FISCAL_VALOR_ZERO', '🚨 NOTA FISCAL COM VALOR ZERO - SUSPEITA!', 'CRÍTICA'),
-            (r'ISS.*não.*recolhido|ISS.*sonegado|tributo.*não.*pago|sonegação.*fiscal', 'NOTA_FISCAL_ISS_NAO_RECOLHIDO', '🚨🚨 TRIBUTO NÃO RECOLHIDO - CRIME FISCAL!', 'CRÍTICA'),
-            (r'número.*nota.*duplicado|nota.*fiscal.*duplicada|mesmo.*número.*emitente', 'NOTA_FISCAL_DUPLICADA', '🚨 NÚMERO DE NOTA FISCAL DUPLICADO', 'CRÍTICA'),
-            (r'nota.*fiscal.*não.*verificada|não.*encontrada.*sistema|autenticidade.*não.*confirmada', 'NOTA_FISCAL_NAO_VERIFICADA', '🚨 NOTA FISCAL NÃO ENCONTRADA NO SISTEMA', 'CRÍTICA'),
-            (r'emitente.*débito.*fiscal|emitente.*irregular|inscrição.*municipal.*cancelada', 'NOTA_FISCAL_EMITENTE_IRREGULAR', '🚨🚨 EMITENTE COM DÉBITO FISCAL OU IRREGULAR', 'CRÍTICA'),
-            
-            # NOTAS FISCAIS - ALTOS
-            (r'CNPJ.*inválido|inscrição.*municipal.*inválida|emitente.*não.*habilitado', 'NOTA_FISCAL_EMITENTE_DADOS_IRREGULARES', '⚠️ DADOS DO EMITENTE IRREGULARES', 'ALTA'),
-            (r'valor.*diferente.*contrato|valor.*divergente|valor.*incompatível', 'NOTA_FISCAL_VALOR_INCOMPATIVEL', '⚠️ VALOR INCOMPATÍVEL COM SERVIÇO', 'ALTA'),
-            (r'serviço.*não.*descrito|descrição.*vazia|sem.*descrição|descrição.*genérica', 'NOTA_FISCAL_DESCRICAO_INSUFICIENTE', '⚠️ DESCRIÇÃO DE SERVIÇO INSUFICIENTE', 'ALTA'),
-            (r'nota.*fiscal.*manual|emissão.*manual|fora.*sistema|emissão.*papel', 'NOTA_FISCAL_EMISSAO_MANUAL', '⚠️ NOTA FISCAL EMITIDA MANUALMENTE', 'ALTA'),
-            (r'competência.*errada|período.*competência.*incorreto|mês.*competência.*diferente', 'NOTA_FISCAL_COMPETENCIA_ERRADA', '⚠️ COMPETÊNCIA TRIBUTÁRIA INCORRETA', 'ALTA'),
-            
-            # CLÁUSULAS ABUSIVAS - CRÍTICAS
-            (r'Cláusula.*Abusiva|cláusula.*abusiva|contrato.*contém.*abusividade', 'CLAUSULA_ABUSIVA', '🚨 CLÁUSULA IDENTIFICADA COMO ABUSIVA', 'CRÍTICA'),
-            (r'Cláusula.*Ilegal|cláusula.*ilegal|contrato.*ilegalidade|cláusula.*contrária.*lei', 'CLAUSULA_ILEGAL', '🚨🚨 CLÁUSULA IDENTIFICADA COMO ILEGAL', 'CRÍTICA'),
-            (r'Cláusula.*Nula|cláusula.*nula|nulidade.*cláusula|cláusula.*sem.*efeito', 'CLAUSULA_NULA', '🚨 CLÁUSULA IDENTIFICADA COMO NULA', 'CRÍTICA'),
-            
-            # SALÁRIO ESPECÍFICO - CRÍTICOS
-            (r'salário.*R\$\s*1400|R\$\s*1400.*salário|1400.*reais.*salário', 'SALARIO_1400_BAIXO_MINIMO', '🚨 SALÁRIO DE R$ 1.400 - ABAIXO DO MÍNIMO', 'CRÍTICA'),
-            (r'salário.*R\$\s*1350|R\$\s*1350.*salário|1350.*reais.*salário', 'SALARIO_1350_BAIXO_MINIMO', '🚨 SALÁRIO DE R$ 1.350 - ABAIXO DO MÍNIMO', 'CRÍTICA'),
-            
-            # MULTAS ESPECÍFICAS - CRÍTICAS
+            # MULTAS - CRÍTICAS (VARIAÇÕES ESPECÍFICAS NÃO COBERTAS)
             (r'multa.*6.*meses|multa.*8.*meses|multa.*9.*meses|multa.*10.*meses', 'MULTA_ACIMA_PERMITIDA', '🚨 MULTA ACIMA DE 2 MESES - ILEGAL', 'CRÍTICA'),
             (r'multa.*integral.*independentemente|multa.*fixa.*sem.*proporcionalidade', 'MULTA_SEM_PROPORCIONALIDADE', '🚨 MULTA SEM PROPORCIONALIDADE', 'CRÍTICA'),
             
@@ -768,9 +665,10 @@ class Detector:
             (r'reajuste.*a.*cada.*2.*meses|reajuste.*a.*cada.*3.*meses|reajuste.*a.*cada.*6.*meses', 'REAJUSTE_PERIODO_CURTO', '🚨 REAJUSTE COM PERÍODO CURTO - ILEGAL', 'CRÍTICA'),
             (r'aumento.*fixo.*10%.*ano|aumento.*fixo.*15%.*ano|aumento.*fixo.*20%.*ano', 'AUMENTO_FIXO_ANUAL', '🚨 AUMENTO FIXO ANUAL - ILEGAL', 'CRÍTICA'),
             
-            # JORNADA ESPECÍFICA - CRÍTICAS
-            (r'jornada.*9.*horas|jornada.*10.*horas|jornada.*11.*horas|jornada.*13.*horas', 'JORNADA_DIARIA_EXCESSIVA', '🚨 JORNADA DIÁRIA ACIMA DE 8 HORAS', 'CRÍTICA'),
-            (r'jornada.*45.*horas|jornada.*48.*horas|jornada.*50.*horas|jornada.*52.*horas', 'JORNADA_SEMANAL_EXCESSIVA', '🚨 JORNADA SEMANAL ACIMA DE 44 HORAS', 'CRÍTICA'),
+            # JORNADA ESPECÍFICA - CRÍTICAS (EXTREMAS)
+            (r'\b24\b.*horas.*trabalho|24.*horas.*diárias|trabalhar.*24.*horas', 'JORNADA_24_HORAS', '🚨 JORNADA DE 24 HORAS - IMPOSSÍVEL/ILEGAL', 'CRÍTICA'),
+            (r'\b18\b.*horas.*trabalho|18.*horas.*diárias|trabalhar.*18.*horas', 'JORNADA_18_HORAS', '🚨 JORNADA DE 18 HORAS - EXTREMAMENTE ILEGAL', 'CRÍTICA'),
+            (r'\b16\b.*horas.*trabalho|16.*horas.*diárias|trabalhar.*16.*horas', 'JORNADA_16_HORAS', '🚨 JORNADA DE 16 HORAS - EXTREMAMENTE ILEGAL', 'CRÍTICA'),
             
             # INTERVALO ESPECÍFICO - CRÍTICOS
             (r'intervalo.*20.*minutos|intervalo.*25.*minutos|intervalo.*35.*minutos', 'INTERVALO_REFEICAO_MUITO_CURTO', '🚨 INTERVALO DE REFEIÇÃO MUITO CURTO', 'CRÍTICA'),
@@ -778,7 +676,12 @@ class Detector:
             
             # TRIBUTAÇÃO ESPECÍFICA - CRÍTICAS
             (r'alíquota.*zero|alíquota.*inexistente|sem.*alíquota|alíquota.*negativa', 'ALIQUOTA_ILEGAL', '🚨 ALÍQUOTA ILEGAL OU INEXISTENTE', 'CRÍTICA'),
-            (r'ISSQN.*fora.*município|ISS.*município.*errado|tributação.*município.*incorreto', 'ISS_MUNICIPIO_ERRADO', '🚨 ISS RECOLHIDO PARA MUNICÍPIO ERRADO', 'CRÍTICA'),
+            (r'ISSQN.*fora.*município|ISS.*município.*errado|tributação.*municipal.*incorreto', 'ISS_MUNICIPIO_ERRADO', '🚨 ISS RECOLHIDO PARA MUNICÍPIO ERRADO', 'CRÍTICA'),
+            
+            # CLÁUSULAS ABUSIVAS - CRÍTICAS
+            (r'Cláusula.*Abusiva|cláusula.*abusiva|contrato.*contém.*abusividade', 'CLAUSULA_ABUSIVA', '🚨 CLÁUSULA IDENTIFICADA COMO ABUSIVA', 'CRÍTICA'),
+            (r'Cláusula.*Ilegal|cláusula.*ilegal|contrato.*ilegalidade|cláusula.*contrária.*lei', 'CLAUSULA_ILEGAL', '🚨🚨 CLÁUSULA IDENTIFICADA COMO ILEGAL', 'CRÍTICA'),
+            (r'Cláusula.*Nula|cláusula.*nula|nulidade.*cláusula|cláusula.*sem.*efeito', 'CLAUSULA_NULA', '🚨 CLÁUSULA IDENTIFICADA COMO NULA', 'CRÍTICA'),
             
             # RETENÇÕES ESPECÍFICAS - ALTOS
             (r'retenção.*indevida|retenção.*excessiva|retenção.*sem.*fundamento', 'RETENCAO_INDEVIDA', '⚠️ RETENÇÃO TRIBUTÁRIA INDEVIDA', 'ALTA'),
@@ -787,15 +690,6 @@ class Detector:
             # CLÁUSULAS ESPECÍFICAS - CRÍTICAS
             (r'cláusula.*excessivamente.*onerosa|cláusula.*onerosa.*excessivo', 'CLAUSULA_EXCESSIVAMENTE_ONEROSA', '🚨 CLÁUSULA EXCESSIVAMENTE ONEROSA', 'CRÍTICA'),
             (r'cláusula.*limita.*direitos|cláusula.*restringe.*direitos', 'CLAUSULA_LIMITA_DIREITOS', '🚨 CLÁUSULA QUE LIMITA DIREITOS', 'CRÍTICA'),
-            
-            # DETECÇÃO DE NÚMEROS ESPECÍFICOS - CRÍTICOS
-            (r'\b24\b.*horas.*trabalho|24.*horas.*diárias|trabalhar.*24.*horas', 'JORNADA_24_HORAS', '🚨 JORNADA DE 24 HORAS - IMPOSSÍVEL/ILEGAL', 'CRÍTICA'),
-            (r'\b18\b.*horas.*trabalho|18.*horas.*diárias|trabalhar.*18.*horas', 'JORNADA_18_HORAS', '🚨 JORNADA DE 18 HORAS - EXTREMAMENTE ILEGAL', 'CRÍTICA'),
-            (r'\b16\b.*horas.*trabalho|16.*horas.*diárias|trabalhar.*16.*horas', 'JORNADA_16_HORAS', '🚨 JORNADA DE 16 HORAS - EXTREMAMENTE ILEGAL', 'CRÍTICA'),
-            
-            # DETECÇÃO DE VALORES ESPECÍFICOS - CRÍTICOS
-            (r'R\$\s*500.*salário|R\$\s*600.*salário|R\$\s*700.*salário|R\$\s*750.*salário', 'SALARIO_EXTREMO_BAIXO', '🚨🚨 SALÁRIO EXTREMAMENTE BAIXO - CRIME', 'CRÍTICA'),
-            (r'R\$\s*1\.200.*salário|R\$\s*1\.250.*salário|R\$\s*1\.300.*salário|R\$\s*1\.350.*salário', 'SALARIO_ABAIXO_MINIMO_ATUAL', '🚨 SALÁRIO ABAIXO DO MÍNIMO ATUAL', 'CRÍTICA'),
             
             # DETECÇÃO DE PADRÕES ABUSIVOS - CRÍTICOS
             (r'obrigação.*excessiva|ônus.*excessivo|encargo.*excessivo|dever.*excessivo', 'ONUS_EXCESSIVO', '🚨 ÔNUS EXCESSIVO - CLÁUSULA ABUSIVA', 'CRÍTICA'),
