@@ -391,11 +391,11 @@ def mostrar_tela_principal():
     
     hora = datetime.now().hour
     if hora < 12:
-        saudacao = "Bom dia"
+        saudacao = "Bem-vindo"
     elif hora < 18:
-        saudacao = "Boa tarde"
+        saudacao = "Bem-vindo"
     else:
-        saudacao = "Boa noite"
+        saudacao = "Bem-vindo"
     
     nome_usuario = st.session_state.usuario['nome'].split()[0]
     
