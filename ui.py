@@ -838,7 +838,6 @@ def mostrar_faq_rodape():
     # Descrição
     st.markdown("""
     <p style="color: #e2e8f0; font-size: 0.9em; margin-bottom: 20px; margin-top: 0; text-align: center;">
-        Análise automática de contratos e documentos com inteligência artificial brasileira
     </p>
     """, unsafe_allow_html=True)
     
