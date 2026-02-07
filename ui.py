@@ -786,7 +786,7 @@ def mostrar_faq_rodape():
     # FAQ Section
     st.markdown("""
     <div class="faq-container">
-        <h3 style="color: #F8D96D; text-align: center; margin-bottom: 25px;">
+        <h3 style="color: #F8D96D; text-align: center; margin-bottom: 25px; margin-top: 0;">
             ❓ PERGUNTAS FREQUENTES
         </h3>
     """, unsafe_allow_html=True)
@@ -870,14 +870,14 @@ def mostrar_faq_rodape():
             Análise automática de contratos e documentos com inteligência artificial brasileira
         </div>
         
-        <div class="social-links">
-            <a href="mailto:contatoburocrata@outlook.com" class="social-link">
+        <div style="display: flex; justify-content: center; gap: 20px; margin-top: 15px; margin-bottom: 25px;">
+            <a href="mailto:contatoburocrata@outlook.com" style="color: #F8D96D; text-decoration: none; font-weight: 700; padding: 8px 15px; border-radius: 20px; border: 2px solid #F8D96D; background: #1a3658; transition: all 0.3s;">
                 📧 E-mail
             </a>
-            <a href="#" class="social-link">
+            <a href="https://wa.me/5511999999999" target="_blank" style="color: #F8D96D; text-decoration: none; font-weight: 700; padding: 8px 15px; border-radius: 20px; border: 2px solid #F8D96D; background: #1a3658; transition: all 0.3s;">
                 💬 WhatsApp
             </a>
-            <a href="#" class="social-link">
+            <a href="#" target="_blank" style="color: #F8D96D; text-decoration: none; font-weight: 700; padding: 8px 15px; border-radius: 20px; border: 2px solid #F8D96D; background: #1a3658; transition: all 0.3s;">
                 🌐 Site
             </a>
         </div>
