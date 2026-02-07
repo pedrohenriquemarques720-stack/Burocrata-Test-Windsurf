@@ -1,10 +1,11 @@
 import sqlite3
 import hashlib
+import os
 
 # --------------------------------------------------
 # CONFIGURAÇÃO DO BANCO DE DADOS SQLITE
 # --------------------------------------------------
-DB_PATH = 'usuarios_burocrata.db'
+DB_PATH = os.path.join(os.getcwd(), 'usuarios_burocrata.db')
 
 def hash_senha(senha):
     """Gera hash da senha usando SHA-256"""
