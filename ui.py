@@ -69,13 +69,13 @@ def mostrar_tela_login():
         st.session_state.modo_auth = 'login'
     
     with st.container():
-        st.markdown("""
-        <div class="auth-card">
-            <div class="auth-title">🔐 Entrar na Conta</div>
-        </div>
-        """, unsafe_allow_html=True)
-        
         if st.session_state.modo_auth == 'login':
+            st.markdown("""
+            <div class="auth-card">
+                <div class="auth-title">🔐 Entrar na Conta</div>
+            </div>
+            """, unsafe_allow_html=True)
+            
             email = st.text_input("E-mail", placeholder="seu@email.com", key="login_email")
             senha = st.text_input("Senha", type="password", placeholder="Digite sua senha", key="login_senha")
             
