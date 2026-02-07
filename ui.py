@@ -853,37 +853,69 @@ def mostrar_faq_rodape():
     # Footer
     st.markdown("""
     <div style="background: #10263D; 
-                padding: 30px 0; 
+                padding: 30px 20px; 
                 margin-top: 40px; 
                 text-align: center; 
-                border-top: 2px solid #F8D96D;">
+                border-top: 2px solid #F8D96D;
+                border-radius: 15px;">
         
-        <div style="color: #F8D96D; font-size: 1.8em; font-weight: 900; margin-bottom: 15px;">
+        <h3 style="color: #F8D96D; font-size: 1.8em; font-weight: 900; margin-bottom: 15px; margin-top: 0;">
             ⚖️ BUROCRATA DE BOLSO
-        </div>
+        </h3>
         
-        <div style="color: #FFFFFF; font-size: 1.1em; margin-bottom: 20px;">
+        <p style="color: #FFFFFF; font-size: 1.1em; margin-bottom: 20px; margin-top: 0;">
             IA de Análise Documental - Proteção Jurídica Inteligente
-        </div>
+        </p>
         
-        <div style="color: #e2e8f0; font-size: 0.9em; margin-bottom: 25px;">
+        <p style="color: #e2e8f0; font-size: 0.9em; margin-bottom: 25px; margin-top: 0;">
             Análise automática de contratos e documentos com inteligência artificial brasileira
-        </div>
+        </p>
         
-        <div style="display: flex; justify-content: center; gap: 20px; margin-top: 15px; margin-bottom: 25px;">
-            <a href="mailto:contatoburocrata@outlook.com" style="color: #F8D96D; text-decoration: none; font-weight: 700; padding: 8px 15px; border-radius: 20px; border: 2px solid #F8D96D; background: #1a3658; transition: all 0.3s;">
+        <div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin: 20px 0;">
+            <a href="mailto:contatoburocrata@outlook.com" 
+               style="color: #F8D96D; 
+                      text-decoration: none; 
+                      font-weight: 700; 
+                      padding: 10px 20px; 
+                      border-radius: 25px; 
+                      border: 2px solid #F8D96D; 
+                      background: #1a3658; 
+                      display: inline-block;
+                      transition: all 0.3s;">
                 📧 E-mail
             </a>
-            <a href="https://wa.me/5511999999999" target="_blank" style="color: #F8D96D; text-decoration: none; font-weight: 700; padding: 8px 15px; border-radius: 20px; border: 2px solid #F8D96D; background: #1a3658; transition: all 0.3s;">
+            <a href="https://wa.me/5511999999999" 
+               target="_blank"
+               style="color: #F8D96D; 
+                      text-decoration: none; 
+                      font-weight: 700; 
+                      padding: 10px 20px; 
+                      border-radius: 25px; 
+                      border: 2px solid #F8D96D; 
+                      background: #1a3658; 
+                      display: inline-block;
+                      transition: all 0.3s;">
                 💬 WhatsApp
             </a>
-            <a href="#" target="_blank" style="color: #F8D96D; text-decoration: none; font-weight: 700; padding: 8px 15px; border-radius: 20px; border: 2px solid #F8D96D; background: #1a3658; transition: all 0.3s;">
+            <a href="#" 
+               target="_blank"
+               style="color: #F8D96D; 
+                      text-decoration: none; 
+                      font-weight: 700; 
+                      padding: 10px 20px; 
+                      border-radius: 25px; 
+                      border: 2px solid #F8D96D; 
+                      background: #1a3658; 
+                      display: inline-block;
+                      transition: all 0.3s;">
                 🌐 Site
             </a>
         </div>
         
-        <div style="color: #a0aec0; font-size: 0.8em; margin-top: 25px;">
+        <hr style="border: 1px solid #F8D96D; margin: 25px 0; opacity: 0.3;">
+        
+        <p style="color: #a0aec0; font-size: 0.8em; margin: 0;">
             © 2024 Burocrata de Bolso - Todos os direitos reservados
-        </div>
+        </p>
     </div>
     """, unsafe_allow_html=True)
