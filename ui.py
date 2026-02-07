@@ -783,68 +783,72 @@ def mostrar_faq_rodape():
     
     st.markdown("---")
     
-    # FAQ Section - VERSÃO EXTREMAMENTE SIMPLES
+    # FAQ Section
     st.markdown("""
-    <div style="background: #1a3658; 
-                border: 2px solid #F8D96D;
-                border-radius: 15px;
-                padding: 25px;
-                margin: 20px 0;">
-        
-        <h3 style="color: #F8D96D; 
-                text-align: center; 
-                margin: 0 0 25px 0;
-                font-size: 1.5em;
-                font-weight: bold;">
+    <div class="faq-container">
+        <h3 style="color: #F8D96D; text-align: center; margin-bottom: 25px; margin-top: 0;">
             ❓ PERGUNTAS FREQUENTES
         </h3>
-        
-        <div style="color: #FFFFFF;">
-            <div style="background: #2a4a75; 
-                        border: 1px solid #F8D96D; 
-                        border-radius: 8px; 
-                        margin: 10px 0; 
-                        padding: 15px;">
-                <div style="color: #F8D96D; font-weight: bold; margin-bottom: 10px;">
-                    🔍 1. Que tipos de documentos o sistema analisa?
-                </div>
-                <div style="color: #FFFFFF;">
-                    Nosso sistema especializado analisa:<br>
-                    • Contratos de Trabalho (CLT, PJ, estágio)<br>
-                    • Contratos de Locação (residencial, comercial)<br>
-                    • Notas Fiscais (serviços, produtos)<br>
-                    • Documentos diversos com cláusulas contratuais
-                </div>
-            </div>
-            
-            <div style="background: #2a4a75; 
-                        border: 1px solid #F8D96D; 
-                        border-radius: 8px; 
-                        margin: 10px 0; 
-                        padding: 15px;">
-                <div style="color: #F8D96D; font-weight: bold; margin-bottom: 10px;">
-                    📄 2. Posso analisar vários documentos de uma vez?
-                </div>
-                <div style="color: #FFFFFF;">
-                    Atualmente, o sistema analisa um documento por vez.
-                </div>
-            </div>
-            
-            <div style="background: #2a4a75; 
-                        border: 1px solid #F8D96D; 
-                        border-radius: 8px; 
-                        margin: 10px 0; 
-                        padding: 15px;">
-                <div style="color: #F8D96D; font-weight: bold; margin-bottom: 10px;">
-                    🔒 3. Meus documentos são seguros?
-                </div>
-                <div style="color: #FFFFFF;">
-                    Sim! Suas informações estão protegidas com privacidade total.
-                </div>
-            </div>
-        </div>
-    </div>
     """, unsafe_allow_html=True)
+    
+    # FAQ 1
+    with st.expander("🔍 1. Que tipos de documentos o sistema analisa?"):
+        st.markdown("""
+        <div class="faq-answer">
+            Nosso sistema especializado analisa:
+            • <strong>Contratos de Trabalho</strong> (CLT, PJ, estágio)
+            • <strong>Contratos de Locação</strong> (residencial, comercial)
+            • <strong>Notas Fiscais</strong> (serviços, produtos)
+            • <strong>Documentos diversos</strong> com cláusulas contratuais
+        </div>
+        """, unsafe_allow_html=True)
+    
+    # FAQ 2
+    with st.expander("⚖️ 2. Como funciona a análise jurídica?"):
+        st.markdown("""
+        <div class="faq-answer">
+            Nossa IA utiliza:
+            • <strong>100+ padrões jurídicos</strong> atualizados
+            • <strong>Inteligência Artificial</strong> que aprende
+            • <strong>Análise profunda</strong> de cláusulas
+            • <strong>Base legal</strong> para cada problema
+            • <strong>Recomendações</strong> práticas e específicas
+        </div>
+        """, unsafe_allow_html=True)
+    
+    # FAQ 3 - CORRIGIDA
+    with st.expander("📄 3. Posso analisar vários documentos de uma vez?"):
+        st.markdown("""
+        <div class="faq-answer">
+            Atualmente, o sistema analisa um documento por vez.
+        </div>
+        """, unsafe_allow_html=True)
+    
+    # FAQ 4
+    with st.expander("🔒 4. Meus documentos são seguros?"):
+        st.markdown("""
+        <div class="faq-answer">
+            Sim! Suas informações estão protegidas:
+            • <strong>Privacidade total</strong> dos dados
+            • <strong>Armazenamento seguro</strong> local
+            • <strong>Compartilhamento opcional</strong> apenas com seu consentimento
+            • <strong>Conformidade</strong> com LGPD
+        </div>
+        """, unsafe_allow_html=True)
+    
+    # FAQ 5
+    with st.expander("⚡ 5. Quão rápida é a análise?"):
+        st.markdown("""
+        <div class="faq-answer">
+            Nossa análise é ultra-rápida:
+            • <strong>Segundos</strong> para documentos simples
+            • <strong>Menos de 1 minuto</strong> para contratos complexos
+            • <strong>Resultados detalhados</strong> instantâneos
+            • <strong>IA aprende</strong> e fica mais rápida com o tempo
+        </div>
+        """, unsafe_allow_html=True)
+    
+    st.markdown("</div>", unsafe_allow_html=True)
     
     # Footer - Versão Streamlit nativa
     st.markdown("---")
