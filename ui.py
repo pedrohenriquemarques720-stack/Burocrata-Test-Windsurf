@@ -232,102 +232,84 @@ def mostrar_secao_analises():
     
     with col1:
         st.markdown("""
-        <div class="analise-card" style="background: #1a3658 !important; border-radius: 15px !important; padding: 25px !important; box-shadow: 0 10px 30px rgba(0,0,0,0.3) !important; border-top: 5px solid #F8D96D !important; height: 100% !important;">
-            <div class="analise-icon" style="font-size: 2.5em !important; margin-bottom: 15px !important; color: #F8D96D !important; text-align: center !important;">🏠</div>
-            <div class="analise-title" style="color: #F8D96D !important; font-size: 1.5em !important; font-weight: 700 !important; margin-bottom: 20px !important; text-align: center !important;">Contrato de Locação</div>
-            
-            <div class="analise-item" style="margin-bottom: 15px !important; padding-left: 10px !important; border-left: 3px solid rgba(248, 217, 109, 0.5) !important;">
-                <div class="analise-item-title" style="color: #FFFFFF !important; font-weight: 600 !important; margin-bottom: 5px !important; font-size: 1.1em !important;">Valor do Aluguel e Reajuste</div>
-                <div class="analise-item-desc" style="color: #e2e8f0 !important; font-size: 0.95em !important; line-height: 1.4 !important;">Onde dói no bolso (ou entra o dinheiro).</div>
-            </div>
-            
-            <div class="analise-item" style="margin-bottom: 15px !important; padding-left: 10px !important; border-left: 3px solid rgba(248, 217, 109, 0.5) !important;">
-                <div class="analise-item-title" style="color: #FFFFFF !important; font-weight: 600 !important; margin-bottom: 5px !important; font-size: 1.1em !important;">Vigência e Prazo</div>
-                <div class="analise-item-desc" style="color: #e2e8f0 !important; font-size: 0.95em !important; line-height: 1.4 !important;">Quanto tempo dura o "felizes para sempre".</div>
-            </div>
-            
-            <div class="analise-item" style="margin-bottom: 15px !important; padding-left: 10px !important; border-left: 3px solid rgba(248, 217, 109, 0.5) !important;">
-                <div class="analise-item-title" style="color: #FFFFFF !important; font-weight: 600 !important; margin-bottom: 5px !important; font-size: 1.1em !important;">Conservação e Reformas</div>
-                <div class="analise-item-desc" style="color: #e2e8f0 !important; font-size: 0.95em !important; line-height: 1.4 !important;">Quem paga pelo cano que estourou.</div>
-            </div>
-            
-            <div class="analise-item" style="margin-bottom: 15px !important; padding-left: 10px !important; border-left: 3px solid rgba(248, 217, 109, 0.5) !important;">
-                <div class="analise-item-title" style="color: #FFFFFF !important; font-weight: 600 !important; margin-bottom: 5px !important; font-size: 1.1em !important;">Multas e Rescisão</div>
-                <div class="analise-item-desc" style="color: #e2e8f0 !important; font-size: 0.95em !important; line-height: 1.4 !important;">O preço de sair antes da hora.</div>
-            </div>
-            
-            <div class="analise-item" style="margin-bottom: 15px !important; padding-left: 10px !important; border-left: 3px solid rgba(248, 217, 109, 0.5) !important;">
-                <div class="analise-item-title" style="color: #FFFFFF !important; font-weight: 600 !important; margin-bottom: 5px !important; font-size: 1.1em !important;">Garantia Locatória</div>
-                <div class="analise-item-desc" style="color: #e2e8f0 !important; font-size: 0.95em !important; line-height: 1.4 !important;">O famoso fiador, caução ou seguro.</div>
+        <div style="background: #1a3658; border-radius: 15px; padding: 25px; 
+                    box-shadow: 0 10px 30px rgba(0,0,0,0.3); border-top: 5px solid #F8D96D; 
+                    height: 100%; text-align: center;">
+            <div style="font-size: 2.5em; margin-bottom: 15px; color: #F8D96D;">🏠</div>
+            <div style="color: #F8D96D; font-size: 1.5em; font-weight: 700; margin-bottom: 20px;">
+                Contrato de Locação
             </div>
         </div>
         """, unsafe_allow_html=True)
+        
+        st.markdown("**Valor do Aluguel e Reajuste**")
+        st.write("Onde dói no bolso (ou entra o dinheiro).")
+        
+        st.markdown("**Vigência e Prazo**")
+        st.write("Quanto tempo dura o 'felizes para sempre'.")
+        
+        st.markdown("**Conservação e Reformas**")
+        st.write("Quem paga pelo cano que estourou.")
+        
+        st.markdown("**Multas e Rescisão**")
+        st.write("O preço de sair antes da hora.")
+        
+        st.markdown("**Garantia Locatória**")
+        st.write("O famoso fiador, caução ou seguro.")
     
     with col2:
         st.markdown("""
-        <div class="analise-card" style="background: #1a3658 !important; border-radius: 15px !important; padding: 25px !important; box-shadow: 0 10px 30px rgba(0,0,0,0.3) !important; border-top: 5px solid #F8D96D !important; height: 100% !important;">
-            <div class="analise-icon" style="font-size: 2.5em !important; margin-bottom: 15px !important; color: #F8D96D !important; text-align: center !important;">💼</div>
-            <div class="analise-title" style="color: #F8D96D !important; font-size: 1.5em !important; font-weight: 700 !important; margin-bottom: 20px !important; text-align: center !important;">Contrato de Emprego</div>
-            
-            <div class="analise-item" style="margin-bottom: 15px !important; padding-left: 10px !important; border-left: 3px solid rgba(248, 217, 109, 0.5) !important;">
-                <div class="analise-item-title" style="color: #FFFFFF !important; font-weight: 600 !important; margin-bottom: 5px !important; font-size: 1.1em !important;">Remuneração e Benefícios</div>
-                <div class="analise-item-desc" style="color: #e2e8f0 !important; font-size: 0.95em !important; line-height: 1.4 !important;">Salário, VR, VT e os mimos.</div>
-            </div>
-            
-            <div class="analise-item" style="margin-bottom: 15px !important; padding-left: 10px !important; border-left: 3px solid rgba(248, 217, 109, 0.5) !important;">
-                <div class="analise-item-title" style="color: #FFFFFF !important; font-weight: 600 !important; margin-bottom: 5px !important; font-size: 1.1em !important;">Jornada de Trabalho</div>
-                <div class="analise-item-desc" style="color: #e2e8f0 !important; font-size: 0.95em !important; line-height: 1.4 !important;">O horário de bater o ponto.</div>
-            </div>
-            
-            <div class="analise-item" style="margin-bottom: 15px !important; padding-left: 10px !important; border-left: 3px solid rgba(248, 217, 109, 0.5) !important;">
-                <div class="analise-item-title" style="color: #FFFFFF !important; font-weight: 600 !important; margin-bottom: 5px !important; font-size: 1.1em !important;">Atribuições do Cargo</div>
-                <div class="analise-item-desc" style="color: #e2e8f0 !important; font-size: 0.95em !important; line-height: 1.4 !important;">O que, afinal, você foi contratado para fazer.</div>
-            </div>
-            
-            <div class="analise-item" style="margin-bottom: 15px !important; padding-left: 10px !important; border-left: 3px solid rgba(248, 217, 109, 0.5) !important;">
-                <div class="analise-item-title" style="color: #FFFFFF !important; font-weight: 600 !important; margin-bottom: 5px !important; font-size: 1.1em !important;">Confidencialidade</div>
-                <div class="analise-item-desc" style="color: #e2e8f0 !important; font-size: 0.95em !important; line-height: 1.4 !important;">O que acontece na empresa, morre na empresa.</div>
-            </div>
-            
-            <div class="analise-item" style="margin-bottom: 15px !important; padding-left: 10px !important; border-left: 3px solid rgba(248, 217, 109, 0.5) !important;">
-                <div class="analise-item-title" style="color: #FFFFFF !important; font-weight: 600 !important; margin-bottom: 5px !important; font-size: 1.1em !important;">Aviso Prévio e Rescisão</div>
-                <div class="analise-item-desc" style="color: #e2e8f0 !important; font-size: 0.95em !important; line-height: 1.4 !important;">As regras do adeus.</div>
+        <div style="background: #1a3658; border-radius: 15px; padding: 25px; 
+                    box-shadow: 0 10px 30px rgba(0,0,0,0.3); border-top: 5px solid #F8D96D; 
+                    height: 100%; text-align: center;">
+            <div style="font-size: 2.5em; margin-bottom: 15px; color: #F8D96D;">💼</div>
+            <div style="color: #F8D96D; font-size: 1.5em; font-weight: 700; margin-bottom: 20px;">
+                Contrato de Emprego
             </div>
         </div>
         """, unsafe_allow_html=True)
+        
+        st.markdown("**Remuneração e Benefícios**")
+        st.write("Salário, VR, VT e os mimos.")
+        
+        st.markdown("**Jornada de Trabalho**")
+        st.write("O horário de bater o ponto.")
+        
+        st.markdown("**Atribuições do Cargo**")
+        st.write("O que, afinal, você foi contratado para fazer.")
+        
+        st.markdown("**Confidencialidade**")
+        st.write("O que acontece na empresa, morre na empresa.")
+        
+        st.markdown("**Aviso Prévio e Rescisão**")
+        st.write("As regras do adeus.")
     
     with col3:
         st.markdown("""
-        <div class="analise-card" style="background: #1a3658 !important; border-radius: 15px !important; padding: 25px !important; box-shadow: 0 10px 30px rgba(0,0,0,0.3) !important; border-top: 5px solid #F8D96D !important; height: 100% !important;">
-            <div class="analise-icon" style="font-size: 2.5em !important; margin-bottom: 15px !important; color: #F8D96D !important; text-align: center !important;">🧾</div>
-            <div class="analise-title" style="color: #F8D96D !important; font-size: 1.5em !important; font-weight: 700 !important; margin-bottom: 20px !important; text-align: center !important;">Notas Fiscais</div>
-            
-            <div class="analise-item" style="margin-bottom: 15px !important; padding-left: 10px !important; border-left: 3px solid rgba(248, 217, 109, 0.5) !important;">
-                <div class="analise-item-title" style="color: #FFFFFF !important; font-weight: 600 !important; margin-bottom: 5px !important; font-size: 1.1em !important;">Dados do Emissor/Destinatário</div>
-                <div class="analise-item-desc" style="color: #e2e8f0 !important; font-size: 0.95em !important; line-height: 1.4 !important;">Quem vendeu e quem comprou.</div>
-            </div>
-            
-            <div class="analise-item" style="margin-bottom: 15px !important; padding-left: 10px !important; border-left: 3px solid rgba(248, 217, 109, 0.5) !important;">
-                <div class="analise-item-title" style="color: #FFFFFF !important; font-weight: 600 !important; margin-bottom: 5px !important; font-size: 1.1em !important;">Itens e Serviços</div>
-                <div class="analise-item-desc" style="color: #e2e8f0 !important; font-size: 0.95em !important; line-height: 1.4 !important;">A lista de compras detalhada.</div>
-            </div>
-            
-            <div class="analise-item" style="margin-bottom: 15px !important; padding-left: 10px !important; border-left: 3px solid rgba(248, 217, 109, 0.5) !important;">
-                <div class="analise-item-title" style="color: #FFFFFF !important; font-weight: 600 !important; margin-bottom: 5px !important; font-size: 1.1em !important;">Impostos e Tributação</div>
-                <div class="analise-item-desc" style="color: #e2e8f0 !important; font-size: 0.95em !important; line-height: 1.4 !important;">A fatia que fica para o governo.</div>
-            </div>
-            
-            <div class="analise-item" style="margin-bottom: 15px !important; padding-left: 10px !important; border-left: 3px solid rgba(248, 217, 109, 0.5) !important;">
-                <div class="analise-item-title" style="color: #FFFFFF !important; font-weight: 600 !important; margin-bottom: 5px !important; font-size: 1.1em !important;">Valor Total e Descontos</div>
-                <div class="analise-item-desc" style="color: #e2e8f0 !important; font-size: 0.95em !important; line-height: 1.4 !important;">O número final da conta.</div>
-            </div>
-            
-            <div class="analise-item" style="margin-bottom: 15px !important; padding-left: 10px !important; border-left: 3px solid rgba(248, 217, 109, 0.5) !important;">
-                <div class="analise-item-title" style="color: #FFFFFF !important; font-weight: 600 !important; margin-bottom: 5px !important; font-size: 1.1em !important;">Status de Pagamento</div>
-                <div class="analise-item-desc" style="color: #e2e8f0 !important; font-size: 0.95em !important; line-height: 1.4 !important;">Se já caiu na conta ou se ainda é promessa.</div>
+        <div style="background: #1a3658; border-radius: 15px; padding: 25px; 
+                    box-shadow: 0 10px 30px rgba(0,0,0,0.3); border-top: 5px solid #F8D96D; 
+                    height: 100%; text-align: center;">
+            <div style="font-size: 2.5em; margin-bottom: 15px; color: #F8D96D;">🧾</div>
+            <div style="color: #F8D96D; font-size: 1.5em; font-weight: 700; margin-bottom: 20px;">
+                Notas Fiscais
             </div>
         </div>
         """, unsafe_allow_html=True)
+        
+        st.markdown("**Dados do Emissor/Destinatário**")
+        st.write("Quem vendeu e quem comprou.")
+        
+        st.markdown("**Itens e Serviços**")
+        st.write("A lista de compras detalhada.")
+        
+        st.markdown("**Impostos e Tributação**")
+        st.write("A fatia que fica para o governo.")
+        
+        st.markdown("**Valor Total e Descontos**")
+        st.write("O número final da conta.")
+        
+        st.markdown("**Status de Pagamento**")
+        st.write("Se já caiu na conta ou se ainda é promessa.")
     
     st.markdown("<div style='margin: 40px 0;'></div>", unsafe_allow_html=True)
 
