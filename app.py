@@ -362,6 +362,58 @@ st.markdown("""
         color: #F8D96D !important;
     }
     
+    /* CSS adicional para forçar título branco */
+    .streamlit-expanderHeader {
+        color: #FFFFFF !important;
+    }
+    
+    .streamlit-expanderHeader span {
+        color: #FFFFFF !important;
+    }
+    
+    div[data-testid="stExpander"] > div > div > div > span {
+        color: #FFFFFF !important;
+    }
+    
+    /* Forçar cor em todos os níveis */
+    [data-baseweb="expander"] > div > div > div > span {
+        color: #FFFFFF !important;
+    }
+    
+    button[data-testid="stExpanderToggle"] > span {
+        color: #FFFFFF !important;
+    }
+    
+    /* CSS mais agressivo - forçar tudo branco */
+    * [data-testid="stExpander"] * {
+        color: #FFFFFF !important;
+    }
+    
+    * [data-baseweb="expander"] * {
+        color: #FFFFFF !important;
+    }
+    
+    /* Especificamente para os spans dentro dos expanders */
+    div[data-testid="stExpander"] span,
+    div[data-testid="stExpander"] span *,
+    button[data-testid="stExpanderToggle"] span,
+    button[data-testid="stExpanderToggle"] span * {
+        color: #FFFFFF !important;
+    }
+    
+    /* CSS NUCLEAR - forçar tudo */
+    div[class*="expander"] *,
+    button[class*="expander"] *,
+    div[id*="expander"] *,
+    span[class*="expander"] * {
+        color: #FFFFFF !important;
+    }
+    
+    /* Forçar cor do texto em toda página */
+    .stExpander * {
+        color: #FFFFFF !important;
+    }
+    
     /* Scrollbar personalizada */
     ::-webkit-scrollbar {
         width: 8px;
