@@ -1,8 +1,8 @@
 import re
 from utils import limpar_texto
 
-class SistemaDetecao:
-    """Sistema altamente especializado em detecção de problemas jurídicos - VERSÃO 2.0"""
+class Detector:
+    """Sistema de detecção de problemas jurídicos - VERSÃO 2.0"""
     
     def __init__(self):
         # Padrões EXTREMAMENTE específicos e abrangentes - ATUALIZADO 2024
