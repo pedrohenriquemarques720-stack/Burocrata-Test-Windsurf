@@ -12,7 +12,7 @@ import os
 
 # Import modules
 from database import init_database, criar_usuario, autenticar_usuario, get_usuario_por_id, atualizar_burocreds, registrar_analise, get_historico_usuario
-from detection import BurocrataDetector
+from detection import Detector
 from utils import limpar_texto, extrair_texto_pdf
 from ui import mostrar_tela_login, mostrar_cabecalho_usuario, mostrar_secao_analises, mostrar_faq_rodape, mostrar_tela_principal
 
