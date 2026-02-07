@@ -1,7 +1,7 @@
 import re
 from utils import limpar_texto
 
-class SistemaDetecção:
+class SistemaDetecao:
     """Sistema altamente especializado em detecção de problemas jurídicos - VERSÃO 2.0"""
     
     def __init__(self):
