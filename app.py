@@ -87,6 +87,8 @@ st.markdown("""
         font-weight: 800;
         text-align: center;
         margin-bottom: 30px;
+        margin-top: 0;
+        padding-top: 0;
     }
     
     /* Perfil do usuário */
