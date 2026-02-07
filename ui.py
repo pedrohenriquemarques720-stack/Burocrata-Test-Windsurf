@@ -231,7 +231,7 @@ def mostrar_secao_analises():
     col1, col2, col3 = st.columns(3)
     
     with col1:
-        with st.expander():
+        with st.container():
             st.markdown("""
             <div class="analise-card">
                 <div class="analise-icon">🏠</div>
@@ -265,7 +265,7 @@ def mostrar_secao_analises():
             """, unsafe_allow_html=True)
     
     with col2:
-        with st.expander():
+        with st.container():
             st.markdown("""
             <div class="analise-card">
                 <div class="analise-icon">💼</div>
@@ -299,7 +299,7 @@ def mostrar_secao_analises():
             """, unsafe_allow_html=True)
     
     with col3:
-        with st.expander():
+        with st.container():
             st.markdown("""
             <div class="analise-card">
                 <div class="analise-icon">🧾</div>
