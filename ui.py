@@ -2,6 +2,9 @@ import streamlit as st
 import time
 from datetime import datetime
 from detection import Detector
+from smart_detector import SmartDetector
+from utils import extrair_texto_pdf, formatar_moeda, formatar_data
+import database as db
 from database import autenticar_usuario, criar_usuario, get_usuario_por_id, atualizar_burocreds, registrar_analise, get_historico_usuario
 from utils import extrair_texto_pdf
 
@@ -455,7 +458,14 @@ def mostrar_tela_principal():
                 texto = extrair_texto_pdf(arquivo)
                 
                 if texto:
-                    resultado = detector.analisar_documento(texto)
+                    # Usar SmartDetector com inteligência artificial
+                    smart_detector = SmartDetector()
+                    resultado = smart_detector.analisar_documento_inteligente(texto)
+                    
+                    # Mostrar informações de aprendizado se houver
+                    learning_info = resultado.get('learning_info', {})
+                    if learning_info.get('improved_analysis'):
+                        st.success(f"🧠 **IA APRENDEU!** +{learning_info.get('improvement', 0)} problemas detectados automaticamente!")
                     
                     if st.session_state.usuario['id']:
                         registrar_analise(
@@ -465,7 +475,6 @@ def mostrar_tela_principal():
                             resultado['total'],
                             resultado['score']
                         )
-                        
                         if not is_conta_especial:
                             atualizar_burocreds(st.session_state.usuario['id'], -10)
                             st.session_state.usuario['burocreds'] -= 10
