@@ -155,10 +155,18 @@ st.markdown("""
     .faq-container {
         background: #1a3658;
         border-radius: 15px;
-        padding: 25px;
+        padding: 25px 25px 25px 25px;
         box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         border: 2px solid #F8D96D;
         margin: 20px 0;
+    }
+    
+    .faq-container h3 {
+        color: #F8D96D !important;
+        font-weight: 700 !important;
+        margin-bottom: 25px !important;
+        margin-top: 0 !important;
+        text-align: center !important;
     }
     
     .faq-question {
@@ -326,6 +334,32 @@ st.markdown("""
         background-color: #F8D96D !important;
         color: #10263D !important;
         font-weight: bold;
+    }
+    
+    /* Expanders - Corrigir título para branco */
+    .stExpander {
+        background: #1a3658;
+        border: 1px solid #F8D96D;
+        border-radius: 10px;
+    }
+    
+    .stExpander > div > div {
+        background: #1a3658 !important;
+    }
+    
+    /* Título do expander em branco */
+    .stExpander .streamlit-expanderHeader {
+        color: #FFFFFF !important;
+        font-weight: 600 !important;
+    }
+    
+    /* Forçar cor do texto do expander */
+    [data-testid="stExpander"] div[role="button"] {
+        color: #FFFFFF !important;
+    }
+    
+    [data-testid="stExpander"] div[role="button"]:hover {
+        color: #F8D96D !important;
     }
     
     /* Scrollbar personalizada */
