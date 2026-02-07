@@ -1,4 +1,5 @@
 import re
+from learning_engine import LearningEngine
 
 def limpar_texto(texto):
     """Limpa texto removendo caracteres especiais e normalizando"""
@@ -650,6 +651,7 @@ class Detector:
         
         # Análise genérica SUPER avançada - COBERTURA MÁXIMA (SEM DUPLICAÇÃO)
         # Padrões genéricos que NÃO estão cobertos na análise específica
+        # BASEADO NOS CONTRATOS REAIS ANALISADOS
         self.padroes_genericos = [
             # SALÁRIO - CRÍTICOS (VALORES EXTREMAMENTE BAIXOS NÃO COBERTOS NA ANÁLISE ESPECÍFICA)
             (r'\b500\b.*reais|\bR\$\s*500\b|\b600\b.*reais|\bR\$\s*600\b|\b700\b.*reais|\bR\$\s*700\b|\b750\b.*reais|\bR\$\s*750\b', 'SALARIO_EXTREMO_BAIXO', '🚨🚨 SALÁRIO EXTREMAMENTE BAIXO - CRIME', 'CRÍTICA'),
@@ -682,6 +684,22 @@ class Detector:
             (r'Cláusula.*Abusiva|cláusula.*abusiva|contrato.*contém.*abusividade', 'CLAUSULA_ABUSIVA', '🚨 CLÁUSULA IDENTIFICADA COMO ABUSIVA', 'CRÍTICA'),
             (r'Cláusula.*Ilegal|cláusula.*ilegal|contrato.*ilegalidade|cláusula.*contrária.*lei', 'CLAUSULA_ILEGAL', '🚨🚨 CLÁUSULA IDENTIFICADA COMO ILEGAL', 'CRÍTICA'),
             (r'Cláusula.*Nula|cláusula.*nula|nulidade.*cláusula|cláusula.*sem.*efeito', 'CLAUSULA_NULA', '🚨 CLÁUSULA IDENTIFICADA COMO NULA', 'CRÍTICA'),
+            
+            # DETECÇÃO DE CONTRATOS DE PRESTAÇÃO DISFARÇADOS - CRÍTICOS
+            (r'contrato.*prestação.*serviços.*profissionais|prestador.*autônomo.*CLT|autônomo.*horário.*fixo|pj.*horas.*semanais', 'TRABALHO_DISFARCADO_PJ', '🚨🚨 TRABALHO DISFARÇADO COMO PJ - FRAUDE!', 'CRÍTICA'),
+            (r'empresa.*contrata.*profissional.*sem.*vínculo|sem.*vínculo.*empregatício.*horário.*fixo', 'VINCULO_EMPREGATICIO_DISFARCADO', '🚨 VÍNCULO EMPREGATÍCIO DISFARÇADO - FRAUDE!', 'CRÍTICA'),
+            
+            # DETECÇÃO DE VALORES ZERO EM DOCUMENTOS - CRÍTICOS
+            (r'R\$\s*0,00|R\$\s*0\.00|valor.*zero|valor.*nulo|sem.*valor|valor.*inexistente', 'VALOR_ZERO_DOCUMENTO', '🚨 VALOR ZERO EM DOCUMENTO - SUSPEITA DE FRAUDE!', 'CRÍTICA'),
+            
+            # DETECÇÃO DE CLÁUSULAS DE EXCLUSIVIDADE - ALTOS
+            (r'exclusividade.*absoluta|dedicação.*exclusiva|proibido.*outro.*emprego|vedado.*atividade.*remunerada', 'EXCLUSIVIDADE_EXCESSIVA', '⚠️ CLÁUSULA DE EXCLUSIVIDADE EXCESSIVA', 'ALTA'),
+            
+            # DETECÇÃO DE MULTAS PUNITIVAS EXCESSIVAS - CRÍTICAS
+            (r'multa.*punitiva.*excessiva|penalidade.*excessiva|multa.*compensatória.*abusiva', 'MULTA_PUNITIVA_EXCESSIVA', '🚨 MULTA PUNITIVA EXCESSIVA - ABUSIVA', 'CRÍTICA'),
+            
+            # DETECÇÃO DE CLÁUSULAS DE IRRETRATABILIDADE - ALTOS
+            (r'irretratável.*irrevogável|cláusula.*irretratável|sem.*direito.*arrependimento', 'IRRETRATABILIDADE_ABSOLUTA', '⚠️ CLÁUSULA DE IRRETRATABILIDADE ABSOLUTA', 'ALTA'),
             
             # RETENÇÕES ESPECÍFICAS - ALTOS
             (r'retenção.*indevida|retenção.*excessiva|retenção.*sem.*fundamento', 'RETENCAO_INDEVIDA', '⚠️ RETENÇÃO TRIBUTÁRIA INDEVIDA', 'ALTA'),
