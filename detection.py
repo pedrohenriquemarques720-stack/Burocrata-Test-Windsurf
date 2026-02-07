@@ -1,5 +1,30 @@
 import re
-from utils import limpar_texto
+
+def limpar_texto(texto):
+    """Limpa texto removendo caracteres especiais e normalizando"""
+    if not texto:
+        return ""
+    
+    # Converter para string se não for
+    texto = str(texto)
+    
+    # Remover caracteres de controle e substituir por espaço
+    texto = re.sub(r'[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]', ' ', texto)
+    
+    # Normalizar caracteres Unicode
+    try:
+        import unicodedata
+        texto = unicodedata.normalize('NFKD', texto).encode('ASCII', 'ignore').decode('ASCII')
+    except:
+        pass
+    
+    # Converter para minúsculas
+    texto = texto.lower()
+    
+    # Remover espaços extras
+    texto = re.sub(r'\s+', ' ', texto).strip()
+    
+    return texto
 
 class Detector:
     """Sistema de detecção de problemas jurídicos - VERSÃO 2.0"""
