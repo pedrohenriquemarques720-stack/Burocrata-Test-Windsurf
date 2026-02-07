@@ -242,20 +242,20 @@ def mostrar_secao_analises():
         </div>
         """, unsafe_allow_html=True)
         
-        st.markdown("**Valor do Aluguel e Reajuste**")
-        st.write("Onde dói no bolso (ou entra o dinheiro).")
+        st.markdown('<p style="text-align: center; color: #FFFFFF; font-weight: 600;">**Valor do Aluguel e Reajuste**</p>', unsafe_allow_html=True)
+        st.write('<p style="text-align: center; color: #FFFFFF;">Onde dói no bolso (ou entra o dinheiro).</p>', unsafe_allow_html=True)
         
-        st.markdown("**Vigência e Prazo**")
-        st.write("Quanto tempo dura o 'felizes para sempre'.")
+        st.markdown('<p style="text-align: center; color: #FFFFFF; font-weight: 600;">**Vigência e Prazo**</p>', unsafe_allow_html=True)
+        st.write('<p style="text-align: center; color: #FFFFFF;">Quanto tempo dura o "felizes para sempre".</p>', unsafe_allow_html=True)
         
-        st.markdown("**Conservação e Reformas**")
-        st.write("Quem paga pelo cano que estourou.")
+        st.markdown('<p style="text-align: center; color: #FFFFFF; font-weight: 600;">**Conservação e Reformas**</p>', unsafe_allow_html=True)
+        st.write('<p style="text-align: center; color: #FFFFFF;">Quem paga pelo cano que estourou.</p>', unsafe_allow_html=True)
         
-        st.markdown("**Multas e Rescisão**")
-        st.write("O preço de sair antes da hora.")
+        st.markdown('<p style="text-align: center; color: #FFFFFF; font-weight: 600;">**Multas e Rescisão**</p>', unsafe_allow_html=True)
+        st.write('<p style="text-align: center; color: #FFFFFF;">O preço de sair antes da hora.</p>', unsafe_allow_html=True)
         
-        st.markdown("**Garantia Locatória**")
-        st.write("O famoso fiador, caução ou seguro.")
+        st.markdown('<p style="text-align: center; color: #FFFFFF; font-weight: 600;">**Garantia Locatória**</p>', unsafe_allow_html=True)
+        st.write('<p style="text-align: center; color: #FFFFFF;">O famoso fiador, caução ou seguro.</p>', unsafe_allow_html=True)
     
     with col2:
         st.markdown("""
@@ -269,20 +269,20 @@ def mostrar_secao_analises():
         </div>
         """, unsafe_allow_html=True)
         
-        st.markdown("**Remuneração e Benefícios**")
-        st.write("Salário, VR, VT e os mimos.")
+        st.markdown('<p style="text-align: center; color: #FFFFFF; font-weight: 600;">**Remuneração e Benefícios**</p>', unsafe_allow_html=True)
+        st.write('<p style="text-align: center; color: #FFFFFF;">Salário, VR, VT e os mimos.</p>', unsafe_allow_html=True)
         
-        st.markdown("**Jornada de Trabalho**")
-        st.write("O horário de bater o ponto.")
+        st.markdown('<p style="text-align: center; color: #FFFFFF; font-weight: 600;">**Jornada de Trabalho**</p>', unsafe_allow_html=True)
+        st.write('<p style="text-align: center; color: #FFFFFF;">O horário de bater o ponto.</p>', unsafe_allow_html=True)
         
-        st.markdown("**Atribuições do Cargo**")
-        st.write("O que, afinal, você foi contratado para fazer.")
+        st.markdown('<p style="text-align: center; color: #FFFFFF; font-weight: 600;">**Atribuições do Cargo**</p>', unsafe_allow_html=True)
+        st.write('<p style="text-align: center; color: #FFFFFF;">O que, afinal, você foi contratado para fazer.</p>', unsafe_allow_html=True)
         
-        st.markdown("**Confidencialidade**")
-        st.write("O que acontece na empresa, morre na empresa.")
+        st.markdown('<p style="text-align: center; color: #FFFFFF; font-weight: 600;">**Confidencialidade**</p>', unsafe_allow_html=True)
+        st.write('<p style="text-align: center; color: #FFFFFF;">O que acontece na empresa, morre na empresa.</p>', unsafe_allow_html=True)
         
-        st.markdown("**Aviso Prévio e Rescisão**")
-        st.write("As regras do adeus.")
+        st.markdown('<p style="text-align: center; color: #FFFFFF; font-weight: 600;">**Aviso Prévio e Rescisão**</p>', unsafe_allow_html=True)
+        st.write('<p style="text-align: center; color: #FFFFFF;">As regras do adeus.</p>', unsafe_allow_html=True)
     
     with col3:
         st.markdown("""
@@ -296,20 +296,20 @@ def mostrar_secao_analises():
         </div>
         """, unsafe_allow_html=True)
         
-        st.markdown("**Dados do Emissor/Destinatário**")
-        st.write("Quem vendeu e quem comprou.")
+        st.markdown('<p style="text-align: center; color: #FFFFFF; font-weight: 600;">**Dados do Emissor/Destinatário**</p>', unsafe_allow_html=True)
+        st.write('<p style="text-align: center; color: #FFFFFF;">Quem vendeu e quem comprou.</p>', unsafe_allow_html=True)
         
-        st.markdown("**Itens e Serviços**")
-        st.write("A lista de compras detalhada.")
+        st.markdown('<p style="text-align: center; color: #FFFFFF; font-weight: 600;">**Itens e Serviços**</p>', unsafe_allow_html=True)
+        st.write('<p style="text-align: center; color: #FFFFFF;">A lista de compras detalhada.</p>', unsafe_allow_html=True)
         
-        st.markdown("**Impostos e Tributação**")
-        st.write("A fatia que fica para o governo.")
+        st.markdown('<p style="text-align: center; color: #FFFFFF; font-weight: 600;">**Impostos e Tributação**</p>', unsafe_allow_html=True)
+        st.write('<p style="text-align: center; color: #FFFFFF;">A fatia que fica para o governo.</p>', unsafe_allow_html=True)
         
-        st.markdown("**Valor Total e Descontos**")
-        st.write("O número final da conta.")
+        st.markdown('<p style="text-align: center; color: #FFFFFF; font-weight: 600;">**Valor Total e Descontos**</p>', unsafe_allow_html=True)
+        st.write('<p style="text-align: center; color: #FFFFFF;">O número final da conta.</p>', unsafe_allow_html=True)
         
-        st.markdown("**Status de Pagamento**")
-        st.write("Se já caiu na conta ou se ainda é promessa.")
+        st.markdown('<p style="text-align: center; color: #FFFFFF; font-weight: 600;">**Status de Pagamento**</p>', unsafe_allow_html=True)
+        st.write('<p style="text-align: center; color: #FFFFFF;">Se já caiu na conta ou se ainda é promessa.</p>', unsafe_allow_html=True)
     
     st.markdown("<div style='margin: 40px 0;'></div>", unsafe_allow_html=True)
 
