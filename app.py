@@ -159,6 +159,7 @@ st.markdown("""
         box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         border: 2px solid #F8D96D;
         margin: 20px 0;
+        overflow: hidden; /* Evita que conteúdo vaze */
     }
     
     .faq-container h3 {
@@ -167,6 +168,15 @@ st.markdown("""
         margin-bottom: 25px !important;
         margin-top: 0 !important;
         text-align: center !important;
+        padding-top: 0 !important;
+        position: relative !important;
+        display: block !important;
+    }
+    
+    /* Forçar o container a conter o título */
+    .faq-container > h3:first-child {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
     }
     
     .faq-question {
