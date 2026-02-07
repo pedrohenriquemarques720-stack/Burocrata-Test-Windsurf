@@ -110,7 +110,11 @@ def mostrar_tela_login():
                     st.rerun()
         
         else:
-            st.markdown('<div class="auth-title">📝 Criar Nova Conta</div>', unsafe_allow_html=True)
+            st.markdown("""
+            <div class="auth-card">
+                <div class="auth-title">📝 Criar Nova Conta</div>
+            </div>
+            """, unsafe_allow_html=True)
             
             nome = st.text_input("Nome Completo", placeholder="Seu nome", key="cad_nome")
             email = st.text_input("E-mail", placeholder="seu@email.com", key="cad_email")
