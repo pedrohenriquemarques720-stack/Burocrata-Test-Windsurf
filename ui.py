@@ -455,15 +455,15 @@ def mostrar_tela_principal():
                 texto = extrair_texto_pdf(arquivo)
                 
                 if texto:
-                    problemas, tipo_doc, metricas = detector.analisar_documento(texto)
+                    resultado = detector.analisar_documento(texto)
                     
                     if st.session_state.usuario['id']:
                         registrar_analise(
                             st.session_state.usuario['id'],
                             arquivo.name,
-                            tipo_doc,
-                            metricas['total'],
-                            metricas['score']
+                            resultado['tipo_documento'],
+                            resultado['total'],
+                            resultado['score']
                         )
                         
                         if not is_conta_especial:
@@ -478,11 +478,11 @@ def mostrar_tela_principal():
                         <div style="display: flex; align-items: center; margin-bottom: 15px;">
                             <div style="font-size: 2em; margin-right: 15px;">⚖️</div>
                             <div>
-                                <h3 style="color: {metricas['cor']}; margin: 0;">{metricas['status']}</h3>
+                                <h3 style="color: {resultado['cor']}; margin: 0;">{resultado['status']}</h3>
                                 <p style="color: #FFFFFF; margin: 5px 0 0 0;">
                                     <strong>Documento:</strong> {arquivo.name}
-                                    {f"• <strong>Tipo:</strong> {detector.padroes.get(tipo_doc, {}).get('nome', 'Documento')}" if tipo_doc != 'DESCONHECIDO' else ''}
-                                    • <strong>Nível de Risco:</strong> {metricas['nivel_risco']}
+                                    {f"• <strong>Tipo:</strong> {detector.padroes.get(resultado['tipo_documento'], {}).get('nome', 'Documento')}" if resultado['tipo_documento'] != 'DESCONHECIDO' else ''}
+                                    • <strong>Nível de Risco:</strong> {resultado['nivel_risco']}
                                 </p>
                             </div>
                         </div>
@@ -493,16 +493,16 @@ def mostrar_tela_principal():
                     col1, col2, col3, col4, col5 = st.columns(5)
                     
                     with col1:
-                        st.metric("Problemas Detectados", metricas['total'], delta_color="inverse")
+                        st.metric("Problemas Detectados", resultado['total'], delta_color="inverse")
                     
                     with col2:
-                        st.metric("Críticos", metricas['criticos'], delta_color="inverse")
+                        st.metric("Críticos", resultado['criticos'], delta_color="inverse")
                     
                     with col3:
-                        st.metric("Altos", metricas['altos'], delta_color="inverse")
+                        st.metric("Altos", resultado['altos'], delta_color="inverse")
                     
                     with col4:
-                        st.metric("Score Conformidade", f"{metricas['score']}%")
+                        st.metric("Score Conformidade", f"{resultado['score']}%")
                     
                     with col5:
                         if is_conta_especial:
@@ -511,13 +511,13 @@ def mostrar_tela_principal():
                             st.metric("BuroCreds Restantes", st.session_state.usuario['burocreds'], delta=-10)
                     
                     # Detalhes dos problemas detectados
-                    if problemas:
+                    if resultado['problemas']:
                         st.markdown("### ⚖️ Problemas Jurídicos Detectados")
                         
                         # Agrupar por gravidade
-                        problemas_criticos = [p for p in problemas if p['gravidade'] == 'CRÍTICA']
-                        problemas_altos = [p for p in problemas if p['gravidade'] == 'ALTA']
-                        problemas_medios = [p for p in problemas if p['gravidade'] == 'MÉDIA']
+                        problemas_criticos = [p for p in resultado['problemas'] if p['gravidade'] == 'CRÍTICA']
+                        problemas_altos = [p for p in resultado['problemas'] if p['gravidade'] == 'ALTA']
+                        problemas_medios = [p for p in resultado['problemas'] if p['gravidade'] == 'MÉDIA']
                         
                         if problemas_criticos:
                             st.markdown("#### 🔴 Problemas Críticos (Requerem Atenção Imediata)")
@@ -601,6 +601,25 @@ def mostrar_tela_principal():
                                 """, unsafe_allow_html=True)
                         
                         # Recomendação jurídica
+                        if resultado.get('recomendacoes'):
+                            st.markdown("""
+                            <div style="background: #1a3658;
+                                      padding: 20px;
+                                      border-radius: 15px;
+                                      margin: 20px 0;
+                                      border: 2px solid #F8D96D;">
+                                <h4 style="color: #F8D96D; margin-top: 0;">⚠️ RECOMENDAÇÕES URGENTES</h4>
+                            """, unsafe_allow_html=True)
+                            
+                            for recomendacao in resultado['recomendacoes']:
+                                st.markdown(f"""
+                                <p style="color: #FFFFFF; margin: 5px 0; font-weight: bold;">
+                                    {recomendacao}
+                                </p>
+                                """, unsafe_allow_html=True)
+                            
+                            st.markdown("</div>", unsafe_allow_html=True)
+                        
                         st.markdown("""
                         <div style="background: #1a3658;
                                   padding: 20px;
