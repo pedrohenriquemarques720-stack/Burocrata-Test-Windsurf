@@ -850,7 +850,10 @@ def mostrar_faq_rodape():
     
     st.markdown("</div>", unsafe_allow_html=True)
     
-    # Footer - Versão simplificada sem erros
+    # Footer - Versão Streamlit nativa
+    st.markdown("---")
+    
+    # Container do rodapé
     st.markdown("""
     <div style="background: #1a3658; 
                 padding: 30px; 
@@ -858,38 +861,73 @@ def mostrar_faq_rodape():
                 text-align: center; 
                 border: 2px solid #F8D96D;
                 border-radius: 15px;">
-        
-        <div style="color: #F8D96D; font-size: 1.8em; font-weight: bold; margin-bottom: 15px;">
-            ⚖️ BUROCRATA DE BOLSO
-        </div>
-        
-        <div style="color: #FFFFFF; font-size: 1.1em; margin-bottom: 15px;">
-            IA de Análise Documental - Proteção Jurídica Inteligente
-        </div>
-        
-        <div style="color: #e2e8f0; font-size: 0.9em; margin-bottom: 20px;">
-            Análise automática de contratos e documentos com inteligência artificial brasileira
-        </div>
-        
-        <div style="margin: 20px 0;">
+    """, unsafe_allow_html=True)
+    
+    # Título principal
+    st.markdown("""
+    <div style="color: #F8D96D; font-size: 1.8em; font-weight: bold; margin-bottom: 15px; text-align: center;">
+        ⚖️ BUROCRATA DE BOLSO
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Subtítulo
+    st.markdown("""
+    <div style="color: #FFFFFF; font-size: 1.1em; margin-bottom: 15px; text-align: center;">
+        IA de Análise Documental - Proteção Jurídica Inteligente
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Descrição
+    st.markdown("""
+    <div style="color: #e2e8f0; font-size: 0.9em; margin-bottom: 20px; text-align: center;">
+        Análise automática de contratos e documentos com inteligência artificial brasileira
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Links sociais usando colunas do Streamlit
+    col1, col2, col3 = st.columns([1, 1, 1])
+    
+    with col1:
+        st.markdown("""
+        <div style="text-align: center;">
             <a href="mailto:contatoburocrata@outlook.com" 
-               style="color: #F8D96D; text-decoration: none; font-weight: bold; margin: 0 10px;">
+               style="color: #F8D96D; text-decoration: none; font-weight: bold;">
                 📧 E-mail
             </a>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col2:
+        st.markdown("""
+        <div style="text-align: center;">
             <a href="https://wa.me/5511999999999" 
-               style="color: #F8D96D; text-decoration: none; font-weight: bold; margin: 0 10px;">
+               style="color: #F8D96D; text-decoration: none; font-weight: bold;">
                 💬 WhatsApp
             </a>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col3:
+        st.markdown("""
+        <div style="text-align: center;">
             <a href="#" 
-               style="color: #F8D96D; text-decoration: none; font-weight: bold; margin: 0 10px;">
+               style="color: #F8D96D; text-decoration: none; font-weight: bold;">
                 🌐 Site
             </a>
         </div>
-        
-        <div style="border-top: 1px solid #F8D96D; margin-top: 20px; padding-top: 20px;">
-            <div style="color: #a0aec0; font-size: 0.8em;">
-                © 2024 Burocrata de Bolso - Todos os direitos reservados
-            </div>
-        </div>
+        """, unsafe_allow_html=True)
+    
+    # Linha separadora
+    st.markdown("""
+    <div style="border-top: 1px solid #F8D96D; margin-top: 20px; margin-bottom: 20px;"></div>
+    """, unsafe_allow_html=True)
+    
+    # Copyright
+    st.markdown("""
+    <div style="color: #a0aec0; font-size: 0.8em; text-align: center;">
+        © 2024 Burocrata de Bolso - Todos os direitos reservados
     </div>
     """, unsafe_allow_html=True)
+    
+    # Fechar container
+    st.markdown("</div>", unsafe_allow_html=True)
