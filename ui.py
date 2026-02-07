@@ -15,9 +15,39 @@ except ImportError:
 try:
     from utils import extrair_texto_pdf, formatar_moeda, formatar_data
     UTILS_AVAILABLE = True
-except ImportError:
+except ImportError as e:
     UTILS_AVAILABLE = False
-    print("Aviso: utils não disponível - usando modo limitado")
+    print(f"Aviso: utils não disponível - {e}")
+    
+    # Criar função de fallback para extração de PDF
+    def extrair_texto_pdf(arquivo):
+        """Função de fallback para extração de PDF"""
+        try:
+            import pdfplumber
+            texto_total = ""
+            with pdfplumber.open(arquivo) as pdf:
+                for page in pdf.pages:
+                    text = page.extract_text()
+                    if text:
+                        texto_total += text + "\n"
+            
+            if texto_total.strip():
+                return texto_total
+            else:
+                st.error("❌ Não foi possível extrair texto do PDF")
+                return None
+        except ImportError:
+            st.error("❌ pdfplumber não disponível no ambiente")
+            return None
+        except Exception as e:
+            st.error(f"❌ Erro ao extrair texto: {str(e)}")
+            return None
+    
+    def formatar_moeda(valor):
+        return f"R$ {valor:.2f}"
+    
+    def formatar_data(data):
+        return data.strftime("%d/%m/%Y")
 
 import database as db
 from database import autenticar_usuario, criar_usuario, get_usuario_por_id, atualizar_burocreds, registrar_analise, get_historico_usuario
@@ -469,11 +499,6 @@ def mostrar_tela_principal():
             """)
         else:
             with st.spinner(f"🔍 Analisando juridicamente '{arquivo.name}'..."):
-                # Verificar se utils está disponível
-                if not UTILS_AVAILABLE:
-                    st.error("❌ Sistema de extração de PDF não disponível")
-                    return
-                
                 texto = extrair_texto_pdf(arquivo)
                 
                 if texto:
