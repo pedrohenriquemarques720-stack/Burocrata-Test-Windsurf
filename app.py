@@ -162,7 +162,11 @@ st.markdown("""
         overflow: hidden; /* Evita que conteúdo vaze */
     }
     
-    .faq-container h3 {
+    /* CSS NUCLEAR para forçar título dentro */
+    .faq-container h3,
+    .faq-container > h3,
+    div.faq-container h3,
+    div[class*="faq-container"] h3 {
         color: #F8D96D !important;
         font-weight: 700 !important;
         margin-bottom: 25px !important;
@@ -171,6 +175,8 @@ st.markdown("""
         padding-top: 0 !important;
         position: relative !important;
         display: block !important;
+        float: none !important;
+        clear: both !important;
     }
     
     /* Forçar o container a conter o título */
