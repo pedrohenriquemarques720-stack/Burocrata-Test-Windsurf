@@ -1,5 +1,12 @@
 import re
-from learning_engine import LearningEngine
+
+# Import opcional para compatibilidade com produção
+try:
+    from learning_engine import LearningEngine
+    LEARNING_ENGINE_AVAILABLE = True
+except ImportError:
+    LEARNING_ENGINE_AVAILABLE = False
+    print("Aviso: LearningEngine não disponível - usando modo padrão")
 
 def limpar_texto(texto):
     """Limpa texto removendo caracteres especiais e normalizando"""
