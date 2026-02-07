@@ -783,75 +783,65 @@ def mostrar_faq_rodape():
     
     st.markdown("---")
     
-    # FAQ Section - HTML PURO E COMPLETO
+    # FAQ Section - VERSÃO EXTREMAMENTE SIMPLES
     st.markdown("""
-    <div class="faq-container">
-        <h3 style="color: #F8D96D; text-align: center; margin-bottom: 25px; margin-top: 0;">
+    <div style="background: #1a3658; 
+                border: 2px solid #F8D96D;
+                border-radius: 15px;
+                padding: 25px;
+                margin: 20px 0;">
+        
+        <h3 style="color: #F8D96D; 
+                text-align: center; 
+                margin: 0 0 25px 0;
+                font-size: 1.5em;
+                font-weight: bold;">
             ❓ PERGUNTAS FREQUENTES
         </h3>
         
-        <div style="margin-top: 20px;">
-            <details style="background: #2a4a75; border: 1px solid #F8D96D; border-radius: 8px; margin-bottom: 10px; padding: 15px;">
-                <summary style="color: #FFFFFF; font-weight: bold; cursor: pointer; outline: none;">
+        <div style="color: #FFFFFF;">
+            <div style="background: #2a4a75; 
+                        border: 1px solid #F8D96D; 
+                        border-radius: 8px; 
+                        margin: 10px 0; 
+                        padding: 15px;">
+                <div style="color: #F8D96D; font-weight: bold; margin-bottom: 10px;">
                     🔍 1. Que tipos de documentos o sistema analisa?
-                </summary>
-                <div style="color: #FFFFFF; margin-top: 10px; padding-top: 10px; border-top: 1px solid #F8D96D;">
+                </div>
+                <div style="color: #FFFFFF;">
                     Nosso sistema especializado analisa:<br>
-                    • <strong>Contratos de Trabalho</strong> (CLT, PJ, estágio)<br>
-                    • <strong>Contratos de Locação</strong> (residencial, comercial)<br>
-                    • <strong>Notas Fiscais</strong> (serviços, produtos)<br>
-                    • <strong>Documentos diversos</strong> com cláusulas contratuais
+                    • Contratos de Trabalho (CLT, PJ, estágio)<br>
+                    • Contratos de Locação (residencial, comercial)<br>
+                    • Notas Fiscais (serviços, produtos)<br>
+                    • Documentos diversos com cláusulas contratuais
                 </div>
-            </details>
+            </div>
             
-            <details style="background: #2a4a75; border: 1px solid #F8D96D; border-radius: 8px; margin-bottom: 10px; padding: 15px;">
-                <summary style="color: #FFFFFF; font-weight: bold; cursor: pointer; outline: none;">
-                    ⚖️ 2. Como funciona a análise jurídica?
-                </summary>
-                <div style="color: #FFFFFF; margin-top: 10px; padding-top: 10px; border-top: 1px solid #F8D96D;">
-                    Nossa IA utiliza:<br>
-                    • <strong>100+ padrões jurídicos</strong> atualizados<br>
-                    • <strong>Inteligência Artificial</strong> que aprende<br>
-                    • <strong>Análise profunda</strong> de cláusulas<br>
-                    • <strong>Base legal</strong> para cada problema<br>
-                    • <strong>Recomendações</strong> práticas e específicas
+            <div style="background: #2a4a75; 
+                        border: 1px solid #F8D96D; 
+                        border-radius: 8px; 
+                        margin: 10px 0; 
+                        padding: 15px;">
+                <div style="color: #F8D96D; font-weight: bold; margin-bottom: 10px;">
+                    📄 2. Posso analisar vários documentos de uma vez?
                 </div>
-            </details>
-            
-            <details style="background: #2a4a75; border: 1px solid #F8D96D; border-radius: 8px; margin-bottom: 10px; padding: 15px;">
-                <summary style="color: #FFFFFF; font-weight: bold; cursor: pointer; outline: none;">
-                    📄 3. Posso analisar vários documentos de uma vez?
-                </summary>
-                <div style="color: #FFFFFF; margin-top: 10px; padding-top: 10px; border-top: 1px solid #F8D96D;">
+                <div style="color: #FFFFFF;">
                     Atualmente, o sistema analisa um documento por vez.
                 </div>
-            </details>
+            </div>
             
-            <details style="background: #2a4a75; border: 1px solid #F8D96D; border-radius: 8px; margin-bottom: 10px; padding: 15px;">
-                <summary style="color: #FFFFFF; font-weight: bold; cursor: pointer; outline: none;">
-                    🔒 4. Meus documentos são seguros?
-                </summary>
-                <div style="color: #FFFFFF; margin-top: 10px; padding-top: 10px; border-top: 1px solid #F8D96D;">
-                    Sim! Suas informações estão protegidas:<br>
-                    • <strong>Privacidade total</strong> dos dados<br>
-                    • <strong>Armazenamento seguro</strong> local<br>
-                    • <strong>Compartilhamento opcional</strong> apenas com seu consentimento<br>
-                    • <strong>Conformidade</strong> com LGPD
+            <div style="background: #2a4a75; 
+                        border: 1px solid #F8D96D; 
+                        border-radius: 8px; 
+                        margin: 10px 0; 
+                        padding: 15px;">
+                <div style="color: #F8D96D; font-weight: bold; margin-bottom: 10px;">
+                    🔒 3. Meus documentos são seguros?
                 </div>
-            </details>
-            
-            <details style="background: #2a4a75; border: 1px solid #F8D96D; border-radius: 8px; margin-bottom: 10px; padding: 15px;">
-                <summary style="color: #FFFFFF; font-weight: bold; cursor: pointer; outline: none;">
-                    ⚡ 5. Quão rápida é a análise?
-                </summary>
-                <div style="color: #FFFFFF; margin-top: 10px; padding-top: 10px; border-top: 1px solid #F8D96D;">
-                    Nossa análise é ultra-rápida:<br>
-                    • <strong>Segundos</strong> para documentos simples<br>
-                    • <strong>Menos de 1 minuto</strong> para contratos complexos<br>
-                    • <strong>Resultados detalhados</strong> instantâneos<br>
-                    • <strong>IA aprende</strong> e fica mais rápida com o tempo
+                <div style="color: #FFFFFF;">
+                    Sim! Suas informações estão protegidas com privacidade total.
                 </div>
-            </details>
+            </div>
         </div>
     </div>
     """, unsafe_allow_html=True)
