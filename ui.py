@@ -231,106 +231,103 @@ def mostrar_secao_analises():
     col1, col2, col3 = st.columns(3)
     
     with col1:
-        with st.container():
-            st.markdown("""
-            <div class="analise-card">
-                <div class="analise-icon">🏠</div>
-                <div class="analise-title">Contrato de Locação</div>
-                
-                <div class="analise-item">
-                    <div class="analise-item-title">Valor do Aluguel e Reajuste</div>
-                    <div class="analise-item-desc">Onde dói no bolso (ou entra o dinheiro).</div>
-                </div>
-                
-                <div class="analise-item">
-                    <div class="analise-item-title">Vigência e Prazo</div>
-                    <div class="analise-item-desc">Quanto tempo dura o "felizes para sempre".</div>
-                </div>
-                
-                <div class="analise-item">
-                    <div class="analise-item-title">Conservação e Reformas</div>
-                    <div class="analise-item-desc">Quem paga pelo cano que estourou.</div>
-                </div>
-                
-                <div class="analise-item">
-                    <div class="analise-item-title">Multas e Rescisão</div>
-                    <div class="analise-item-desc">O preço de sair antes da hora.</div>
-                </div>
-                
-                <div class="analise-item">
-                    <div class="analise-item-title">Garantia Locatória</div>
-                    <div class="analise-item-desc">O famoso fiador, caução ou seguro.</div>
-                </div>
+        st.markdown("""
+        <div class="analise-card">
+            <div class="analise-icon">🏠</div>
+            <div class="analise-title">Contrato de Locação</div>
+            
+            <div class="analise-item">
+                <div class="analise-item-title">Valor do Aluguel e Reajuste</div>
+                <div class="analise-item-desc">Onde dói no bolso (ou entra o dinheiro).</div>
             </div>
-            """, unsafe_allow_html=True)
+            
+            <div class="analise-item">
+                <div class="analise-item-title">Vigência e Prazo</div>
+                <div class="analise-item-desc">Quanto tempo dura o "felizes para sempre".</div>
+            </div>
+            
+            <div class="analise-item">
+                <div class="analise-item-title">Conservação e Reformas</div>
+                <div class="analise-item-desc">Quem paga pelo cano que estourou.</div>
+            </div>
+            
+            <div class="analise-item">
+                <div class="analise-item-title">Multas e Rescisão</div>
+                <div class="analise-item-desc">O preço de sair antes da hora.</div>
+            </div>
+            
+            <div class="analise-item">
+                <div class="analise-item-title">Garantia Locatória</div>
+                <div class="analise-item-desc">O famoso fiador, caução ou seguro.</div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
     
     with col2:
-        with st.container():
-            st.markdown("""
-            <div class="analise-card">
-                <div class="analise-icon">💼</div>
-                <div class="analise-title">Contrato de Emprego</div>
-                
-                <div class="analise-item">
-                    <div class="analise-item-title">Remuneração e Benefícios</div>
-                    <div class="analise-item-desc">Salário, VR, VT e os mimos.</div>
-                </div>
-                
-                <div class="analise-item">
-                    <div class="analise-item-title">Jornada de Trabalho</div>
-                    <div class="analise-item-desc">O horário de bater o ponto.</div>
-                </div>
-                
-                <div class="analise-item">
-                    <div class="analise-item-title">Atribuições do Cargo</div>
-                    <div class="analise-item-desc">O que, afinal, você foi contratado para fazer.</div>
-                </div>
-                
-                <div class="analise-item">
-                    <div class="analise-item-title">Confidencialidade</div>
-                    <div class="analise-item-desc">O que acontece na empresa, morre na empresa.</div>
-                </div>
-                
-                <div class="analise-item">
-                    <div class="analise-item-title">Aviso Prévio e Rescisão</div>
-                    <div class="analise-item-desc">As regras do adeus.</div>
-                </div>
+        st.markdown("""
+        <div class="analise-card">
+            <div class="analise-icon">💼</div>
+            <div class="analise-title">Contrato de Emprego</div>
+            
+            <div class="analise-item">
+                <div class="analise-item-title">Remuneração e Benefícios</div>
+                <div class="analise-item-desc">Salário, VR, VT e os mimos.</div>
             </div>
-            """, unsafe_allow_html=True)
+            
+            <div class="analise-item">
+                <div class="analise-item-title">Jornada de Trabalho</div>
+                <div class="analise-item-desc">O horário de bater o ponto.</div>
+            </div>
+            
+            <div class="analise-item">
+                <div class="analise-item-title">Atribuições do Cargo</div>
+                <div class="analise-item-desc">O que, afinal, você foi contratado para fazer.</div>
+            </div>
+            
+            <div class="analise-item">
+                <div class="analise-item-title">Confidencialidade</div>
+                <div class="analise-item-desc">O que acontece na empresa, morre na empresa.</div>
+            </div>
+            
+            <div class="analise-item">
+                <div class="analise-item-title">Aviso Prévio e Rescisão</div>
+                <div class="analise-item-desc">As regras do adeus.</div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
     
     with col3:
-        with st.container():
-            st.markdown("""
-            <div class="analise-card">
-                <div class="analise-icon">🧾</div>
-                <div class="analise-title">Notas Fiscais</div>
-                
-                <div class="analise-item">
-                    <div class="analise-item-title">Dados do Emissor/Destinatário</div>
-                    <div class="analise-item-desc">Quem vendeu e quem comprou.</div>
-                </div>
-                
-                <div class="analise-item">
-                    <div class="analise-item-title">Itens e Serviços</div>
-                    <div class="analise-item-desc">A lista de compras detalhada.</div>
-                </div>
-                
-                <div class="analise-item">
-                    <div class="analise-item-title">Impostos e Tributação</div>
-                    <div class="analise-item-desc">A fatia que fica para o governo.</div>
-                </div>
-                
-                <div class="analise-item">
-                    <div class="analise-item-title">Valor Total e Descontos</div>
-                    <div class="analise-item-desc">O número final da conta.</div>
-                </div>
-                
-                <div class="analise-item">
-                    <div class="analise-item-title">Status de Pagamento</div>
-                    <div class="analise-item-desc">Se já caiu na conta ou se ainda é promessa.</div>
-                </div>
+        st.markdown("""
+        <div class="analise-card">
+            <div class="analise-icon">🧾</div>
+            <div class="analise-title">Notas Fiscais</div>
+            
+            <div class="analise-item">
+                <div class="analise-item-title">Dados do Emissor/Destinatário</div>
+                <div class="analise-item-desc">Quem vendeu e quem comprou.</div>
             </div>
-            """, unsafe_allow_html=True)
+            
+            <div class="analise-item">
+                <div class="analise-item-title">Itens e Serviços</div>
+                <div class="analise-item-desc">A lista de compras detalhada.</div>
+            </div>
+            
+            <div class="analise-item">
+                <div class="analise-item-title">Impostos e Tributação</div>
+                <div class="analise-item-desc">A fatia que fica para o governo.</div>
+            </div>
+            
+            <div class="analise-item">
+                <div class="analise-item-title">Valor Total e Descontos</div>
+                <div class="analise-item-desc">O número final da conta.</div>
+            </div>
+            
+            <div class="analise-item">
+                <div class="analise-item-title">Status de Pagamento</div>
+                <div class="analise-item-desc">Se já caiu na conta ou se ainda é promessa.</div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
     
     st.markdown("<div style='margin: 40px 0;'></div>", unsafe_allow_html=True)
 
