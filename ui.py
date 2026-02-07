@@ -850,72 +850,46 @@ def mostrar_faq_rodape():
     
     st.markdown("</div>", unsafe_allow_html=True)
     
-    # Footer
+    # Footer - Versão simplificada sem erros
     st.markdown("""
-    <div style="background: #10263D; 
-                padding: 30px 20px; 
+    <div style="background: #1a3658; 
+                padding: 30px; 
                 margin-top: 40px; 
                 text-align: center; 
-                border-top: 2px solid #F8D96D;
+                border: 2px solid #F8D96D;
                 border-radius: 15px;">
         
-        <h3 style="color: #F8D96D; font-size: 1.8em; font-weight: 900; margin-bottom: 15px; margin-top: 0;">
+        <div style="color: #F8D96D; font-size: 1.8em; font-weight: bold; margin-bottom: 15px;">
             ⚖️ BUROCRATA DE BOLSO
-        </h3>
+        </div>
         
-        <p style="color: #FFFFFF; font-size: 1.1em; margin-bottom: 20px; margin-top: 0;">
+        <div style="color: #FFFFFF; font-size: 1.1em; margin-bottom: 15px;">
             IA de Análise Documental - Proteção Jurídica Inteligente
-        </p>
+        </div>
         
-        <p style="color: #e2e8f0; font-size: 0.9em; margin-bottom: 25px; margin-top: 0;">
+        <div style="color: #e2e8f0; font-size: 0.9em; margin-bottom: 20px;">
             Análise automática de contratos e documentos com inteligência artificial brasileira
-        </p>
+        </div>
         
-        <div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin: 20px 0;">
+        <div style="margin: 20px 0;">
             <a href="mailto:contatoburocrata@outlook.com" 
-               style="color: #F8D96D; 
-                      text-decoration: none; 
-                      font-weight: 700; 
-                      padding: 10px 20px; 
-                      border-radius: 25px; 
-                      border: 2px solid #F8D96D; 
-                      background: #1a3658; 
-                      display: inline-block;
-                      transition: all 0.3s;">
+               style="color: #F8D96D; text-decoration: none; font-weight: bold; margin: 0 10px;">
                 📧 E-mail
             </a>
             <a href="https://wa.me/5511999999999" 
-               target="_blank"
-               style="color: #F8D96D; 
-                      text-decoration: none; 
-                      font-weight: 700; 
-                      padding: 10px 20px; 
-                      border-radius: 25px; 
-                      border: 2px solid #F8D96D; 
-                      background: #1a3658; 
-                      display: inline-block;
-                      transition: all 0.3s;">
+               style="color: #F8D96D; text-decoration: none; font-weight: bold; margin: 0 10px;">
                 💬 WhatsApp
             </a>
             <a href="#" 
-               target="_blank"
-               style="color: #F8D96D; 
-                      text-decoration: none; 
-                      font-weight: 700; 
-                      padding: 10px 20px; 
-                      border-radius: 25px; 
-                      border: 2px solid #F8D96D; 
-                      background: #1a3658; 
-                      display: inline-block;
-                      transition: all 0.3s;">
+               style="color: #F8D96D; text-decoration: none; font-weight: bold; margin: 0 10px;">
                 🌐 Site
             </a>
         </div>
         
-        <hr style="border: 1px solid #F8D96D; margin: 25px 0; opacity: 0.3;">
-        
-        <p style="color: #a0aec0; font-size: 0.8em; margin: 0;">
-            © 2024 Burocrata de Bolso - Todos os direitos reservados
-        </p>
+        <div style="border-top: 1px solid #F8D96D; margin-top: 20px; padding-top: 20px;">
+            <div style="color: #a0aec0; font-size: 0.8em;">
+                © 2024 Burocrata de Bolso - Todos os direitos reservados
+            </div>
+        </div>
     </div>
     """, unsafe_allow_html=True)
