@@ -269,19 +269,19 @@ def mostrar_secao_analises():
         </div>
         """, unsafe_allow_html=True)
         
-        st.markdown('<p style="text-align: center; color: #FFFFFF; font-size: 1.1em; font-weight: bold;">**Remuneração e Benefícios**</p>', unsafe_allow_html=True)
+        st.markdown('<p style="text-align: center; color: #FFFFFF; font-size: 1.1em; font-weight: bold;">- Remuneração e Benefícios -</p>', unsafe_allow_html=True)
         st.write('<p style="text-align: center; color: #FFFFFF; font-size: 0.9em;">Salário, VR, VT e os mimos.</p>', unsafe_allow_html=True)
         
-        st.markdown('<p style="text-align: center; color: #FFFFFF; font-size: 1.1em; font-weight: bold;">**Jornada de Trabalho**</p>', unsafe_allow_html=True)
+        st.markdown('<p style="text-align: center; color: #FFFFFF; font-size: 1.1em; font-weight: bold;">-Jornada de Trabalho-</p>', unsafe_allow_html=True)
         st.write('<p style="text-align: center; color: #FFFFFF; font-size: 0.9em;">O horário de bater o ponto.</p>', unsafe_allow_html=True)
         
-        st.markdown('<p style="text-align: center; color: #FFFFFF; font-size: 1.1em; font-weight: bold;">**Atribuições do Cargo**</p>', unsafe_allow_html=True)
+        st.markdown('<p style="text-align: center; color: #FFFFFF; font-size: 1.1em; font-weight: bold;">- Atribuições do Cargo -</p>', unsafe_allow_html=True)
         st.write('<p style="text-align: center; color: #FFFFFF; font-size: 0.9em;">O que, afinal, você foi contratado para fazer.</p>', unsafe_allow_html=True)
         
-        st.markdown('<p style="text-align: center; color: #FFFFFF; font-size: 1.1em; font-weight: bold;">**Confidencialidade**</p>', unsafe_allow_html=True)
+        st.markdown('<p style="text-align: center; color: #FFFFFF; font-size: 1.1em; font-weight: bold;">- Confidencialidade -</p>', unsafe_allow_html=True)
         st.write('<p style="text-align: center; color: #FFFFFF; font-size: 0.9em;">O que acontece na empresa, morre na empresa.</p>', unsafe_allow_html=True)
         
-        st.markdown('<p style="text-align: center; color: #FFFFFF; font-size: 1.1em; font-weight: bold;">**Aviso Prévio e Rescisão**</p>', unsafe_allow_html=True)
+        st.markdown('<p style="text-align: center; color: #FFFFFF; font-size: 1.1em; font-weight: bold;">- Aviso Prévio e Rescisão -</p>', unsafe_allow_html=True)
         st.write('<p style="text-align: center; color: #FFFFFF; font-size: 0.9em;">As regras do adeus.</p>', unsafe_allow_html=True)
     
     with col3:
