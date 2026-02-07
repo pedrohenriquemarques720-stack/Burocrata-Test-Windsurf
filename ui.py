@@ -73,6 +73,29 @@ def mostrar_tela_login():
             st.markdown("""
             <div class="auth-card">
                 <div class="auth-title">🔐 Entrar na Conta</div>
+                
+                <div style="margin: 20px 0;">
+                    <label style="color: #F8D96D; font-weight: bold; display: block; margin-bottom: 5px;">📧 E-mail</label>
+                </div>
+                
+                <div style="margin: 20px 0;">
+                    <label style="color: #F8D96D; font-weight: bold; display: block; margin-bottom: 5px;">🔒 Senha</label>
+                </div>
+                
+                <div style="margin: 30px 0;">
+                    <div style="display: flex; gap: 10px;">
+                        <div style="flex: 1;">
+                            <div style="background: linear-gradient(135deg, #F8D96D, #d4b747); color: #10263D; border: none; padding: 15px; border-radius: 10px; font-weight: 700; text-align: center; cursor: pointer;">
+                                🚀 Entrar
+                            </div>
+                        </div>
+                        <div style="flex: 1;">
+                            <div style="background: linear-gradient(135deg, #2a4a75, #1a3658); color: #F8D96D; border: 2px solid #F8D96D; padding: 15px; border-radius: 10px; font-weight: 700; text-align: center; cursor: pointer;">
+                                📝 Criar Conta
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             """, unsafe_allow_html=True)
             
@@ -113,6 +136,37 @@ def mostrar_tela_login():
             st.markdown("""
             <div class="auth-card">
                 <div class="auth-title">📝 Criar Nova Conta</div>
+                
+                <div style="margin: 20px 0;">
+                    <label style="color: #F8D96D; font-weight: bold; display: block; margin-bottom: 5px;">👤 Nome Completo</label>
+                </div>
+                
+                <div style="margin: 20px 0;">
+                    <label style="color: #F8D96D; font-weight: bold; display: block; margin-bottom: 5px;">📧 E-mail</label>
+                </div>
+                
+                <div style="margin: 20px 0;">
+                    <label style="color: #F8D96D; font-weight: bold; display: block; margin-bottom: 5px;">🔒 Senha</label>
+                </div>
+                
+                <div style="margin: 20px 0;">
+                    <label style="color: #F8D96D; font-weight: bold; display: block; margin-bottom: 5px;">🔒 Confirmar Senha</label>
+                </div>
+                
+                <div style="margin: 30px 0;">
+                    <div style="display: flex; gap: 10px;">
+                        <div style="flex: 1;">
+                            <div style="background: linear-gradient(135deg, #F8D96D, #d4b747); color: #10263D; border: none; padding: 15px; border-radius: 10px; font-weight: 700; text-align: center; cursor: pointer;">
+                                🎉 Criar Conta
+                            </div>
+                        </div>
+                        <div style="flex: 1;">
+                            <div style="background: linear-gradient(135deg, #2a4a75, #1a3658); color: #F8D96D; border: 2px solid #F8D96D; padding: 15px; border-radius: 10px; font-weight: 700; text-align: center; cursor: pointer;">
+                                🔙 Voltar
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             """, unsafe_allow_html=True)
             
