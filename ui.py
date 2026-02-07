@@ -853,7 +853,7 @@ def mostrar_faq_rodape():
     # Footer - Versão Streamlit nativa
     st.markdown("---")
     
-    # Container do rodapé
+    # Container do rodapé COM TÍTULO DENTRO
     st.markdown("""
     <div style="background: #1a3658; 
                 padding: 30px; 
@@ -861,27 +861,18 @@ def mostrar_faq_rodape():
                 text-align: center; 
                 border: 2px solid #F8D96D;
                 border-radius: 15px;">
-    """, unsafe_allow_html=True)
-    
-    # Título principal
-    st.markdown("""
-    <div style="color: #F8D96D; font-size: 1.8em; font-weight: bold; margin-bottom: 15px; text-align: center;">
-        ⚖️ BUROCRATA DE BOLSO
-    </div>
-    """, unsafe_allow_html=True)
-    
-    # Subtítulo
-    st.markdown("""
-    <div style="color: #FFFFFF; font-size: 1.1em; margin-bottom: 15px; text-align: center;">
-        IA de Análise Documental - Proteção Jurídica Inteligente
-    </div>
-    """, unsafe_allow_html=True)
-    
-    # Descrição
-    st.markdown("""
-    <div style="color: #e2e8f0; font-size: 0.9em; margin-bottom: 20px; text-align: center;">
-        Análise automática de contratos e documentos com inteligência artificial brasileira
-    </div>
+        
+        <div style="color: #F8D96D; font-size: 1.8em; font-weight: bold; margin-bottom: 15px; text-align: center;">
+            ⚖️ BUROCRATA DE BOLSO
+        </div>
+        
+        <div style="color: #FFFFFF; font-size: 1.1em; margin-bottom: 15px; text-align: center;">
+            IA de Análise Documental - Proteção Jurídica Inteligente
+        </div>
+        
+        <div style="color: #e2e8f0; font-size: 0.9em; margin-bottom: 20px; text-align: center;">
+            Análise automática de contratos e documentos com inteligência artificial brasileira
+        </div>
     """, unsafe_allow_html=True)
     
     # Links sociais usando colunas do Streamlit
@@ -917,17 +908,12 @@ def mostrar_faq_rodape():
         </div>
         """, unsafe_allow_html=True)
     
-    # Linha separadora
+    # Linha separadora e copyright DENTRO do container
     st.markdown("""
-    <div style="border-top: 1px solid #F8D96D; margin-top: 20px; margin-bottom: 20px;"></div>
-    """, unsafe_allow_html=True)
-    
-    # Copyright
-    st.markdown("""
-    <div style="color: #a0aec0; font-size: 0.8em; text-align: center;">
-        © 2024 Burocrata de Bolso - Todos os direitos reservados
+        <div style="border-top: 1px solid #F8D96D; margin-top: 20px; margin-bottom: 20px;"></div>
+        
+        <div style="color: #a0aec0; font-size: 0.8em; text-align: center;">
+            © 2024 Burocrata de Bolso - Todos os direitos reservados
+        </div>
     </div>
     """, unsafe_allow_html=True)
-    
-    # Fechar container
-    st.markdown("</div>", unsafe_allow_html=True)
