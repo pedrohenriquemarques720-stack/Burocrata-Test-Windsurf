@@ -778,7 +778,7 @@ def mostrar_faq_rodape():
     with st.expander("📄 3. Posso analisar vários documentos de uma vez?"):
         st.markdown("""
         <div class="faq-answer">
-            Atualmente, o sistema analisa um documento por vez.
+            Atualmente, o sistema analisa um documento por vez para uma maior precisão.
         </div>
         """, unsafe_allow_html=True)
     
@@ -870,7 +870,7 @@ def mostrar_faq_rodape():
     st.markdown("""
     <div style="border-top: 1px solid #F8D96D; margin-top: 20px; padding-top: 20px;">
         <p style="color: #a0aec0; font-size: 0.8em; margin: 0; text-align: center;">
-            © 2024 Burocrata de Bolso - Todos os direitos reservados
+            © 2026 Burocrata de Bolso - Todos os direitos reservados - Criado por Pedro Graciano
         </p>
     </div>
     </div>
