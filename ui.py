@@ -783,12 +783,15 @@ def mostrar_faq_rodape():
     
     st.markdown("---")
     
-    # FAQ Section
+    # FAQ Section - TUDO DENTRO DO MESMO BLOCO HTML
     st.markdown("""
     <div class="faq-container">
         <h3 style="color: #F8D96D; text-align: center; margin-bottom: 25px; margin-top: 0;">
             ❓ PERGUNTAS FREQUENTES
         </h3>
+        
+        <div style="margin-top: 20px;">
+    </div>
     """, unsafe_allow_html=True)
     
     # FAQ 1
