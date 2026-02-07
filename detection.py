@@ -37,21 +37,21 @@ class Detector:
                 'padroes': [
                     # MULTAS - CRÍTICAS
                     {
-                        'regex': r'multa.*correspondente.*12.*meses.*aluguel|multa.*12.*meses|doze.*meses.*aluguel|multa.*integral.*12.*meses|multa.*ano.*inteiro|multa.*período.*restante',
+                        'regex': r'multa.*correspondente.*12.*meses.*aluguel|multa.*12.*meses|doze.*meses.*aluguel|multa.*integral.*12.*meses|multa.*ano.*inteiro|multa.*período.*restante|multa.*doze.*vezes|12.*vezes.*aluguel',
                         'descricao': '🚨🚨🚨 MULTA DE 12 MESES DE ALUGUEL - ILEGAL!',
                         'gravidade': 'CRÍTICA',
                         'lei': 'Lei 8.245/1991, Art. 4º: Multa máxima = 2 meses de aluguel',
                         'detalhe': 'A lei do inquilinato PROÍBE multas superiores a 2 meses de aluguel. Multa de 12 meses é ABUSIVA e NULA!'
                     },
                     {
-                        'regex': r'multa.*superior.*2.*meses|multa.*excedente.*2.*meses|multa.*acima.*2.*meses|multa.*maior.*2.*meses',
+                        'regex': r'multa.*superior.*2.*meses|multa.*excedente.*2.*meses|multa.*acima.*2.*meses|multa.*maior.*2.*meses|multa.*3.*meses|multa.*4.*meses|multa.*5.*meses|multa.*6.*meses',
                         'descricao': '🚨 MULTA ACIMA DE 2 MESES - ILEGAL!',
                         'gravidade': 'CRÍTICA',
                         'lei': 'Lei 8.245/1991, Art. 4º',
                         'detalhe': 'Multa rescisória não pode exceder 2 meses de aluguel, mesmo que proporcional.'
                     },
                     {
-                        'regex': r'multa.*não.*proporcional|multa.*integral.*independentemente.*tempo|multa.*fixa.*sem.*proporcionalidade',
+                        'regex': r'multa.*não.*proporcional|multa.*integral.*independentemente.*tempo|multa.*fixa.*sem.*proporcionalidade|multa.*cheia|multa.*inteira',
                         'descricao': '🚨 MULTA SEM PROPORCIONALIDADE - ILEGAL!',
                         'gravidade': 'CRÍTICA',
                         'lei': 'Lei 8.245/1991, Art. 4º + Súmula 595 STJ',
@@ -60,14 +60,14 @@ class Detector:
                     
                     # CAUÇÃO - CRÍTICAS
                     {
-                        'regex': r'depósito.*caução.*três.*meses|caução.*3.*meses|três.*meses.*aluguel.*caução|3.*meses.*depósito|caução.*excessiva|caução.*superior.*1.*mês',
-                        'descricao': '🚨🚨 CAUÇÃO DE 3 MESES - ILEGAL!',
+                        'regex': r'depósito.*caução.*três.*meses|caução.*3.*meses|três.*meses.*aluguel.*caução|3.*meses.*depósito|caução.*excessiva|caução.*superior.*1.*mês|caução.*2.*meses|caução.*4.*meses|caução.*5.*meses',
+                        'descricao': '🚨🚨 CAUÇÃO DE 3+ MESES - ILEGAL!',
                         'gravidade': 'CRÍTICA',
                         'lei': 'Lei 8.245/1991, Art. 37: Caução máxima = 1 mês de aluguel',
-                        'detalhe': 'Limite legal é apenas 1 mês de aluguel como caução. 3 meses é TRIPLO do permitido!'
+                        'detalhe': 'Limite legal é apenas 1 mês de aluguel como caução. 3+ meses é ilegal!'
                     },
                     {
-                        'regex': r'caução.*superior.*um.*mês|caução.*maior.*1.*mês|depósito.*maior.*1.*mês',
+                        'regex': r'caução.*superior.*um.*mês|caução.*maior.*1.*mês|depósito.*maior.*1.*mês|caução.*acima.*1.*mês',
                         'descricao': '🚨 CAUÇÃO ACIMA DE 1 MÊS - ILEGAL!',
                         'gravidade': 'CRÍTICA',
                         'lei': 'Lei 8.245/1991, Art. 37',
@@ -76,51 +76,51 @@ class Detector:
                     
                     # REAJUSTE - CRÍTICOS
                     {
-                        'regex': r'reajuste.*trimestral|reajuste.*a.*cada.*3.*meses|reajuste.*mensalmente|reajuste.*mensal|aumento.*mensal|reajuste.*bimestral',
+                        'regex': r'reajuste.*trimestral|reajuste.*a.*cada.*3.*meses|reajuste.*mensalmente|reajuste.*mensal|aumento.*mensal|reajuste.*bimestral|reajuste.*a.*cada.*2.*meses|reajuste.*semestral',
                         'descricao': '🚨 REAJUSTE TRIMESTRAL/MENSAL - ILEGAL!',
                         'gravidade': 'CRÍTICA',
                         'lei': 'Lei 8.245/1991, Art. 7º: Reajuste mínimo anual (12 meses)',
-                        'detalhe': 'Reajustes só podem ser feitos a cada 12 meses no mínimo. Reajuste trimestral é 4x mais frequente que o permitido!'
+                        'detalhe': 'Reajustes só podem ser feitos a cada 12 meses no mínimo.'
                     },
                     {
-                        'regex': r'reajuste.*sem.*índice.*oficial|reajuste.*livre|reajuste.*conforme.*mercado|reajuste.*acordo|índice.*livre',
+                        'regex': r'reajuste.*sem.*índice.*oficial|reajuste.*livre|reajuste.*conforme.*mercado|reajuste.*acordo|índice.*livre|reajuste.*negociado',
                         'descricao': '🚨 REAJUSTE SEM ÍNDICE OFICIAL - ILEGAL!',
                         'gravidade': 'CRÍTICA',
                         'lei': 'Lei 8.245/1991, Art. 7º',
-                        'detalhe': 'Reajustes devem seguir índices oficiais (IGPM, INCC, IPCA). Índice livre é abusivo.'
+                        'detalhe': 'Reajustes devem seguir índices oficiais (IGPM, INCC, IPCA).'
                     },
                     {
-                        'regex': r'reajuste.*dólar|reajuste.*variação.*dólar|reajuste.*câmbio',
+                        'regex': r'reajuste.*dólar|reajuste.*variação.*dólar|reajuste.*câmbio|reajuste.*dolar|variação.*cambial',
                         'descricao': '🚨🚨 REAJUSTE PELO DÓLAR - ILEGAL!',
                         'gravidade': 'CRÍTICA',
                         'lei': 'Lei 8.245/1991, Art. 7º',
-                        'detalhe': 'Reajustes devem seguir índices brasileiros, NÃO o dólar. Variação cambial é proibida!'
+                        'detalhe': 'Reajustes devem seguir índices brasileiros, NÃO o dólar.'
                     },
                     {
-                        'regex': r'aumento.*fixo.*20%.*ano|20%.*ao.*ano.*fixo|percentual.*fixo.*20%',
-                        'descricao': '🚨 AUMENTO FIXO DE 20% AO ANO - ILEGAL!',
+                        'regex': r'aumento.*fixo.*20%.*ano|20%.*ao.*ano.*fixo|percentual.*fixo.*20%|aumento.*15%.*fixo|aumento.*10%.*fixo',
+                        'descricao': '🚨 AUMENTO FIXO ANUAL - ILEGAL!',
                         'gravidade': 'CRÍTICA',
                         'lei': 'Lei 8.245/1991, Art. 7º',
-                        'detalhe': 'Percentuais fixos não seguem inflação oficial. Deve usar índices oficiais.'
+                        'detalhe': 'Percentuais fixos não seguem inflação oficial.'
                     },
                     
                     # VISITAS E PRIVACIDADE - CRÍTICOS
                     {
-                        'regex': r'visitas.*qualquer.*tempo.*sem.*aviso|visitas.*sem.*aviso.*prévio|visitas.*a.*qualquer.*momento|entrar.*qualquer.*hora.*sem.*aviso|ingresso.*imediato.*imóvel',
+                        'regex': r'visitas.*qualquer.*tempo.*sem.*aviso|visitas.*sem.*aviso.*prévio|visitas.*a.*qualquer.*momento|entrar.*qualquer.*hora.*sem.*aviso|ingresso.*imediato.*imóvel|acesso.*livre.*imóvel',
                         'descricao': '🚨🚨 VISITAS SEM AVISO - VIOLAÇÃO DE DOMICÍLIO!',
                         'gravidade': 'CRÍTICA',
                         'lei': 'CDC Art. 51 + Lei 8.245/1991 Art. 23 + Código Penal Art. 150',
-                        'detalhe': 'Locador deve avisar com antecedência mínima de 12 horas. Entrar sem aviso pode configurar crime de violação de domicílio!'
+                        'detalhe': 'Locador deve avisar com antecedência mínima de 12 horas.'
                     },
                     {
-                        'regex': r'ingressar.*imóvel.*qualquer.*momento.*sem.*aviso|acesso.*livre.*imóvel|chave.*disponível.*locador',
+                        'regex': r'ingressar.*imóvel.*qualquer.*momento.*sem.*aviso|acesso.*livre.*imóvel|chave.*disponível.*locador|chave.*entregue.*locador',
                         'descricao': '🚨 INGRESSO LIVRE NO IMÓVEL - CRIME!',
                         'gravidade': 'CRÍTICA',
                         'lei': 'Código Penal Art. 150 + CDC Art. 51',
-                        'detalhe': 'Locatário tem direito à intimidade. Acesso livre do locador é crime de violação de domicílio!'
+                        'detalhe': 'Locatário tem direito à intimidade. Acesso livre é crime!'
                     },
                     {
-                        'regex': r'vistorias.*surpresa|vistorias.*sem.*aviso|inspeção.*surpresa',
+                        'regex': r'vistorias.*surpresa|vistorias.*sem.*aviso|inspeção.*surpresa|visita.*surpresa',
                         'descricao': '⚠️ VISTORIAS SURPRESA - ILEGAL',
                         'gravidade': 'ALTA',
                         'lei': 'CDC Art. 51 + Lei 8.245/1991',
@@ -129,14 +129,14 @@ class Detector:
                     
                     # BENFEITORIAS - CRÍTICAS
                     {
-                        'regex': r'renúncia.*indenização.*benfeitorias.*necessárias|benfeitorias.*necessárias.*sem.*indenização|renúncia.*retensão.*benfeitorias|abrir.*mão.*benfeitorias',
+                        'regex': r'renúncia.*indenização.*benfeitorias.*necessárias|benfeitorias.*necessárias.*sem.*indenização|renúncia.*retensão.*benfeitorias|abrir.*mão.*benfeitorias|nenhuma.*indenização.*benfeitorias',
                         'descricao': '🚨🚨 RENÚNCIA A BENFEITORIAS NECESSÁRIAS - ILEGAL!',
                         'gravidade': 'CRÍTICA',
                         'lei': 'Código Civil Art. 35 + Lei 8.245/1991',
-                        'detalhe': 'Locatário tem direito à indenização por benfeitorias necessárias. Cláusula é NULA!'
+                        'detalhe': 'Locatário tem direito à indenização por benfeitorias necessárias.'
                     },
                     {
-                        'regex': r'benfeitorias.*sem.*direito.*indenização|benfeitorias.*não.*indenizáveis|improvements.*não.*pagos',
+                        'regex': r'benfeitorias.*sem.*direito.*indenização|benfeitorias.*não.*indenizáveis|improvements.*não.*pagos|nenhuma.*benfeitoria.*indenizável',
                         'descricao': '🚨 BENFEITORIAS SEM INDENIZAÇÃO - ILEGAL!',
                         'gravidade': 'CRÍTICA',
                         'lei': 'Código Civil Art. 35',
@@ -145,48 +145,39 @@ class Detector:
                     
                     # ANIMAIS - ALTO
                     {
-                        'regex': r'vedada.*permanência.*animais|proibido.*animais.*estimação|não.*permitido.*animais|animais.*proibidos|pets.*não.*permitidos',
+                        'regex': r'vedada.*permanência.*animais|proibido.*animais.*estimação|não.*permitido.*animais|animais.*proibidos|pets.*não.*permitidos|nenhum.*animal|proibição.*total.*animais',
                         'descricao': '⚠️ PROIBIÇÃO DE ANIMAIS - CLAUSULA ABUSIVA',
                         'gravidade': 'ALTA',
                         'lei': 'CDC Art. 51: Cláusulas abusivas são nulas',
-                        'detalhe': 'Proibição total de animais pode ser considerada abusiva e nula. Deve analisar caso a caso.'
+                        'detalhe': 'Proibição total de animais pode ser considerada abusiva.'
                     },
                     
                     # VENDA DO IMÓVEL - ALTO
                     {
-                        'regex': r'contrato.*automaticamente.*resciso.*venda|venda.*imóvel.*contrato.*rescindido|retomada.*48.*horas.*venda|venda.*fim.*contrato',
+                        'regex': r'contrato.*automaticamente.*resciso.*venda|venda.*imóvel.*contrato.*rescindido|retomada.*48.*horas.*venda|venda.*fim.*contrato|venda.*rescisão.*imediata',
                         'descricao': '⚠️ RESCISÃO AUTOMÁTICA POR VENDA - ILEGAL',
                         'gravidade': 'ALTA',
                         'lei': 'Lei 8.245/1991, Art. 9º: Contrato segue para novo proprietário',
-                        'detalhe': 'Na venda do imóvel, o contrato continua com o novo proprietário. Prazo de desocupação mínimo é de 30 dias.'
+                        'detalhe': 'Na venda do imóvel, o contrato continua com o novo proprietário.'
                     },
                     {
-                        'regex': r'desocupação.*imediata.*venda|despejo.*imediato.*venda|saída.*30.*dias.*venda',
+                        'regex': r'desocupação.*imediata.*venda|despejo.*imediato.*venda|saída.*30.*dias.*venda|desocupação.*15.*dias|desocupação.*7.*dias',
                         'descricao': '🚨 PRAZO DE DESOCUPAÇÃO INFERIOR A 30 DIAS - ILEGAL',
                         'gravidade': 'CRÍTICA',
                         'lei': 'Lei 8.245/1991, Art. 9º',
                         'detalhe': 'Prazo mínimo para desocupação em caso de venda é 30 dias.'
                     },
                     
-                    # FIADORES - MÉDIO
-                    {
-                        'regex': r'fiadores.*com.*renda.*comprovada|exigência.*fiador|obrigatoriedade.*fiador',
-                        'descricao': '⚠️ EXIGÊNCIA DE FIADORES - PODE SER ABUSIVA',
-                        'gravidade': 'MÉDIA',
-                        'lei': 'CDC Art. 51 + Jurisprudência',
-                        'detalhe': 'Exigência de fiadores pode ser substituída por seguro fiança.'
-                    },
-                    
                     # RESPONSABILIDADE ESTRUTURAL - CRÍTICA
                     {
-                        'regex': r'locatário.*assume.*responsabilidade.*estrutural|dano.*estrutural.*locatário|reparos.*estruturais.*locatário|fundação.*locatário|telhado.*locatário',
+                        'regex': r'locatário.*assume.*responsabilidade.*estrutural|dano.*estrutural.*locatário|reparos.*estruturais.*locatário|fundação.*locatário|telhado.*locatário|estrutura.*locatário',
                         'descricao': '🚨 LOCATÁRIO RESPONSÁVEL POR ESTRUTURA - ILEGAL!',
                         'gravidade': 'CRÍTICA',
                         'lei': 'Lei 8.245/1991, Art. 22: Despesas com estrutura são do locador',
                         'detalhe': 'Telhado, fundação, fiação central e tubulações são responsabilidade do LOCADOR!'
                     },
                     {
-                        'regex': r'locatário.*responsável.*vícios.*construção|vícios.*ocultos.*locatário|defeitos.*estrutura.*locatário',
+                        'regex': r'locatário.*responsável.*vícios.*construção|vícios.*ocultos.*locatário|defeitos.*estrutura.*locatário|problemas.*estrutura.*locatário',
                         'descricao': '🚨 LOCATÁRIO RESPONSÁVEL POR VÍCIOS - ILEGAL!',
                         'gravidade': 'CRÍTICA',
                         'lei': 'Lei 8.245/1991, Art. 22',
@@ -195,7 +186,7 @@ class Detector:
                     
                     # PAGAMENTO ANTECIPADO - ALTO
                     {
-                        'regex': r'pagamento.*antecipado.*mês.*vencer|aluguel.*primeiro.*dia.*mês|pagamento.*adiantado.*obrigatório',
+                        'regex': r'pagamento.*antecipado.*mês.*vencer|aluguel.*primeiro.*dia.*mês|pagamento.*adiantado.*obrigatório|pagamento.*adiantado.*exigido',
                         'descricao': '⚠️ PAGAMENTO ANTECIPADO OBRIGATÓRIO - ILEGAL',
                         'gravidade': 'ALTA',
                         'lei': 'Lei 8.245/1991, Art. 3º',
@@ -204,132 +195,629 @@ class Detector:
                     
                     # IMPOSTO DE RENDA - CRÍTICO
                     {
-                        'regex': r'locatário.*pagar.*imposto.*renda.*locador|imposto.*renda.*locatário.*pagar|IR.*locatário.*responsável',
+                        'regex': r'locatário.*pagar.*imposto.*renda.*locador|imposto.*renda.*locatário.*pagar|IR.*locatário.*responsável|locatário.*responsável.*IR',
                         'descricao': '🚨🚨 LOCATÁRIO PAGANDO IR DO LOCADOR - ILEGAL!',
                         'gravidade': 'CRÍTICA',
                         'lei': 'Lei 8.245/1991 + Lei Tributária',
-                        'detalhe': 'Imposto de Renda é encargo PESSOAL do contribuinte (locador). Transferência é ilegal!'
+                        'detalhe': 'Imposto de Renda é encargo PESSOAL do contribuinte (locador).'
                     },
                     
                     # DESPEJO - CRÍTICO
                     {
-                        'regex': r'despejo.*imediato.*atrasar.*1.*dia|trocar.*fechaduras.*atraso|despejo.*24.*horas|despejo.*48.*horas',
+                        'regex': r'despejo.*imediato.*atrasar.*1.*dia|trocar.*fechaduras.*atraso|despejo.*24.*horas|despejo.*48.*horas|despejo.*72.*horas',
                         'descricao': '🚨🚨 DESPEJO IMEDIATO POR 1 DIA DE ATRASO - ILEGAL!',
                         'gravidade': 'CRÍTICA',
                         'lei': 'Lei 8.245/1991 + Código de Processo Civil',
-                        'detalhe': 'Despejo só pode ser determinado por ORDEM JUDICIAL após processo legal. Não existe despejo imediato!'
+                        'detalhe': 'Despejo só pode ser determinado por ORDEM JUDICIAL após processo legal.'
                     },
                     {
-                        'regex': r'multa.*atraso.*10%.*dia|multa.*diária.*excessiva|penalidade.*diária.*atraso',
+                        'regex': r'multa.*atraso.*10%.*dia|multa.*diária.*excessiva|penalidade.*diária.*atraso|multa.*5%.*dia|multa.*diária.*5%',
                         'descricao': '⚠️ MULTA DIÁRIA EXCESSIVA - ABUSIVA',
                         'gravidade': 'ALTA',
                         'lei': 'CDC Art. 51',
-                        'detalhe': 'Multa diária excessiva pode ser considerada abusiva e reduzida judicialmente.'
+                        'detalhe': 'Multa diária excessiva pode ser considerada abusiva.'
                     },
                     
                     # CUMULAÇÃO DE GARANTIAS - ALTO
                     {
-                        'regex': r'cumulação.*modalidades.*garantia|caução.*E.*fiador|seguro.*E.*caução|múltiplas.*garantias',
+                        'regex': r'cumulação.*modalidades.*garantia|caução.*E.*fiador|seguro.*E.*caução|múltiplas.*garantias|garantias.*cumulativas',
                         'descricao': '⚠️ CUMULAÇÃO DE GARANTIAS - ILEGAL',
                         'gravidade': 'ALTA',
                         'lei': 'Lei 8.245/1991, Art. 37',
-                        'detalhe': 'É proibida a cumulação de modalidades de garantia (caução E fiador).'
-                    },
-                    
-                    # CLÁUSULAS LEONINAS - CRÍTICO
-                    {
-                        'regex': r'cláusula.*leonina|cláusula.*excessivamente.*onerosa|cláusula.*abuso.*direito',
-                        'descricao': '🚨 CLÁUSULA LEONINA - NULA!',
-                        'gravidade': 'CRÍTICA',
-                        'lei': 'Código Civil Art. 423 + CDC Art. 51',
-                        'detalhe': 'Cláusulas que impõem vantagem excessiva a uma parte são nulas.'
+                        'detalhe': 'É proibida a cumulação de modalidades de garantia.'
                     }
                 ]
             },
-            {
-                'regex': r'salário.*inferior.*mínimo|salário.*abaixo.*mínimo|remuneração.*abaixo.*mínimo',
-                'descricao': '🚨🚨 SALÁRIO INFERIOR AO MÍNIMO CONSTITUCIONAL!',
-                'gravidade': 'CRÍTICA',
-                'lei': 'Constituição Federal Art. 7º IV',
-                'detalhe': 'Nenhum trabalhador pode receber menos que o salário mínimo.'
+            'CONTRATO_TRABALHO': {
+                'nome': 'Contrato de Trabalho',
+                'padroes': [
+                    # SALÁRIO - CRÍTICOS
+                    {
+                        'regex': r'salário.*mensal.*bruto.*R\$\s*900|R\$\s*900[,\.]00|900.*reais|novecentos.*reais|salário.*R\$\s*800|800.*reais|salário.*R\$\s*1000|1000.*reais|salário.*R\$\s*1100|1100.*reais|salário.*R\$\s*1200|1200.*reais|salário.*R\$\s*1300|1300.*reais',
+                        'descricao': '🚨🚨🚨 SALÁRIO ABAIXO DO MÍNIMO - TRABALHO ESCRAVO!',
+                        'gravidade': 'CRÍTICA',
+                        'lei': 'Constituição Federal Art. 7º IV',
+                        'detalhe': 'Salário mínimo atual (2024): R$ 1.412,00. Valores abaixo disso são CRIME!'
+                    },
+                    {
+                        'regex': r'salário.*inferior.*mínimo|salário.*abaixo.*mínimo|remuneração.*abaixo.*mínimo|salário.*menor.*mínimo',
+                        'descricao': '🚨🚨 SALÁRIO INFERIOR AO MÍNIMO CONSTITUCIONAL!',
+                        'gravidade': 'CRÍTICA',
+                        'lei': 'Constituição Federal Art. 7º IV',
+                        'detalhe': 'Nenhum trabalhador pode receber menos que o salário mínimo.'
+                    },
+                    {
+                        'regex': r'salário.*base.*menor.*mínimo|salário.*comissão.*sem.*fixo|remuneração.*variável.*sem.*garantia|salário.*apenas.*comissão',
+                        'descricao': '🚨 SALÁRIO SEM GARANTIA MÍNIMA - ILEGAL!',
+                        'gravidade': 'CRÍTICA',
+                        'lei': 'Constituição Federal Art. 7º VII + CLT Art. 458',
+                        'detalhe': 'Salário deve ter valor fixo nunca inferior ao mínimo.'
+                    },
+                    
+                    # JORNADA - CRÍTICAS
+                    {
+                        'regex': r'jornada.*das\s*08:00.*às\s*20:00|08:00.*20:00|das\s*08.*às\s*20|jornada.*60.*horas.*semanais|60.*horas.*semanais|12.*horas.*diárias|jornada.*13.*horas|jornada.*14.*horas',
+                        'descricao': '🚨🚨 JORNADA EXCESSIVA - ILEGAL!',
+                        'gravidade': 'CRÍTICA',
+                        'lei': 'CLT Art. 58: Máximo 8h diárias / 44h semanais',
+                        'detalhe': '12h+ diárias = 50%+ ACIMA do limite! 60h semanais = 36% ACIMA!'
+                    },
+                    {
+                        'regex': r'jornada.*superior.*8.*horas|jornada.*acima.*8.*horas|trabalhar.*mais.*8.*horas|carga.*horária.*excessiva|jornada.*9.*horas|jornada.*10.*horas',
+                        'descricao': '🚨 JORNADA ACIMA DE 8 HORAS DIÁRIAS - ILEGAL!',
+                        'gravidade': 'CRÍTICA',
+                        'lei': 'CLT Art. 58',
+                        'detalhe': 'Jornada normal não pode exceder 8 horas diárias.'
+                    },
+                    {
+                        'regex': r'jornada.*semanal.*superior.*44.*horas|44.*horas.*semanais.*ultrapassada|carga.*horária.*semanal.*excessiva|jornada.*45.*horas|jornada.*50.*horas',
+                        'descricao': '🚨 JORNADA SEMANAL ACIMA DE 44 HORAS - ILEGAL!',
+                        'gravidade': 'CRÍTICA',
+                        'lei': 'CLT Art. 58',
+                        'detalhe': 'Limite semanal é 44 horas. Acima disso só com horas extras.'
+                    },
+                    
+                    # HORAS EXTRAS - CRÍTICAS
+                    {
+                        'regex': r'não.*haverá.*pagamento.*horas.*extras|sem.*pagamento.*horas.*extras|sem.*direito.*horas.*extras|horas.*extras.*não.*remuneradas|horas.*extras.*gratuitas',
+                        'descricao': '🚨🚨 SEM PAGAMENTO DE HORAS EXTRAS - ILEGAL!',
+                        'gravidade': 'CRÍTICA',
+                        'lei': 'CLT Art. 59: Horas extras obrigatórias após 8h/dia',
+                        'detalhe': 'Horas extras são DIREITO do trabalhador e DEVEM ser pagas!'
+                    },
+                    {
+                        'regex': r'horas.*extras.*sem.*adicional|horas.*extras.*50%|adicional.*horas.*extras.*negado|horas.*extras.*sem.*adicional',
+                        'descricao': '🚨 HORAS EXTRAS SEM ADICIONAL - ILEGAL!',
+                        'gravidade': 'CRÍTICA',
+                        'lei': 'CLT Art. 59: Adicional mínimo de 50%',
+                        'detalhe': 'Horas extras devem ter adicional mínimo de 50% sobre hora normal.'
+                    },
+                    
+                    # INTERVALOS - CRÍTICOS
+                    {
+                        'regex': r'23:00.*retornar.*06:00|encerrar.*23:00.*retornar.*06:00|intervalo.*interjornada.*7.*horas|7.*horas.*descanso|intervalo.*8.*horas|intervalo.*6.*horas',
+                        'descricao': '🚨🚨 INTERVALO INTERJORNADA DE 7 HORAS - ILEGAL!',
+                        'gravidade': 'CRÍTICA',
+                        'lei': 'CLT Art. 66: Mínimo 11 horas entre jornadas',
+                        'detalhe': '7-8 horas entre jornadas = 36%+ ABAIXO do mínimo de 11h!'
+                    },
+                    {
+                        'regex': r'intervalo.*refeição.*30.*minutos|30.*minutos.*refeição|intervalo.*10.*minutos|10.*minutos.*almoço|intervalo.*inferior.*1.*hora|intervalo.*45.*minutos',
+                        'descricao': '🚨 INTERVALO INSUFICIENTE PARA REFEIÇÃO - ILEGAL!',
+                        'gravidade': 'CRÍTICA',
+                        'lei': 'CLT Art. 71: Mínimo 1 hora para jornada >6h',
+                        'detalhe': '30-45 minutos = 50%+ ABAIXO do mínimo! 10 minutos = VIOLAÇÃO!'
+                    },
+                    {
+                        'regex': r'intervalo.*descanso.*15.*minutos|15.*minutos.*descanso|intervalo.*reduzido|intervalo.*20.*minutos',
+                        'descricao': '⚠️ INTERVALO REDUZIDO ILEGALMENTE',
+                        'gravidade': 'ALTA',
+                        'lei': 'CLT Art. 71',
+                        'detalhe': 'Intervalo mínimo de 15 minutos só para jornadas até 4 horas.'
+                    },
+                    
+                    # FGTS - CRÍTICOS
+                    {
+                        'regex': r'renúncia.*FGTS|renúncia.*Fundo.*Garantia|Vale.*Cultura.*substituição.*FGTS|FGTS.*descontado.*folha.*pagamento|não.*terá.*FGTS|sem.*FGTS',
+                        'descricao': '🚨🚨🚨 RENÚNCIA AO FGTS - CRIME!',
+                        'gravidade': 'CRÍTICA',
+                        'lei': 'Lei 8.036/1990 Art. 15: FGTS é OBRIGATÓRIO',
+                        'detalhe': 'FGTS é DIREITO IRRENUNCIÁVEL! "Vale Cultura" NÃO substitui FGTS!'
+                    },
+                    {
+                        'regex': r'FGTS.*opcional|FGTS.*não.*obrigatório|dispensa.*FGTS|FGTS.*facultativo',
+                        'descricao': '🚨🚨 FGTS TRATADO COMO OPCIONAL - CRIME!',
+                        'gravidade': 'CRÍTICA',
+                        'lei': 'Lei 8.036/1990',
+                        'detalhe': 'FGTS é obrigatório por lei. Não pode ser opcional.'
+                    },
+                    
+                    # FÉRIAS - CRÍTICAS
+                    {
+                        'regex': r'renúncia.*férias.*remuneradas|renúncia.*férias.*24.*meses|férias.*não.*remuneradas|sem.*direito.*férias|férias.*renunciadas',
+                        'descricao': '🚨 RENÚNCIA A FÉRIAS REMUNERADAS - ILEGAL!',
+                        'gravidade': 'CRÍTICA',
+                        'lei': 'CLT Art. 130: Férias são direito irrenunciável',
+                        'detalhe': 'Férias remuneradas são DIREITO IRRENUNCIÁVEL do trabalhador!'
+                    },
+                    {
+                        'regex': r'férias.*proporcionais.*negadas|férias.*vencidas.*não.*pagas|férias.*acumuladas|férias.*não.*pagas',
+                        'descricao': '🚨 FÉRIAS NÃO PAGAS OU NEGADAS - ILEGAL!',
+                        'gravidade': 'CRÍTICA',
+                        'lei': 'CLT Art. 129 a 145',
+                        'detalhe': 'Férias vencidas devem ser pagas em dobro.'
+                    },
+                    
+                    # DISCRIMINAÇÃO - CRÍTICAS
+                    {
+                        'regex': r'gravidez.*contrato.*resciso|gravidez.*demissão.*sem.*ônus|demissão.*gestante|rescisão.*gravidez|gestante.*demissão',
+                        'descricao': '🚨🚨 DISCRIMINAÇÃO POR GRAVIDEZ - CRIME!',
+                        'gravidade': 'CRÍTICA',
+                        'lei': 'CLT Art. 391-A + Lei 9.029/1995',
+                        'detalhe': 'Estabilidade provisória da gestante é GARANTIDA. Rescisão é DISCRIMINAÇÃO!'
+                    },
+                    {
+                        'regex': r'discriminação.*gênero|discriminação.*raça|discriminação.*religião|discriminação.*orientação.*sexual|discriminação.*idade',
+                        'descricao': '🚨🚨 CLÁUSULA DISCRIMINATÓRIA - CRIME!',
+                        'gravidade': 'CRÍTICA',
+                        'lei': 'Constituição Federal Art. 3º + Lei 9.029/1995',
+                        'detalhe': 'Discriminação em contrato de trabalho é crime inafiançável!'
+                    },
+                    
+                    # CTPS - CRÍTICAS
+                    {
+                        'regex': r'CTPS.*retida.*empresa|retenção.*CTPS|Carteira.*Trabalho.*retida|não.*entregar.*CTPS|CTPS.*empregador',
+                        'descricao': '🚨 RETENÇÃO DE CTPS - CRIME!',
+                        'gravidade': 'CRÍTICA',
+                        'lei': 'CLT Art. 29 + Lei 5.553/1968',
+                        'detalhe': 'Retenção de CTPS é CRIME e contravenção penal!'
+                    },
+                    
+                    # DESCONTOS ILEGAIS - ALTOS
+                    {
+                        'regex': r'custo.*manutenção.*descontado.*salário|equipamentos.*descontado.*salário|uniforme.*descontado|ferramentas.*descontadas|material.*descontado',
+                        'descricao': '⚠️ DESCONTO ILEGAL POR EQUIPAMENTOS',
+                        'gravidade': 'ALTA',
+                        'lei': 'CLT Art. 462',
+                        'detalhe': 'Risco do negócio é do empregador. Custo de equipamentos não pode ser descontado.'
+                    },
+                    {
+                        'regex': r'desconto.*atraso.*excessivo|multa.*atraso.*salário|desconto.*falta.*excessivo|multa.*5%.*dia|multa.*10%.*dia',
+                        'descricao': '⚠️ DESCONTO POR ATRASO EXCESSIVO - ABUSIVO',
+                        'gravidade': 'ALTA',
+                        'lei': 'CLT Art. 462 + Súmula 18 TST',
+                        'detalhe': 'Desconto por atraso não pode exceder 5% do salário.'
+                    },
+                    
+                    # JUSTA CAUSA - ALTOS
+                    {
+                        'regex': r'erro.*técnico.*justa.*causa|justa.*causa.*imediata.*erro|falta.*grave.*justa.*causa|pequeno.*erro.*justa.*causa',
+                        'descricao': '⚠️ JUSTA CAUSA ABUSIVA',
+                        'gravidade': 'ALTA',
+                        'lei': 'CLT Art. 482',
+                        'detalhe': 'Rigor excessivo e falta de gradação de pena.'
+                    },
+                    {
+                        'regex': r'justa.*causa.*vaga|justa.*causa.*genérica|qualquer.*falta.*justa.*causa|justa.*causa.*discricionária',
+                        'descricao': '⚠️ JUSTA CAUSA GENÉRICA - ABUSIVA',
+                        'gravidade': 'ALTA',
+                        'lei': 'CLT Art. 482',
+                        'detalhe': 'Justa causa deve ser específica e comprovada.'
+                    },
+                    
+                    # RESPONSABILIDADE CIVIL - CRÍTICOS
+                    {
+                        'regex': r'funcionário.*responde.*patrimônio.*pessoal|responsabilidade.*civil.*patrimônio.*pessoal|bens.*pessoais.*garantia|patrimônio.*pessoal.*responsável',
+                        'descricao': '🚨 RESPONSABILIDADE CIVIL ABUSIVA',
+                        'gravidade': 'CRÍTICA',
+                        'lei': 'Código Civil + Jurisprudência trabalhista',
+                        'detalhe': 'Responsabilidade civil objetiva abusiva. Empregado não responde com patrimônio pessoal.'
+                    },
+                    {
+                        'regex': r'danos.*lucros.*cessantes.*ilimitados|responsabilidade.*integral.*danos|indenização.*ilimitada|responsabilidade.*total.*danos',
+                        'descricao': '🚨 RESPONSABILIDADE ILIMITADA POR DANOS - ILEGAL!',
+                        'gravidade': 'CRÍTICA',
+                        'lei': 'CLT Art. 462',
+                        'detalhe': 'Responsabilidade por danos deve ser limitada e comprovada o dolo.'
+                    },
+                    
+                    # CLÁUSULAS ABUSIVAS - CRÍTICOS
+                    {
+                        'regex': r'Cláusula.*Abusiva|cláusula.*abusiva|contrato.*contém.*abusividade|cláusula.*excessivamente.*onerosa',
+                        'descricao': '🚨 CLÁUSULA IDENTIFICADA COMO ABUSIVA PELO PRÓPRIO CONTRATO!',
+                        'gravidade': 'CRÍTICA',
+                        'lei': 'CDC Art. 51',
+                        'detalhe': 'O próprio contrato reconhece que contém cláusulas abusivas!'
+                    },
+                    {
+                        'regex': r'Cláusula.*Ilegal|cláusula.*ilegal|contrato.*ilegalidade|cláusula.*contrária.*lei',
+                        'descricao': '🚨🚨 CLÁUSULA IDENTIFICADA COMO ILEGAL PELO PRÓPRIO CONTRATO!',
+                        'gravidade': 'CRÍTICA',
+                        'lei': 'Legislação trabalhista',
+                        'detalhe': 'O contrato ADMITE conter cláusulas ilegais!'
+                    },
+                    {
+                        'regex': r'Cláusula.*Nula|cláusula.*nula|nulidade.*cláusula|cláusula.*sem.*efeito',
+                        'descricao': '🚨 CLÁUSULA IDENTIFICADA COMO NULA PELO PRÓPRIO CONTRATO!',
+                        'gravidade': 'CRÍTICA',
+                        'lei': 'Legislação aplicável',
+                        'detalhe': 'O contrato reconhece que possui cláusulas sem valor jurídico!'
+                    }
+                ]
             },
-            {
-                'regex': r'jornada.*das\s*08:00.*às\s*20:00|08:00.*20:00|das\s*08.*às\s*20|jornada.*60.*horas.*semanais|60.*horas.*semanais|12.*horas.*diárias',
-                'descricao': '🚨🚨 JORNADA EXCESSIVA - ILEGAL!',
-                'gravidade': 'CRÍTICA',
-                'lei': 'CLT Art. 58: Máximo 8h diárias / 44h semanais',
-                'detalhe': '12h diárias = 50% ACIMA do limite! 60h semanais = 36% ACIMA do limite de 44h!'
-            },
-            {
-                'regex': r'não.*haverá.*pagamento.*horas.*extras|sem.*pagamento.*horas.*extras|sem.*direito.*horas.*extras|horas.*extras.*não.*remuneradas',
-                'descricao': '🚨🚨 SEM PAGAMENTO DE HORAS EXTRAS - ILEGAL!',
-                'gravidade': 'CRÍTICA',
-                'lei': 'CLT Art. 59: Horas extras obrigatórias após 8h/dia',
-                'detalhe': 'Horas extras são DIREITO do trabalhador e DEVEM ser pagas com adicional!'
-            },
-            {
-                'regex': r'23:00.*retornar.*06:00|encerrar.*23:00.*retornar.*06:00|intervalo.*interjornada.*7.*horas|7.*horas.*descanso',
-                'descricao': '🚨🚨 INTERVALO INTERJORNADA DE 7 HORAS - ILEGAL!',
-                'gravidade': 'CRÍTICA',
-                'lei': 'CLT Art. 66: Mínimo 11 horas entre jornadas',
-                'detalhe': '7 horas entre jornadas = 36% ABAIXO do mínimo de 11h!'
-            },
-            {
-                'regex': r'intervalo.*refeição.*30.*minutos|30.*minutos.*refeição|intervalo.*10.*minutos|10.*minutos.*almoço|intervalo.*inferior.*1.*hora',
-                'descricao': '🚨 INTERVALO INSUFICIENTE PARA REFEIÇÃO - ILEGAL!',
-                'gravidade': 'CRÍTICA',
-                'lei': 'CLT Art. 71: Mínimo 1 hora para jornada >6h',
-                'detalhe': '30 minutos = 50% ABAIXO do mínimo! 10 minutos = VIOLAÇÃO GRAVÍSSIMA!'
-            },
-            {
-                'regex': r'renúncia.*FGTS|renúncia.*Fundo.*Garantia|Vale.*Cultura.*substituição.*FGTS|FGTS.*descontado.*folha.*pagamento|não.*terá.*FGTS',
-                'descricao': '🚨🚨🚨 RENÚNCIA AO FGTS - CRIME!',
-                'gravidade': 'CRÍTICA',
-                'lei': 'Lei 8.036/1990 Art. 15: FGTS é OBRIGATÓRIO',
-                'detalhe': 'FGTS é DIREITO IRRENUNCIÁVEL! "Vale Cultura" NÃO substitui FGTS!'
-            },
-            {
-                'regex': r'Cláusula.*Abusiva|cláusula.*abusiva|contrato.*contém.*abusividade',
-                'descricao': '🚨 CLÁUSULA IDENTIFICADA COMO ABUSIVA PELO PRÓPRIO CONTRATO!',
-                'gravidade': 'CRÍTICA',
-                'lei': 'CDC Art. 51',
-                'detalhe': 'O próprio contrato reconhece que contém cláusulas abusivas!'
-            },
-            {
-                'regex': r'Cláusula.*Ilegal|cláusula.*ilegal|contrato.*ilegalidade',
-                'descricao': '🚨🚨 CLÁUSULA IDENTIFICADA COMO ILEGAL PELO PRÓPRIO CONTRATO!',
-                'gravidade': 'CRÍTICA',
-                'lei': 'Legislação trabalhista',
-                'detalhe': 'O contrato ADMITE conter cláusulas ilegais!'
-            },
-            {
-                'regex': r'Cláusula.*Nula|cláusula.*nula|nulidade.*cláusula',
-                'descricao': '🚨 CLÁUSULA IDENTIFICADA COMO NULA PELO PRÓPRIO CONTRATO!',
-                'gravidade': 'CRÍTICA',
-                'lei': 'Legislação aplicável',
-                'detalhe': 'O contrato reconhece que possui cláusulas sem valor jurídico!'
+            'NOTA_FISCAL': {
+                'nome': 'Nota Fiscal',
+                'padroes': [
+                    # DATA DE EMISSÃO - CRÍTICAS
+                    {
+                        'regex': r'data.*emissão.*futura|data.*emissão.*posterior|nota.*fiscal.*futura|emissão.*futura|data.*futura|data.*posterior',
+                        'descricao': '🚨🚨 NOTA FISCAL COM DATA FUTURA - ILEGAL!',
+                        'gravidade': 'CRÍTICA',
+                        'lei': 'Lei 5.172/1966 + Convênio SINIEF',
+                        'detalhe': 'Nota fiscal não pode ter data de emissão futura. É crime tributário!'
+                    },
+                    {
+                        'regex': r'data.*emissão.*anterior.*prestação|data.*emissão.*retroativa|emissão.*retroativa|nota.*fiscal.*retroativa',
+                        'descricao': '🚨 NOTA FISCAL COM DATA RETROATIVA - ILEGAL!',
+                        'gravidade': 'CRÍTICA',
+                        'lei': 'Legislação tributária',
+                        'detalhe': 'Data de emissão deve ser contemporânea à prestação do serviço.'
+                    },
+                    
+                    # CANCELAMENTO - CRÍTICAS
+                    {
+                        'regex': r'nota.*fiscal.*cancelada|cancelamento.*indevido|duplo.*cancelamento|cancelada.*sem.*justificativa|cancelamento.*abuso',
+                        'descricao': '🚨 NOTA FISCAL CANCELADA - VERIFICAR!',
+                        'gravidade': 'CRÍTICA',
+                        'lei': 'Legislação tributária',
+                        'detalhe': 'Nota cancelada não tem validade fiscal. Verificar se cancelamento foi legítimo.'
+                    },
+                    {
+                        'regex': r'cancelamento.*posterior.*30.*dias|cancelamento.*tardia|cancelamento.*fora.*prazo|cancelamento.*indevido.*prazo',
+                        'descricao': '⚠️ CANCELAMENTO FORA DO PRAZO LEGAL',
+                        'gravidade': 'ALTA',
+                        'lei': 'Legislação tributária',
+                        'detalhe': 'Cancelamento deve ocorrer dentro do prazo legal.'
+                    },
+                    
+                    # DADOS DO EMITENTE - ALTOS
+                    {
+                        'regex': r'CNPJ.*inválido|CNPJ.*inexistente|inscrição.*municipal.*inválida|emitente.*não.*habilitado|emitente.*irregular',
+                        'descricao': '⚠️ DADOS DO EMITENTE IRREGULARES',
+                        'gravidade': 'ALTA',
+                        'lei': 'Legislação tributária',
+                        'detalhe': 'Emitente deve ter CNPJ e inscrição municipal válidos.'
+                    },
+                    {
+                        'regex': r'nome.*emitente.*diferente|razão.*social.*diferente|emitente.*não.*corresponde|dados.*emitente.*incorretos',
+                        'descricao': '⚠️ DADOS DO EMITENTE INCORRETOS',
+                        'gravidade': 'ALTA',
+                        'lei': 'Legislação tributária',
+                        'detalhe': 'Dados do emitente devem corresponder ao prestador real do serviço.'
+                    },
+                    
+                    # VALORES - CRÍTICOS
+                    {
+                        'regex': r'valor.*zero.*serviço|R\$\s*0,00|valor.*nulo|sem.*valor|valor.*inexistente|grátis.*nota.*fiscal',
+                        'descricao': '🚨 NOTA FISCAL COM VALOR ZERO - SUSPEITA!',
+                        'gravidade': 'CRÍTICA',
+                        'lei': 'Legislação tributária',
+                        'detalhe': 'Nota fiscal com valor zero pode indicar fraude fiscal.'
+                    },
+                    {
+                        'regex': r'valor.*diferente.*contrato|valor.*divergente|valor.*incompatível|valor.*excessivo|valor.*subfaturado',
+                        'descricao': '⚠️ VALOR INCOMPATÍVEL COM SERVIÇO PRESTADO',
+                        'gravidade': 'ALTA',
+                        'lei': 'Legislação tributária',
+                        'detalhe': 'Valor da nota deve corresponder ao serviço efetivamente prestado.'
+                    },
+                    {
+                        'regex': r'base.*cálculo.*zero|base.*cálculo.*inexistente|sem.*base.*cálculo|base.*cálculo.*negativa',
+                        'descricao': '🚨 BASE DE CÁLCULO ZERO - ILEGAL!',
+                        'gravidade': 'CRÍTICA',
+                        'lei': 'Legislação tributária',
+                        'detalhe': 'Base de cálculo não pode ser zero para serviços prestados.'
+                    },
+                    
+                    # TRIBUTAÇÃO - CRÍTICAS
+                    {
+                        'regex': r'alíquota.*zero|alíquota.*inexistente|sem.*alíquota|alíquota.*negativa|alíquota.*indevida',
+                        'descricao': '🚨 ALÍQUOTA ILEGAL OU INEXISTENTE',
+                        'gravidade': 'CRÍTICA',
+                        'lei': 'Legislação tributária municipal',
+                        'detalhe': 'Alíquota deve seguir tabela oficial do município.'
+                    },
+                    {
+                        'regex': r'ISS.*não.*recolhido|ISS.*retido.*indevidamente|ISS.*sonegado|tributo.*não.*pago|sonegação.*fiscal',
+                        'descricao': '🚨🚨 TRIBUTO NÃO RECOLHIDO - CRIME FISCAL!',
+                        'gravidade': 'CRÍTICA',
+                        'lei': 'Lei 5.172/1966 + Lei 8.137/1990',
+                        'detalhe': 'Não recolher ISS é crime de sonegação fiscal!'
+                    },
+                    {
+                        'regex': r'ISSQN.*fora.*município|ISS.*município.*errado|tributação.*município.*incorreto|local.*prestação.*diferente',
+                        'descricao': '🚨 ISS RECOLHIDO PARA MUNICÍPIO ERRADO',
+                        'gravidade': 'CRÍTICA',
+                        'lei': 'Lei Complementar 116/2003',
+                        'detalhe': 'ISS deve ser recolhido para o município da prestação do serviço.'
+                    },
+                    
+                    # DESCRIÇÃO DOS SERVIÇOS - ALTOS
+                    {
+                        'regex': r'serviço.*não.*descrito|descrição.*vazia|sem.*descrição|descrição.*inexistente|serviço.*genérico',
+                        'descricao': '⚠️ DESCRIÇÃO DE SERVIÇO INSUFICIENTE',
+                        'gravidade': 'ALTA',
+                        'lei': 'Legislação tributária',
+                        'detalhe': 'Descrição do serviço deve ser clara e detalhada.'
+                    },
+                    {
+                        'regex': r'descrição.*genérica.*"serviços"|descrição.*"outros"|descrição.*"diversos"|descrição.*padrão',
+                        'descricao': '⚠️ DESCRIÇÃO GENÉRICA DE SERVIÇOS',
+                        'gravidade': 'ALTA',
+                        'lei': 'Legislação tributária',
+                        'detalhe': 'Descrições genéricas podem indicar irregularidade.'
+                    },
+                    {
+                        'regex': r'código.*serviço.*inválido|código.*serviço.*inexistente|código.*serviço.*errado|LC.*116.*errado',
+                        'descricao': '⚠️ CÓDIGO DE SERVIÇO INCORRETO',
+                        'gravidade': 'ALTA',
+                        'lei': 'Lei Complementar 116/2003',
+                        'detalhe': 'Código do serviço deve seguir tabela LC 116/2003.'
+                    },
+                    
+                    # VERIFICAÇÃO DE AUTENTICIDADE - CRÍTICAS
+                    {
+                        'regex': r'número.*nota.*duplicado|número.*duplicado|nota.*fiscal.*duplicada|mesmo.*número.*emitente',
+                        'descricao': '🚨 NÚMERO DE NOTA FISCAL DUPLICADO',
+                        'gravidade': 'CRÍTICA',
+                        'lei': 'Legislação tributária',
+                        'detalhe': 'Cada nota fiscal deve ter número único por emitente.'
+                    },
+                    {
+                        'regex': r'nota.*fiscal.*não.*verificada|não.*encontrada.*sistema|autenticidade.*não.*confirmada|validação.*falhou',
+                        'descricao': '🚨 NOTA FISCAL NÃO ENCONTRADA NO SISTEMA',
+                        'gravidade': 'CRÍTICA',
+                        'lei': 'Legislação tributária',
+                        'detalhe': 'Nota fiscal deve ser registrada e verificável no sistema oficial.'
+                    },
+                    
+                    # FORMATO E EMISSÃO - ALTOS
+                    {
+                        'regex': r'nota.*fiscal.*manual|emissão.*manual|sem.*sistema|fora.*sistema|emissão.*papel',
+                        'descricao': '⚠️ NOTA FISCAL EMITIDA MANUALMENTE',
+                        'gravidade': 'ALTA',
+                        'lei': 'Legislação tributária',
+                        'detalhe': 'Notas fiscais devem ser emitidas por sistema eletrônico.'
+                    },
+                    {
+                        'regex': r'nota.*fiscal.*sem.*assinatura|sem.*carimbo|sem.*autenticação|sem.*validação',
+                        'descricao': '⚠️ NOTA FISCAL SEM ASSINATURA/AUTENTICAÇÃO',
+                        'gravidade': 'ALTA',
+                        'lei': 'Legislação tributária',
+                        'detalhe': 'Nota fiscal deve ser devidamente assinada/autenticada.'
+                    },
+                    
+                    # REGULARIDADE FISCAL - CRÍTICAS
+                    {
+                        'regex': r'emitente.*débito.*fiscal|emitente.*irregular|emitente.*não.*habilitado|empresa.*suspensa|empresa.*baixada',
+                        'descricao': '🚨🚨 EMITENTE COM DÉBITO FISCAL OU IRREGULAR',
+                        'gravidade': 'CRÍTICA',
+                        'lei': 'Legislação tributária',
+                        'detalhe': 'Emitente deve estar regular com o fisco municipal.'
+                    },
+                    {
+                        'regex': r'inscrição.*municipal.*cancelada|inscrição.*suspensa|inscrição.*baixada|empresa.*inapta',
+                        'descricao': '🚨 EMITENTE COM INSCRIÇÃO MUNICIPAL CANCELADA',
+                        'gravidade': 'CRÍTICA',
+                        'lei': 'Legislação tributária',
+                        'detalhe': 'Inscrição municipal cancelada indica irregularidade grave.'
+                    },
+                    
+                    # COMPETÊNCIA TRIBUTÁRIA - ALTOS
+                    {
+                        'regex': r'competência.*errada|período.*competência.*incorreto|mês.*competência.*diferente|ano.*competência.*errado',
+                        'descricao': '⚠️ COMPETÊNCIA TRIBUTÁRIA INCORRETA',
+                        'gravidade': 'ALTA',
+                        'lei': 'Legislação tributária',
+                        'detalhe': 'Período de competência deve corresponder à prestação do serviço.'
+                    },
+                    {
+                        'regex': r'local.*prestação.*diferente.*serviço|local.*incorreto|município.*errado|endereço.*prestação.*diferente',
+                        'descricao': '⚠️ LOCAL DE PRESTAÇÃO DE SERVIÇO INCORRETO',
+                        'gravidade': 'ALTA',
+                        'lei': 'Lei Complementar 116/2003',
+                        'detalhe': 'Local da prestação deve ser corretamente informado.'
+                    },
+                    
+                    # RETENÇÕES - ALTOS
+                    {
+                        'regex': r'retenção.*indevida|retenção.*excessiva|retenção.*sem.*fundamento|IRRF.*retido.*indevidamente|PIS.*COFINS.*retenção',
+                        'descricao': '⚠️ RETENÇÃO TRIBUTÁRIA INDEVIDA',
+                        'gravidade': 'ALTA',
+                        'lei': 'Legislação tributária',
+                        'detalhe': 'Retenções devem seguir legislação específica.'
+                    },
+                    {
+                        'regex': r'alíquota.*retenção.*errada|percentual.*retenção.*incorreto|retenção.*maior.*devido|retenção.*menor.*devido',
+                        'descricao': '⚠️ ALÍQUOTA DE RETENÇÃO INCORRETA',
+                        'gravidade': 'ALTA',
+                        'lei': 'Legislação tributária',
+                        'detalhe': 'Alíquotas de retenção devem seguir tabelas oficiais.'
+                    }
+                ]
             }
         }
-        }
         
-        # Termos para detecção rápida de tipo - ATUALIZADO
-        self.indicadores_tipo = {
-            'CONTRATO_LOCACAO': [
-                'locação', 'aluguel', 'locador', 'locatário', 'imóvel residencial',
-                'caução', 'fiador', 'benfeitorias', 'multa rescisória', 'inquilino',
-                'proprietário', 'Lei 8.245/1991', 'Lei do Inquilinato', 'contrato de aluguel'
-            ],
-            'CONTRATO_TRABALHO': [
-                'empregador', 'empregado', 'CLT', 'salário', 'jornada',
-                'horas extras', 'FGTS', 'férias', '13º salário', 'funcionário',
-                'trabalhador', 'contrato de trabalho', 'carteira de trabalho', 'holerite'
-            ],
-            'NOTA_FISCAL': [
-                'nota fiscal', 'nfse', 'nfe', 'prefeitura municipal',
+        # Análise genérica SUPER avançada - COBERTURA MÁXIMA
+        self.padroes_genericos = [
+            # SALÁRIO - CRÍTICOS
+            (r'\b900\b.*reais|\bR\$\s*900\b|\b800\b.*reais|\bR\$\s*800\b|\b1000\b.*reais|\bR\$\s*1000\b|\b1100\b.*reais|\bR\$\s*1100\b|\b1200\b.*reais|\bR\$\s*1200\b|\b1300\b.*reais|\bR\$\s*1300\b', 'SALARIO_ABAIXO_MINIMO', '🚨🚨 SALÁRIO ABAIXO DO MÍNIMO DETECTADO', 'CRÍTICA'),
+            
+            # MULTAS - CRÍTICAS
+            (r'\b12\b.*meses.*multa|multa.*\b12\b.*meses|\bdoze\b.*meses.*multa|multa.*doze.*meses|12.*vezes.*aluguel', 'MULTA_12_MESES_DIRETO', '🚨🚨 MULTA DE 12 MESES ENCONTRADA', 'CRÍTICA'),
+            (r'\b3\b.*meses.*caução|caução.*\b3\b.*meses|\btrês\b.*meses.*caução|caução.*tres.*meses', 'CAUCAO_3_MESES_DIRETO', '🚨 CAUÇÃO DE 3 MESES ENCONTRADA', 'CRÍTICA'),
+            (r'multa.*superior.*2.*meses|multa.*maior.*2.*meses|multa.*acima.*2.*meses', 'MULTA_ACIMA_2_MESES', '🚨 MULTA ACIMA DE 2 MESES', 'CRÍTICA'),
+            
+            # JORNADA - CRÍTICAS
+            (r'\b60\b.*horas.*semanais|60.*horas.*semana|jornada.*\b60\b.*horas|60h.*semanais', 'JORNADA_60_HORAS', '🚨 JORNADA DE 60 HORAS SEMANAIS - ILEGAL!', 'CRÍTICA'),
+            (r'\b12\b.*horas.*diárias|12.*horas.*dia|jornada.*\b12\b.*horas|12h.*diárias', 'JORNADA_12_HORAS', '🚨 JORNADA DE 12 HORAS DIÁRIAS - ILEGAL!', 'CRÍTICA'),
+            (r'\b44\b.*horas.*semanais.*ultrapassada|44.*horas.*semana.*excedida', 'JORNADA_ACIMA_44_HORAS', '🚨 JORNADA ACIMA DE 44 HORAS SEMANAIS', 'CRÍTICA'),
+            
+            # INTERVALOS - CRÍTICOS
+            (r'\b7\b.*horas.*descanso|7.*horas.*intervalo|\b8\b.*horas.*descanso|8.*horas.*intervalo', 'INTERVALO_INTERJORNADA_CURTO', '🚨 INTERVALO INTERJORNADA DE 7-8 HORAS - ILEGAL!', 'CRÍTICA'),
+            (r'\b30\b.*minutos.*refeição|30.*minutos.*almoço|\b45\b.*minutos.*refeição|45.*minutos.*almoço', 'INTERVALO_REFEICAO_CURTO', '🚨 INTERVALO DE REFEIÇÃO DE 30-45 MINUTOS - ILEGAL!', 'CRÍTICA'),
+            (r'\b10\b.*minutos.*descanso|10.*minutos.*intervalo|\b15\b.*minutos.*descanso|15.*minutos.*intervalo', 'INTERVALO_MUITO_CURTO', '⚠️ INTERVALO MUITO CURTO - VERIFICAR', 'ALTA'),
+            
+            # FGTS - CRÍTICOS
+            (r'FGTS.*opcional|FGTS.*não.*obrigatório|sem.*FGTS|renúncia.*FGTS|FGTS.*renunciado', 'FGTS_IRREGULAR', '🚨🚨 FGTS ILEGAL OU OPCIONAL - CRIME!', 'CRÍTICA'),
+            (r'Vale.*Cultura.*substitui.*FGTS|Vale.*Cultura.*FGTS|Bolsa.*Família.*FGTS', 'FGTS_SUBSTITUIDO', '🚨🚨 FGTS SENDO SUBSTITUÍDO ILEGALMENTE!', 'CRÍTICA'),
+            
+            # HORAS EXTRAS - CRÍTICAS
+            (r'horas.*extras.*gratuitas|horas.*extras.*sem.*pagamento|horas.*extras.*não.*remuneradas', 'HORAS_EXTRAS_GRATUITAS', '🚨🚨 HORAS EXTRAS SEM PAGAMENTO - ILEGAL!', 'CRÍTICA'),
+            (r'horas.*extras.*sem.*adicional|adicional.*horas.*extras.*negado|50%.*horas.*extras.*negado', 'HORAS_EXTRAS_SEM_ADICIONAL', '🚨 HORAS EXTRAS SEM ADICIONAL - ILEGAL!', 'CRÍTICA'),
+            
+            # FÉRIAS - CRÍTICAS
+            (r'férias.*renunciadas|renúncia.*férias|férias.*não.*remuneradas|sem.*férias', 'FERIAS_IRREGULARES', '🚨 FÉRIAS ILEGAIS OU RENUNCIADAS', 'CRÍTICA'),
+            (r'férias.*vencidas.*não.*pagas|férias.*acumuladas|férias.*proporcionais.*negadas', 'FERIAS_NAO_PAGAS', '🚨 FÉRIAS NÃO PAGAS OU NEGADAS', 'CRÍTICA'),
+            
+            # DISCRIMINAÇÃO - CRÍTICOS
+            (r'gravidez.*demissão|demissão.*gestante|rescisão.*gravidez|gravidez.*contrato.*resciso', 'DISCRIMINACAO_GRAVIDEZ', '🚨🚨 DISCRIMINAÇÃO POR GRAVIDEZ - CRIME!', 'CRÍTICA'),
+            (r'discriminação.*gênero|discriminação.*raça|discriminação.*religião|discriminação.*idade', 'DISCRIMINACAO_ILEGAL', '🚨🚨 DISCRIMINAÇÃO ILEGAL - CRIME!', 'CRÍTICA'),
+            
+            # CTPS - CRÍTICOS
+            (r'CTPS.*retida|Carteira.*Trabalho.*retida|retenção.*CTPS|não.*entregar.*CTPS', 'CTPS_RETIDA', '🚨 RETENÇÃO DE CTPS - CRIME!', 'CRÍTICA'),
+            
+            # REAJUSTE - CRÍTICOS
+            (r'reajuste.*trimestral|reajuste.*mensal|reajuste.*bimestral|reajuste.*semestral', 'REAJUSTE_FREQUENTE', '🚨 REAJUSTE COM FREQUÊNCIA ILEGAL', 'CRÍTICA'),
+            (r'reajuste.*dólar|reajuste.*câmbio|reajuste.*variação.*dólar|dólar.*reajuste', 'REAJUSTE_DOLAR', '🚨🚨 REAJUSTE PELO DÓLAR - ILEGAL!', 'CRÍTICA'),
+            (r'reajuste.*sem.*índice.*oficial|reajuste.*livre|reajuste.*acordo|índice.*livre', 'REAJUSTE_SEM_INDICE', '🚨 REAJUSTE SEM ÍNDICE OFICIAL - ILEGAL!', 'CRÍTICA'),
+            
+            # VISITAS E PRIVACIDADE - CRÍTICOS
+            (r'visitas.*sem.*aviso|visitas.*qualquer.*momento|acesso.*livre.*imóvel|ingresso.*imediato', 'VISITAS_SEM_AVISO', '🚨🚨 VISITAS SEM AVISO - VIOLAÇÃO DE DOMICÍLIO!', 'CRÍTICA'),
+            (r'vistorias.*surpresa|vistorias.*sem.*aviso|inspeção.*surpresa', 'VISTORIAS_SURPRESA', '⚠️ VISTORIAS SURPRESA - ILEGAL', 'ALTA'),
+            
+            # BENFEITORIAS - CRÍTICAS
+            (r'benfeitorias.*não.*indenizáveis|renúncia.*benfeitorias|nenhuma.*indenização.*benfeitorias', 'BENFEITORIAS_SEM_INDENIZACAO', '🚨 BENFEITORIAS SEM INDENIZAÇÃO - ILEGAL!', 'CRÍTICA'),
+            
+            # RESPONSABILIDADE ESTRUTURAL - CRÍTICOS
+            (r'locatário.*responsável.*estrutura|estrutura.*locatário|dano.*estrutural.*locatário', 'RESPONSABILIDADE_ESTRUTURAL', '🚨 LOCATÁRIO RESPONSÁVEL POR ESTRUTURA - ILEGAL!', 'CRÍTICA'),
+            (r'locatário.*responsável.*vícios|vícios.*locatário|defeitos.*estrutura.*locatário', 'RESPONSABILIDADE_VICIOS', '🚨 LOCATÁRIO RESPONSÁVEL POR VÍCIOS - ILEGAL!', 'CRÍTICA'),
+            
+            # IMPOSTO DE RENDA - CRÍTICOS
+            (r'locatário.*pagar.*IR|imposto.*renda.*locatário|IR.*locatário.*responsável', 'IR_LOCATARIO', '🚨🚨 LOCATÁRIO PAGANDO IR DO LOCADOR - ILEGAL!', 'CRÍTICA'),
+            
+            # DESPEJO - CRÍTICOS
+            (r'despejo.*imediato.*atraso|despejo.*24.*horas|despejo.*48.*horas|trocar.*fechaduras.*atraso', 'DESPEJO_IMEDIATO', '🚨🚨 DESPEJO IMEDIATO POR ATRASO - ILEGAL!', 'CRÍTICA'),
+            
+            # PAGAMENTO ANTECIPADO - ALTOS
+            (r'pagamento.*adiantado.*obrigatório|aluguel.*primeiro.*dia|mês.*vencer.*adiantado', 'PAGAMENTO_ADIANTADO', '⚠️ PAGAMENTO ANTECIPADO OBRIGATÓRIO - ILEGAL', 'ALTA'),
+            
+            # CUMULAÇÃO DE GARANTIAS - ALTOS
+            (r'caução.*E.*fiador|seguro.*E.*caução|múltiplas.*garantias|garantias.*cumulativas', 'CUMULACAO_GARANTIAS', '⚠️ CUMULAÇÃO DE GARANTIAS - ILEGAL', 'ALTA'),
+            
+            # ANIMAIS - ALTOS
+            (r'proibido.*animais|animais.*proibidos|nenhum.*animal|proibição.*animais', 'PROIBICAO_ANIMAIS', '⚠️ PROIBIÇÃO DE ANIMAIS - ABUSIVA', 'ALTA'),
+            
+            # VENDA DO IMÓVEL - ALTOS
+            (r'contrato.*resciso.*venda|rescisão.*automática.*venda|desocupação.*imediata.*venda', 'VENDA_RESCISAO', '⚠️ RESCISÃO AUTOMÁTICA POR VENDA - ILEGAL', 'ALTA'),
+            
+            # DESCONTOS ILEGAIS - ALTOS
+            (r'desconto.*equipamentos|uniforme.*descontado|ferramentas.*descontadas|material.*descontado', 'DESCONTOS_EQUIPAMENTOS', '⚠️ DESCONTO ILEGAL POR EQUIPAMENTOS', 'ALTA'),
+            (r'desconto.*atraso.*excessivo|multa.*atraso.*salário|multa.*5%.*dia', 'DESCONTO_ATRASO', '⚠️ DESCONTO POR ATRASO EXCESSIVO', 'ALTA'),
+            
+            # JUSTA CAUSA - ALTOS
+            (r'justa.*causa.*genérica|justa.*causa.*vaga|erro.*técnico.*justa.*causa', 'JUSTA_CAUSA_ABUSIVA', '⚠️ JUSTA CAUSA ABUSIVA', 'ALTA'),
+            
+            # RESPONSABILIDADE CIVIL - CRÍTICOS
+            (r'funcionário.*responde.*patrimônio|responsabilidade.*civil.*patrimônio|bens.*pessoais.*garantia', 'RESPONSABILIDADE_CIVIL_ABUSIVA', '🚨 RESPONSABILIDADE CIVIL ABUSIVA', 'CRÍTICA'),
+            (r'responsabilidade.*ilimitada.*danos|indenização.*ilimitada|danos.*lucros.*cessantes.*ilimitados', 'RESPONSABILIDADE_ILIMITADA', '🚨 RESPONSABILIDADE ILIMITADA POR DANOS', 'CRÍTICA'),
+            
+            # NOTAS FISCAIS - CRÍTICAS
+            (r'data.*emissão.*futura|emissão.*futura|data.*futura|nota.*fiscal.*futura', 'NOTA_FISCAL_DATA_FUTURA', '🚨🚨 NOTA FISCAL COM DATA FUTURA - ILEGAL!', 'CRÍTICA'),
+            (r'nota.*fiscal.*cancelada|cancelamento.*indevido|duplo.*cancelamento', 'NOTA_FISCAL_CANCELADA', '🚨 NOTA FISCAL CANCELADA - VERIFICAR!', 'CRÍTICA'),
+            (r'valor.*zero.*serviço|R\$\s*0,00|base.*cálculo.*zero|valor.*nulo', 'NOTA_FISCAL_VALOR_ZERO', '🚨 NOTA FISCAL COM VALOR ZERO - SUSPEITA!', 'CRÍTICA'),
+            (r'ISS.*não.*recolhido|ISS.*sonegado|tributo.*não.*pago|sonegação.*fiscal', 'NOTA_FISCAL_ISS_NAO_RECOLHIDO', '🚨🚨 TRIBUTO NÃO RECOLHIDO - CRIME FISCAL!', 'CRÍTICA'),
+            (r'número.*nota.*duplicado|nota.*fiscal.*duplicada|mesmo.*número.*emitente', 'NOTA_FISCAL_DUPLICADA', '🚨 NÚMERO DE NOTA FISCAL DUPLICADO', 'CRÍTICA'),
+            (r'nota.*fiscal.*não.*verificada|não.*encontrada.*sistema|autenticidade.*não.*confirmada', 'NOTA_FISCAL_NAO_VERIFICADA', '🚨 NOTA FISCAL NÃO ENCONTRADA NO SISTEMA', 'CRÍTICA'),
+            (r'emitente.*débito.*fiscal|emitente.*irregular|inscrição.*municipal.*cancelada', 'NOTA_FISCAL_EMITENTE_IRREGULAR', '🚨🚨 EMITENTE COM DÉBITO FISCAL OU IRREGULAR', 'CRÍTICA'),
+            
+            # NOTAS FISCAIS - ALTOS
+            (r'CNPJ.*inválido|inscrição.*municipal.*inválida|emitente.*não.*habilitado', 'NOTA_FISCAL_EMITENTE_DADOS_IRREGULARES', '⚠️ DADOS DO EMITENTE IRREGULARES', 'ALTA'),
+            (r'valor.*diferente.*contrato|valor.*divergente|valor.*incompatível', 'NOTA_FISCAL_VALOR_INCOMPATIVEL', '⚠️ VALOR INCOMPATÍVEL COM SERVIÇO', 'ALTA'),
+            (r'serviço.*não.*descrito|descrição.*vazia|sem.*descrição|descrição.*genérica', 'NOTA_FISCAL_DESCRICAO_INSUFICIENTE', '⚠️ DESCRIÇÃO DE SERVIÇO INSUFICIENTE', 'ALTA'),
+            (r'nota.*fiscal.*manual|emissão.*manual|fora.*sistema|emissão.*papel', 'NOTA_FISCAL_EMISSAO_MANUAL', '⚠️ NOTA FISCAL EMITIDA MANUALMENTE', 'ALTA'),
+            (r'competência.*errada|período.*competência.*incorreto|mês.*competência.*diferente', 'NOTA_FISCAL_COMPETENCIA_ERRADA', '⚠️ COMPETÊNCIA TRIBUTÁRIA INCORRETA', 'ALTA'),
+            
+            # CLÁUSULAS ABUSIVAS - CRÍTICAS
+            (r'Cláusula.*Abusiva|cláusula.*abusiva|contrato.*contém.*abusividade', 'CLAUSULA_ABUSIVA', '🚨 CLÁUSULA IDENTIFICADA COMO ABUSIVA', 'CRÍTICA'),
+            (r'Cláusula.*Ilegal|cláusula.*ilegal|contrato.*ilegalidade|cláusula.*contrária.*lei', 'CLAUSULA_ILEGAL', '🚨🚨 CLÁUSULA IDENTIFICADA COMO ILEGAL', 'CRÍTICA'),
+            (r'Cláusula.*Nula|cláusula.*nula|nulidade.*cláusula|cláusula.*sem.*efeito', 'CLAUSULA_NULA', '🚨 CLÁUSULA IDENTIFICADA COMO NULA', 'CRÍTICA'),
+            
+            # SALÁRIO ESPECÍFICO - CRÍTICOS
+            (r'salário.*R\$\s*1400|R\$\s*1400.*salário|1400.*reais.*salário', 'SALARIO_1400_BAIXO_MINIMO', '🚨 SALÁRIO DE R$ 1.400 - ABAIXO DO MÍNIMO', 'CRÍTICA'),
+            (r'salário.*R\$\s*1350|R\$\s*1350.*salário|1350.*reais.*salário', 'SALARIO_1350_BAIXO_MINIMO', '🚨 SALÁRIO DE R$ 1.350 - ABAIXO DO MÍNIMO', 'CRÍTICA'),
+            
+            # MULTAS ESPECÍFICAS - CRÍTICAS
+            (r'multa.*6.*meses|multa.*8.*meses|multa.*9.*meses|multa.*10.*meses', 'MULTA_ACIMA_PERMITIDA', '🚨 MULTA ACIMA DE 2 MESES - ILEGAL', 'CRÍTICA'),
+            (r'multa.*integral.*independentemente|multa.*fixa.*sem.*proporcionalidade', 'MULTA_SEM_PROPORCIONALIDADE', '🚨 MULTA SEM PROPORCIONALIDADE', 'CRÍTICA'),
+            
+            # CAUÇÃO ESPECÍFICA - CRÍTICAS
+            (r'caução.*2.*meses|caução.*4.*meses|caução.*5.*meses|caução.*6.*meses', 'CAUCAO_ACIMA_PERMITIDA', '🚨 CAUÇÃO ACIMA DE 1 MÊS - ILEGAL', 'CRÍTICA'),
+            
+            # REAJUSTE ESPECÍFICO - CRÍTICOS
+            (r'reajuste.*a.*cada.*2.*meses|reajuste.*a.*cada.*3.*meses|reajuste.*a.*cada.*6.*meses', 'REAJUSTE_PERIODO_CURTO', '🚨 REAJUSTE COM PERÍODO CURTO - ILEGAL', 'CRÍTICA'),
+            (r'aumento.*fixo.*10%.*ano|aumento.*fixo.*15%.*ano|aumento.*fixo.*20%.*ano', 'AUMENTO_FIXO_ANUAL', '🚨 AUMENTO FIXO ANUAL - ILEGAL', 'CRÍTICA'),
+            
+            # JORNADA ESPECÍFICA - CRÍTICAS
+            (r'jornada.*9.*horas|jornada.*10.*horas|jornada.*11.*horas|jornada.*13.*horas', 'JORNADA_DIARIA_EXCESSIVA', '🚨 JORNADA DIÁRIA ACIMA DE 8 HORAS', 'CRÍTICA'),
+            (r'jornada.*45.*horas|jornada.*48.*horas|jornada.*50.*horas|jornada.*52.*horas', 'JORNADA_SEMANAL_EXCESSIVA', '🚨 JORNADA SEMANAL ACIMA DE 44 HORAS', 'CRÍTICA'),
+            
+            # INTERVALO ESPECÍFICO - CRÍTICOS
+            (r'intervalo.*20.*minutos|intervalo.*25.*minutos|intervalo.*35.*minutos', 'INTERVALO_REFEICAO_MUITO_CURTO', '🚨 INTERVALO DE REFEIÇÃO MUITO CURTO', 'CRÍTICA'),
+            (r'intervalo.*9.*horas|intervalo.*10.*horas|intervalo.*5.*horas|intervalo.*6.*horas', 'INTERVALO_INTERJORNADA_MUITO_CURTO', '🚨 INTERVALO INTERJORNADA MUITO CURTO', 'CRÍTICA'),
+            
+            # TRIBUTAÇÃO ESPECÍFICA - CRÍTICAS
+            (r'alíquota.*zero|alíquota.*inexistente|sem.*alíquota|alíquota.*negativa', 'ALIQUOTA_ILEGAL', '🚨 ALÍQUOTA ILEGAL OU INEXISTENTE', 'CRÍTICA'),
+            (r'ISSQN.*fora.*município|ISS.*município.*errado|tributação.*município.*incorreto', 'ISS_MUNICIPIO_ERRADO', '🚨 ISS RECOLHIDO PARA MUNICÍPIO ERRADO', 'CRÍTICA'),
+            
+            # RETENÇÕES ESPECÍFICAS - ALTOS
+            (r'retenção.*indevida|retenção.*excessiva|retenção.*sem.*fundamento', 'RETENCAO_INDEVIDA', '⚠️ RETENÇÃO TRIBUTÁRIA INDEVIDA', 'ALTA'),
+            (r'alíquota.*retenção.*errada|percentual.*retenção.*incorreto', 'ALIQUOTA_RETENCAO_ERRADA', '⚠️ ALÍQUOTA DE RETENÇÃO INCORRETA', 'ALTA'),
+            
+            # CLÁUSULAS ESPECÍFICAS - CRÍTICAS
+            (r'cláusula.*excessivamente.*onerosa|cláusula.*onerosa.*excessivo', 'CLAUSULA_EXCESSIVAMENTE_ONEROSA', '🚨 CLÁUSULA EXCESSIVAMENTE ONEROSA', 'CRÍTICA'),
+            (r'cláusula.*limita.*direitos|cláusula.*restringe.*direitos', 'CLAUSULA_LIMITA_DIREITOS', '🚨 CLÁUSULA QUE LIMITA DIREITOS', 'CRÍTICA'),
+            
+            # DETECÇÃO DE NÚMEROS ESPECÍFICOS - CRÍTICOS
+            (r'\b24\b.*horas.*trabalho|24.*horas.*diárias|trabalhar.*24.*horas', 'JORNADA_24_HORAS', '🚨 JORNADA DE 24 HORAS - IMPOSSÍVEL/ILEGAL', 'CRÍTICA'),
+            (r'\b18\b.*horas.*trabalho|18.*horas.*diárias|trabalhar.*18.*horas', 'JORNADA_18_HORAS', '🚨 JORNADA DE 18 HORAS - EXTREMAMENTE ILEGAL', 'CRÍTICA'),
+            (r'\b16\b.*horas.*trabalho|16.*horas.*diárias|trabalhar.*16.*horas', 'JORNADA_16_HORAS', '🚨 JORNADA DE 16 HORAS - EXTREMAMENTE ILEGAL', 'CRÍTICA'),
+            
+            # DETECÇÃO DE VALORES ESPECÍFICOS - CRÍTICOS
+            (r'R\$\s*500.*salário|R\$\s*600.*salário|R\$\s*700.*salário|R\$\s*750.*salário', 'SALARIO_EXTREMO_BAIXO', '🚨🚨 SALÁRIO EXTREMAMENTE BAIXO - CRIME', 'CRÍTICA'),
+            (r'R\$\s*1\.200.*salário|R\$\s*1\.250.*salário|R\$\s*1\.300.*salário|R\$\s*1\.350.*salário', 'SALARIO_ABAIXO_MINIMO_ATUAL', '🚨 SALÁRIO ABAIXO DO MÍNIMO ATUAL', 'CRÍTICA'),
+            
+            # DETECÇÃO DE PADRÕES ABUSIVOS - CRÍTICOS
+            (r'obrigação.*excessiva|ônus.*excessivo|encargo.*excessivo|dever.*excessivo', 'ONUS_EXCESSIVO', '🚨 ÔNUS EXCESSIVO - CLÁUSULA ABUSIVA', 'CRÍTICA'),
+            (r'desvantagem.*excessiva|prejuízo.*excessivo|sacrifício.*excessivo', 'DESVANTAGEM_EXCESSIVA', '🚨 DESVANTAGEM EXCESSIVA - CLÁUSULA ABUSIVA', 'CRÍTICA'),
+            
+            # DETECÇÃO DE VIOLAÇÕES DIRETAS - CRÍTICAS
+            (r'violação.*direito|violação.*garantia|violação.*constituição|violação.*lei', 'VIOLACAO_DIREITO', '🚨 VIOLAÇÃO DIRETA DE DIREITOS', 'CRÍTICA'),
+            (r'contrário.*lei|contrária.*constituição|ilegal.*expressamente', 'CONTRARIO_LEI', '🚨 CLÁUSULA CONTRÁRIA À LEI', 'CRÍTICA'),
+            
+            # DETECÇÃO DE RISCOS - ALTOS
+            (r'risco.*excessivo|perigo.*excessivo|dano.*potencial.*grave', 'RISCO_EXCESSIVO', '⚠️ RISCO EXCESSIVO - CLÁUSULA PERIGOSA', 'ALTA'),
+            (r'prejudica.*direito|prejudica.*garantia|prejudica.*interesse', 'PREJUDICA_DIREITO', '⚠️ CLÁUSULA QUE PREJUDICA DIREITOS', 'ALTA')
+        ]
+    
+    def detectar_tipo_documento(self, texto):
+        """Detecção ULTRA precisa do tipo de documento"""
+        if not texto:
+            return 'DESCONHECIDO'
         
         texto_limpo = limpar_texto(texto).lower()
         
-        # Verificação direta por termos chave
+        # Verificação direta por termos chave - PRIORIDADE MÁXIMA
         if 'nota fiscal' in texto_limpo or 'nfse' in texto_limpo or 'nfe' in texto_limpo:
             return 'NOTA_FISCAL'
         
@@ -338,102 +826,124 @@ class Detector:
         
         if 'locação' in texto_limpo or ('locador' in texto_limpo and 'locatário' in texto_limpo):
             return 'CONTRATO_LOCACAO'
-        if 'empregador' in texto_limpo and 'empregado' in texto_limpo:
-            return 'CONTRATO_TRABALHO'
         
-        if 'locação' in texto_limpo or ('locador' in texto_limpo and 'locatário' in texto_limpo):
-            return 'CONTRATO_LOCACAO'
+        # Contagem de termos para documentos específicos
+        scores = {
+            'CONTRATO_LOCACAO': 0,
+            'CONTRATO_TRABALHO': 0,
+            'NOTA_FISCAL': 0
+        }
         
-        # Contagem de termos
-        scores = {}
-        for doc_type, termos in self.indicadores_tipo.items():
-            score = 0
-            for termo in termos:
-                if termo.lower() in texto_limpo:
-                    score += 3
-            scores[doc_type] = score
+        # Termos para contratos de locação
+        termos_locacao = ['locação', 'aluguel', 'locador', 'locatário', 'imóvel', 'caução', 'fiador', 'benfeitorias', 'multa rescisória', 'inquilino', 'proprietário', 'Lei 8.245/1991', 'contrato de aluguel', 'imóvel residencial']
+        for termo in termos_locacao:
+            if termo in texto_limpo:
+                scores['CONTRATO_LOCACAO'] += 1
         
-        # Escolher o tipo com maior score
-        if scores:
-            tipo_detectado = max(scores.items(), key=lambda x: x[1])
-            if tipo_detectado[1] > 0:
-                return tipo_detectado[0]
+        # Termos para contratos de trabalho
+        termos_trabalho = ['empregador', 'empregado', 'CLT', 'salário', 'jornada', 'horas extras', 'FGTS', 'férias', '13º salário', 'funcionário', 'trabalhador', 'contrato de trabalho', 'carteira de trabalho', 'holerite', 'CAGED', 'PIS']
+        for termo in termos_trabalho:
+            if termo in texto_limpo:
+                scores['CONTRATO_TRABALHO'] += 1
+        
+        # Termos para notas fiscais
+        termos_nota = ['nota fiscal', 'nfse', 'nfe', 'prefeitura municipal', 'prestador de serviços', 'tomador de serviços', 'iss', 'imposto', 'CNPJ', 'inscrição municipal', 'base de cálculo', 'alíquota', 'competência', 'autenticação', 'verificação']
+        for termo in termos_nota:
+            if termo in texto_limpo:
+                scores['NOTA_FISCAL'] += 1
+        
+        # Retornar tipo com maior score (se houver score > 0)
+        max_score = max(scores.values())
+        if max_score > 0:
+            return max(scores, key=scores.get)
         
         return 'DESCONHECIDO'
     
     def analisar_documento(self, texto):
-        """Análise super agressiva e abrangente"""
-        if not texto or len(texto) < 50:
-            return [], 'DESCONHECIDO', self._calcular_metricas([])
+        """Análise SUPER avançada do documento"""
+        if not texto:
+            return self._resultado_vazio()
         
-        texto_limpo = limpar_texto(texto).lower()
+        texto_limpo = limpar_texto(texto)
+        tipo_documento = self.detectar_tipo_documento(texto)
+        
         problemas = []
-        
-        # Determinar tipo de documento
-        tipo_doc = self.detectar_tipo_documento(texto_limpo)
+        score = 100
         
         # Análise específica por tipo
-        if tipo_doc in self.padroes:
-            for padrao in self.padroes[tipo_doc]['padroes']:
-                try:
-                    if re.search(padrao['regex'], texto_limpo, re.IGNORECASE | re.DOTALL):
-                        problemas.append({
-                            'tipo': self.padroes[tipo_doc]['nome'],
-                            'problema_id': padrao['regex'][:50],
-                            'descricao': padrao['descricao'],
-                            'detalhe': padrao['detalhe'],
-                            'lei': padrao['lei'],
-                            'gravidade': padrao['gravidade'],
-                            'posicao': 0
-                        })
-                except:
-                    continue
+        if tipo_documento in self.padroes:
+            for padrao in self.padroes[tipo_documento]['padroes']:
+                if re.search(padrao['regex'], texto_limpo, re.IGNORECASE):
+                    problemas.append({
+                        'descricao': padrao['descricao'],
+                        'gravidade': padrao['gravidade'],
+                        'lei': padrao['lei'],
+                        'detalhe': padrao['detalhe'],
+                        'tipo': tipo_documento
+                    })
+                    
+                    # Reduzir score conforme gravidade
+                    if padrao['gravidade'] == 'CRÍTICA':
+                        score -= 25
+                    elif padrao['gravidade'] == 'ALTA':
+                        score -= 15
+                    elif padrao['gravidade'] == 'MÉDIA':
+                        score -= 10
+                    else:
+                        score -= 5
         
-        # Remover duplicatas
-        problemas_unicos = []
-        problemas_vistos = set()
-        for problema in problemas:
-            chave = (problema['descricao'], problema['lei'])
-            if chave not in problemas_vistos:
-                problemas_vistos.add(chave)
-                problemas_unicos.append(problema)
+        # Análise genérica SUPER avançada - COBERTURA MÁXIMA
+        for regex, tipo, desc, gravidade in self.padroes_genericos:
+            if re.search(regex, texto_limpo, re.IGNORECASE):
+                # Evitar duplicação de problemas
+                problema_existente = False
+                for problema in problemas:
+                    if desc == problema['descricao']:
+                        problema_existente = True
+                        break
+                
+                if not problema_existente:
+                    problemas.append({
+                        'descricao': desc,
+                        'gravidade': gravidade,
+                        'lei': 'Legislação aplicável',
+                        'detalhe': 'Detectado através de análise de padrões avançados',
+                        'tipo': 'Geral'
+                    })
+                    
+                    if gravidade == 'CRÍTICA':
+                        score -= 20
+                    elif gravidade == 'ALTA':
+                        score -= 10
+                    elif gravidade == 'MÉDIA':
+                        score -= 5
+                    else:
+                        score -= 2
         
-        return problemas_unicos, tipo_doc, self._calcular_metricas(problemas_unicos)
-    
-    def _calcular_metricas(self, problemas):
-        """Cálculo agressivo de métricas"""
+        # Garantir que score não seja negativo
+        score = max(0, score)
+        
+        # Classificar problemas
+        criticos = len([p for p in problemas if p['gravidade'] == 'CRÍTICA'])
+        altos = len([p for p in problemas if p['gravidade'] == 'ALTA'])
+        medios = len([p for p in problemas if p['gravidade'] == 'MÉDIA'])
+        info = len([p for p in problemas if p['gravidade'] == 'BAIXA'])
+        
         total = len(problemas)
-        criticos = sum(1 for p in problemas if 'CRÍTICA' in p.get('gravidade', ''))
-        altos = sum(1 for p in problemas if 'ALTA' in p.get('gravidade', ''))
-        medios = sum(1 for p in problemas if 'MÉDIA' in p.get('gravidade', ''))
-        info = sum(1 for p in problemas if 'INFO' in p.get('gravidade', ''))
         
-        # Penalização EXTREMA
-        score = 100
-        score -= criticos * 40  # -40 por crítica
-        score -= altos * 25     # -25 por alta
-        score -= medios * 10    # -10 por média
-        score -= info * 0       # info não penaliza
-        
-        score = max(0, min(100, score))
-        
-        # Status ULTRA alarmante para problemas
-        if criticos >= 5:
-            status = '🚨🚨🚨 DOCUMENTO CRIMINAL - DENUNCIE!'
+        # Determinar status com base na gravidade
+        if criticos >= 3:
+            status = '🚨🚨🚨 GRAVÍSSIMO - MÚLTIPLAS VIOLAÇÕES CRÍTICAS!'
             cor = '#8B0000'
-            nivel_risco = 'RISCO EXTREMO'
-        elif criticos >= 3:
-            status = '🚨🚨🚨 DOCUMENTO CRIMINOSO - NÃO ASSINE!'
-            cor = '#FF0000'
-            nivel_risco = 'RISCO MÁXIMO'
+            nivel_risco = 'RISCO CRÍTICO'
         elif criticos >= 1:
-            status = '🚨🚨 MÚLTIPLAS VIOLAÇÕES GRAVES - PERIGO!'
-            cor = '#FF4500'
-            nivel_risco = 'ALTO RISCO'
-        elif altos >= 2:
             status = '🚨 VIOLAÇÕES SÉRIAS - CONSULTE UM ADVOGADO!'
-            cor = '#FF8C00'
+            cor = '#FF4500'
             nivel_risco = 'RISCO ELEVADO'
+        elif altos >= 3:
+            status = '⚠️ MÚLTIPLOS PROBLEMAS - REVISÃO URGENTE!'
+            cor = '#FF8C00'
+            nivel_risco = 'RISCO ALTO'
         elif total > 0:
             status = '⚠️ PROBLEMAS DETECTADOS - REVISE COM CUIDADO'
             cor = '#FFD700'
@@ -442,6 +952,30 @@ class Detector:
             status = '✅ DOCUMENTO APARENTEMENTE REGULAR'
             cor = '#27AE60'
             nivel_risco = 'BAIXO RISCO'
+        
+        # Adicionar recomendações específicas
+        recomendacoes = []
+        
+        if criticos > 0:
+            recomendacoes.append('🚨 PROCURE UM ADVOGADO IMEDIATAMENTE!')
+        
+        if tipo_documento == 'CONTRATO_LOCACAO':
+            if criticos > 0:
+                recomendacoes.append('📋 Não assine o contrato sem revisão jurídica')
+            if altos > 0:
+                recomendacoes.append('🏠 Negocie as cláusulas problemáticas antes de assinar')
+        
+        elif tipo_documento == 'CONTRATO_TRABALHO':
+            if criticos > 0:
+                recomendacoes.append('👷 Não aceite o contrato nas condições atuais')
+            if 'salário' in texto_limpo and criticos > 0:
+                recomendacoes.append('💰 Salário abaixo do mínimo é crime - denuncie!')
+        
+        elif tipo_documento == 'NOTA_FISCAL':
+            if criticos > 0:
+                recomendacoes.append('🧾 Não utilize esta nota fiscal - pode ser fraude')
+            if 'cancelada' in texto_limpo:
+                recomendacoes.append('❌ Nota cancelada não tem validade fiscal')
         
         return {
             'total': total,
@@ -452,5 +986,24 @@ class Detector:
             'score': round(score, 1),
             'status': status,
             'cor': cor,
-            'nivel_risco': nivel_risco
+            'nivel_risco': nivel_risco,
+            'tipo_documento': tipo_documento,
+            'problemas': problemas,
+            'recomendacoes': recomendacoes
+        }
+    
+    def _resultado_vazio(self):
+        """Retorna resultado vazio para análise sem texto"""
+        return {
+            'total': 0,
+            'criticos': 0,
+            'altos': 0,
+            'medios': 0,
+            'info': 0,
+            'score': 100,
+            'status': '❌ Nenhum texto fornecido para análise',
+            'cor': '#95A5A6',
+            'nivel_risco': 'SEM DADOS',
+            'tipo_documento': 'DESCONHECIDO',
+            'problemas': []
         }
