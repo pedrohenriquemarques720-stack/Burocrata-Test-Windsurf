@@ -11,10 +11,16 @@ except ImportError:
     SMART_DETECTOR_AVAILABLE = False
     print("Aviso: SmartDetector não disponível - usando modo padrão")
 
-from utils import extrair_texto_pdf, formatar_moeda, formatar_data
+# Import opcional para utils
+try:
+    from utils import extrair_texto_pdf, formatar_moeda, formatar_data
+    UTILS_AVAILABLE = True
+except ImportError:
+    UTILS_AVAILABLE = False
+    print("Aviso: utils não disponível - usando modo limitado")
+
 import database as db
 from database import autenticar_usuario, criar_usuario, get_usuario_por_id, atualizar_burocreds, registrar_analise, get_historico_usuario
-from utils import extrair_texto_pdf
 
 # --------------------------------------------------
 # TELA DE LOGIN
@@ -463,6 +469,11 @@ def mostrar_tela_principal():
             """)
         else:
             with st.spinner(f"🔍 Analisando juridicamente '{arquivo.name}'..."):
+                # Verificar se utils está disponível
+                if not UTILS_AVAILABLE:
+                    st.error("❌ Sistema de extração de PDF não disponível")
+                    return
+                
                 texto = extrair_texto_pdf(arquivo)
                 
                 if texto:
