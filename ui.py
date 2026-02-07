@@ -2,7 +2,15 @@ import streamlit as st
 import time
 from datetime import datetime
 from detection import Detector
-from smart_detector import SmartDetector
+
+# Import opcional para compatibilidade com produção
+try:
+    from smart_detector import SmartDetector
+    SMART_DETECTOR_AVAILABLE = True
+except ImportError:
+    SMART_DETECTOR_AVAILABLE = False
+    print("Aviso: SmartDetector não disponível - usando modo padrão")
+
 from utils import extrair_texto_pdf, formatar_moeda, formatar_data
 import database as db
 from database import autenticar_usuario, criar_usuario, get_usuario_por_id, atualizar_burocreds, registrar_analise, get_historico_usuario
@@ -458,14 +466,19 @@ def mostrar_tela_principal():
                 texto = extrair_texto_pdf(arquivo)
                 
                 if texto:
-                    # Usar SmartDetector com inteligência artificial
-                    smart_detector = SmartDetector()
-                    resultado = smart_detector.analisar_documento_inteligente(texto)
-                    
-                    # Mostrar informações de aprendizado se houver
-                    learning_info = resultado.get('learning_info', {})
-                    if learning_info.get('improved_analysis'):
-                        st.success(f"🧠 **IA APRENDEU!** +{learning_info.get('improvement', 0)} problemas detectados automaticamente!")
+                    # Usar SmartDetector se disponível, senão usar padrão
+                    if SMART_DETECTOR_AVAILABLE:
+                        smart_detector = SmartDetector()
+                        resultado = smart_detector.analisar_documento_inteligente(texto)
+                        
+                        # Mostrar informações de aprendizado se houver
+                        learning_info = resultado.get('learning_info', {})
+                        if learning_info.get('improved_analysis'):
+                            st.success(f"🧠 **IA APRENDEU!** +{learning_info.get('improvement', 0)} problemas detectados automaticamente!")
+                    else:
+                        # Usar detector padrão
+                        detector = Detector()
+                        resultado = detector.analisar_documento(texto)
                     
                     if st.session_state.usuario['id']:
                         registrar_analise(
