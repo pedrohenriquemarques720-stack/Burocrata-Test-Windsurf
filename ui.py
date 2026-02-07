@@ -1,7 +1,7 @@
 import streamlit as st
 import time
 from datetime import datetime
-from detection import BurocrataDetector
+from detection import SistemaDetecao
 from database import autenticar_usuario, criar_usuario, get_usuario_por_id, atualizar_burocreds, registrar_analise, get_historico_usuario
 from utils import extrair_texto_pdf
 
