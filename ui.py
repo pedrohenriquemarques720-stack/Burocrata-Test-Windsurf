@@ -798,8 +798,9 @@ def mostrar_faq_rodape():
         
         <div style="margin-top: 20px;">
             <details style="background: #2a4a75; border: 1px solid #F8D96D; border-radius: 8px; margin-bottom: 10px; padding: 0;">
-                <summary style="color: #FFFFFF; font-weight: bold; cursor: pointer; outline: none; padding: 15px; list-style: none;">
-                    🔍 1. Que tipos de documentos o sistema analisa?
+                <summary style="color: #FFFFFF; font-weight: bold; cursor: pointer; outline: none; padding: 15px; list-style: none; display: flex; align-items: center; justify-content: space-between;">
+                    <span>🔍 1. Que tipos de documentos o sistema analisa?</span>
+                    <span style="font-size: 0.8em; margin-left: 10px;">▼</span>
                 </summary>
                 <div style="color: #FFFFFF; padding: 0 15px 15px 15px; border-top: 1px solid #F8D96D; margin-top: 0;">
                     <br>
@@ -812,8 +813,9 @@ def mostrar_faq_rodape():
             </details>
             
             <details style="background: #2a4a75; border: 1px solid #F8D96D; border-radius: 8px; margin-bottom: 10px; padding: 0;">
-                <summary style="color: #FFFFFF; font-weight: bold; cursor: pointer; outline: none; padding: 15px; list-style: none;">
-                    ⚖️ 2. Como funciona a análise jurídica?
+                <summary style="color: #FFFFFF; font-weight: bold; cursor: pointer; outline: none; padding: 15px; list-style: none; display: flex; align-items: center; justify-content: space-between;">
+                    <span>⚖️ 2. Como funciona a análise jurídica?</span>
+                    <span style="font-size: 0.8em; margin-left: 10px;">▼</span>
                 </summary>
                 <div style="color: #FFFFFF; padding: 0 15px 15px 15px; border-top: 1px solid #F8D96D; margin-top: 0;">
                     <br>
@@ -827,8 +829,9 @@ def mostrar_faq_rodape():
             </details>
             
             <details style="background: #2a4a75; border: 1px solid #F8D96D; border-radius: 8px; margin-bottom: 10px; padding: 0;">
-                <summary style="color: #FFFFFF; font-weight: bold; cursor: pointer; outline: none; padding: 15px; list-style: none;">
-                    📄 3. Posso analisar vários documentos de uma vez?
+                <summary style="color: #FFFFFF; font-weight: bold; cursor: pointer; outline: none; padding: 15px; list-style: none; display: flex; align-items: center; justify-content: space-between;">
+                    <span>📄 3. Posso analisar vários documentos de uma vez?</span>
+                    <span style="font-size: 0.8em; margin-left: 10px;">▼</span>
                 </summary>
                 <div style="color: #FFFFFF; padding: 0 15px 15px 15px; border-top: 1px solid #F8D96D; margin-top: 0;">
                     <br>
@@ -837,8 +840,9 @@ def mostrar_faq_rodape():
             </details>
             
             <details style="background: #2a4a75; border: 1px solid #F8D96D; border-radius: 8px; margin-bottom: 10px; padding: 0;">
-                <summary style="color: #FFFFFF; font-weight: bold; cursor: pointer; outline: none; padding: 15px; list-style: none;">
-                    🔒 4. Meus documentos são seguros?
+                <summary style="color: #FFFFFF; font-weight: bold; cursor: pointer; outline: none; padding: 15px; list-style: none; display: flex; align-items: center; justify-content: space-between;">
+                    <span>🔒 4. Meus documentos são seguros?</span>
+                    <span style="font-size: 0.8em; margin-left: 10px;">▼</span>
                 </summary>
                 <div style="color: #FFFFFF; padding: 0 15px 15px 15px; border-top: 1px solid #F8D96D; margin-top: 0;">
                     <br>
@@ -851,8 +855,9 @@ def mostrar_faq_rodape():
             </details>
             
             <details style="background: #2a4a75; border: 1px solid #F8D96D; border-radius: 8px; margin-bottom: 10px; padding: 0;">
-                <summary style="color: #FFFFFF; font-weight: bold; cursor: pointer; outline: none; padding: 15px; list-style: none;">
-                    ⚡ 5. Quão rápida é a análise?
+                <summary style="color: #FFFFFF; font-weight: bold; cursor: pointer; outline: none; padding: 15px; list-style: none; display: flex; align-items: center; justify-content: space-between;">
+                    <span>⚡ 5. Quão rápida é a análise?</span>
+                    <span style="font-size: 0.8em; margin-left: 10px;">▼</span>
                 </summary>
                 <div style="color: #FFFFFF; padding: 0 15px 15px 15px; border-top: 1px solid #F8D96D; margin-top: 0;">
                     <br>
