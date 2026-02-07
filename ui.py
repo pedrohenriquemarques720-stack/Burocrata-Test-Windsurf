@@ -232,132 +232,105 @@ def mostrar_secao_analises():
     
     with col1:
         with st.container():
-            st.markdown('<div class="analise-card">', unsafe_allow_html=True)
-            st.markdown('<div class="analise-icon">🏠</div>', unsafe_allow_html=True)
-            st.markdown('<div class="analise-title">Contrato de Locação</div>', unsafe_allow_html=True)
-            
             st.markdown("""
-            <div class="analise-item">
-                <div class="analise-item-title">Valor do Aluguel e Reajuste</div>
-                <div class="analise-item-desc">Onde dói no bolso (ou entra o dinheiro).</div>
+            <div class="analise-card">
+                <div class="analise-icon">🏠</div>
+                <div class="analise-title">Contrato de Locação</div>
+                
+                <div class="analise-item">
+                    <div class="analise-item-title">Valor do Aluguel e Reajuste</div>
+                    <div class="analise-item-desc">Onde dói no bolso (ou entra o dinheiro).</div>
+                </div>
+                
+                <div class="analise-item">
+                    <div class="analise-item-title">Vigência e Prazo</div>
+                    <div class="analise-item-desc">Quanto tempo dura o "felizes para sempre".</div>
+                </div>
+                
+                <div class="analise-item">
+                    <div class="analise-item-title">Conservação e Reformas</div>
+                    <div class="analise-item-desc">Quem paga pelo cano que estourou.</div>
+                </div>
+                
+                <div class="analise-item">
+                    <div class="analise-item-title">Multas e Rescisão</div>
+                    <div class="analise-item-desc">O preço de sair antes da hora.</div>
+                </div>
+                
+                <div class="analise-item">
+                    <div class="analise-item-title">Garantia Locatória</div>
+                    <div class="analise-item-desc">O famoso fiador, caução ou seguro.</div>
+                </div>
             </div>
             """, unsafe_allow_html=True)
-            
-            st.markdown("""
-            <div class="analise-item">
-                <div class="analise-item-title">Vigência e Prazo</div>
-                <div class="analise-item-desc">Quanto tempo dura o "felizes para sempre".</div>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            st.markdown("""
-            <div class="analise-item">
-                <div class="analise-item-title">Conservação e Reformas</div>
-                <div class="analise-item-desc">Quem paga pelo cano que estourou.</div>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            st.markdown("""
-            <div class="analise-item">
-                <div class="analise-item-title">Multas e Rescisão</div>
-                <div class="analise-item-desc">O preço de sair antes da hora.</div>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            st.markdown("""
-            <div class="analise-item">
-                <div class="analise-item-title">Garantia Locatória</div>
-                <div class="analise-item-desc">O famoso fiador, caução ou seguro.</div>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            st.markdown('</div>', unsafe_allow_html=True)
     
     with col2:
         with st.container():
-            st.markdown('<div class="analise-card">', unsafe_allow_html=True)
-            st.markdown('<div class="analise-icon">💼</div>', unsafe_allow_html=True)
-            st.markdown('<div class="analise-title">Contrato de Emprego</div>', unsafe_allow_html=True)
-            
             st.markdown("""
-            <div class="analise-item">
-                <div class="analise-item-title">Remuneração e Benefícios</div>
-                <div class="analise-item-desc">Salário, VR, VT e os mimos.</div>
+            <div class="analise-card">
+                <div class="analise-icon">💼</div>
+                <div class="analise-title">Contrato de Emprego</div>
+                
+                <div class="analise-item">
+                    <div class="analise-item-title">Remuneração e Benefícios</div>
+                    <div class="analise-item-desc">Salário, VR, VT e os mimos.</div>
+                </div>
+                
+                <div class="analise-item">
+                    <div class="analise-item-title">Jornada de Trabalho</div>
+                    <div class="analise-item-desc">O horário de bater o ponto.</div>
+                </div>
+                
+                <div class="analise-item">
+                    <div class="analise-item-title">Atribuições do Cargo</div>
+                    <div class="analise-item-desc">O que, afinal, você foi contratado para fazer.</div>
+                </div>
+                
+                <div class="analise-item">
+                    <div class="analise-item-title">Confidencialidade</div>
+                    <div class="analise-item-desc">O que acontece na empresa, morre na empresa.</div>
+                </div>
+                
+                <div class="analise-item">
+                    <div class="analise-item-title">Aviso Prévio e Rescisão</div>
+                    <div class="analise-item-desc">As regras do adeus.</div>
+                </div>
             </div>
             """, unsafe_allow_html=True)
-            
-            st.markdown("""
-            <div class="analise-item">
-                <div class="analise-item-title">Jornada de Trabalho</div>
-                <div class="analise-item-desc">O horário de bater o ponto.</div>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            st.markdown("""
-            <div class="analise-item">
-                <div class="analise-item-title">Atribuições do Cargo</div>
-                <div class="analise-item-desc">O que, afinal, você foi contratado para fazer.</div>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            st.markdown("""
-            <div class="analise-item">
-                <div class="analise-item-title">Confidencialidade</div>
-                <div class="analise-item-desc">O que acontece na empresa, morre na empresa.</div>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            st.markdown("""
-            <div class="analise-item">
-                <div class="analise-item-title">Aviso Prévio e Rescisão</div>
-                <div class="analise-item-desc">As regras do adeus.</div>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            st.markdown('</div>', unsafe_allow_html=True)
     
     with col3:
         with st.container():
-            st.markdown('<div class="analise-card">', unsafe_allow_html=True)
-            st.markdown('<div class="analise-icon">🧾</div>', unsafe_allow_html=True)
-            st.markdown('<div class="analise-title">Notas Fiscais</div>', unsafe_allow_html=True)
-            
             st.markdown("""
-            <div class="analise-item">
-                <div class="analise-item-title">Dados do Emissor/Destinatário</div>
-                <div class="analise-item-desc">Quem vendeu e quem comprou.</div>
+            <div class="analise-card">
+                <div class="analise-icon">🧾</div>
+                <div class="analise-title">Notas Fiscais</div>
+                
+                <div class="analise-item">
+                    <div class="analise-item-title">Dados do Emissor/Destinatário</div>
+                    <div class="analise-item-desc">Quem vendeu e quem comprou.</div>
+                </div>
+                
+                <div class="analise-item">
+                    <div class="analise-item-title">Itens e Serviços</div>
+                    <div class="analise-item-desc">A lista de compras detalhada.</div>
+                </div>
+                
+                <div class="analise-item">
+                    <div class="analise-item-title">Impostos e Tributação</div>
+                    <div class="analise-item-desc">A fatia que fica para o governo.</div>
+                </div>
+                
+                <div class="analise-item">
+                    <div class="analise-item-title">Valor Total e Descontos</div>
+                    <div class="analise-item-desc">O número final da conta.</div>
+                </div>
+                
+                <div class="analise-item">
+                    <div class="analise-item-title">Status de Pagamento</div>
+                    <div class="analise-item-desc">Se já caiu na conta ou se ainda é promessa.</div>
+                </div>
             </div>
             """, unsafe_allow_html=True)
-            
-            st.markdown("""
-            <div class="analise-item">
-                <div class="analise-item-title">Itens e Serviços</div>
-                <div class="analise-item-desc">A lista de compras detalhada.</div>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            st.markdown("""
-            <div class="analise-item">
-                <div class="analise-item-title">Impostos e Tributação</div>
-                <div class="analise-item-desc">A fatia que fica para o governo.</div>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            st.markdown("""
-            <div class="analise-item">
-                <div class="analise-item-title">Valor Total e Descontos</div>
-                <div class="analise-item-desc">O número final da conta.</div>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            st.markdown("""
-            <div class="analise-item">
-                <div class="analise-item-title">Status de Pagamento</div>
-                <div class="analise-item-desc">Se já caiu na conta ou se ainda é promessa.</div>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            st.markdown('</div>', unsafe_allow_html=True)
     
     st.markdown("<div style='margin: 40px 0;'></div>", unsafe_allow_html=True)
 
@@ -789,88 +762,72 @@ def mostrar_faq_rodape():
     
     st.markdown("---")
     
-    # FAQ Section - Menu Accordion
+    # FAQ Section
     st.markdown("""
     <div class="faq-container">
         <h3 style="color: #F8D96D; text-align: center; margin-bottom: 25px; margin-top: 0;">
             ❓ PERGUNTAS FREQUENTES
         </h3>
-        
-        <div style="margin-top: 20px;">
-            <details style="background: #2a4a75; border: 1px solid #F8D96D; border-radius: 8px; margin-bottom: 10px; padding: 0;">
-                <summary style="color: #FFFFFF; font-weight: bold; cursor: pointer; outline: none; padding: 15px; list-style: none; display: flex; align-items: center; justify-content: space-between;">
-                    <span>🔍 1. Que tipos de documentos o sistema analisa?</span>
-                    <span style="font-size: 0.8em; margin-left: 10px;">▼</span>
-                </summary>
-                <div style="color: #FFFFFF; padding: 0 15px 15px 15px; border-top: 1px solid #F8D96D; margin-top: 0;">
-                    <br>
-                    Nosso sistema especializado analisa:<br><br>
-                    • <strong>Contratos de Trabalho</strong> (CLT, PJ, estágio)<br>
-                    • <strong>Contratos de Locação</strong> (residencial, comercial)<br>
-                    • <strong>Notas Fiscais</strong> (serviços, produtos)<br>
-                    • <strong>Documentos diversos</strong> com cláusulas contratuais
-                </div>
-            </details>
-            
-            <details style="background: #2a4a75; border: 1px solid #F8D96D; border-radius: 8px; margin-bottom: 10px; padding: 0;">
-                <summary style="color: #FFFFFF; font-weight: bold; cursor: pointer; outline: none; padding: 15px; list-style: none; display: flex; align-items: center; justify-content: space-between;">
-                    <span>⚖️ 2. Como funciona a análise jurídica?</span>
-                    <span style="font-size: 0.8em; margin-left: 10px;">▼</span>
-                </summary>
-                <div style="color: #FFFFFF; padding: 0 15px 15px 15px; border-top: 1px solid #F8D96D; margin-top: 0;">
-                    <br>
-                    Nossa IA utiliza:<br><br>
-                    • <strong>100+ padrões jurídicos</strong> atualizados<br>
-                    • <strong>Inteligência Artificial</strong> que aprende<br>
-                    • <strong>Análise profunda</strong> de cláusulas<br>
-                    • <strong>Base legal</strong> para cada problema<br>
-                    • <strong>Recomendações</strong> práticas e específicas
-                </div>
-            </details>
-            
-            <details style="background: #2a4a75; border: 1px solid #F8D96D; border-radius: 8px; margin-bottom: 10px; padding: 0;">
-                <summary style="color: #FFFFFF; font-weight: bold; cursor: pointer; outline: none; padding: 15px; list-style: none; display: flex; align-items: center; justify-content: space-between;">
-                    <span>📄 3. Posso analisar vários documentos de uma vez?</span>
-                    <span style="font-size: 0.8em; margin-left: 10px;">▼</span>
-                </summary>
-                <div style="color: #FFFFFF; padding: 0 15px 15px 15px; border-top: 1px solid #F8D96D; margin-top: 0;">
-                    <br>
-                    Atualmente, o sistema analisa um documento por vez.
-                </div>
-            </details>
-            
-            <details style="background: #2a4a75; border: 1px solid #F8D96D; border-radius: 8px; margin-bottom: 10px; padding: 0;">
-                <summary style="color: #FFFFFF; font-weight: bold; cursor: pointer; outline: none; padding: 15px; list-style: none; display: flex; align-items: center; justify-content: space-between;">
-                    <span>🔒 4. Meus documentos são seguros?</span>
-                    <span style="font-size: 0.8em; margin-left: 10px;">▼</span>
-                </summary>
-                <div style="color: #FFFFFF; padding: 0 15px 15px 15px; border-top: 1px solid #F8D96D; margin-top: 0;">
-                    <br>
-                    Sim! Suas informações estão protegidas:<br><br>
-                    • <strong>Privacidade total</strong> dos dados<br>
-                    • <strong>Armazenamento seguro</strong> local<br>
-                    • <strong>Compartilhamento opcional</strong> apenas com seu consentimento<br>
-                    • <strong>Conformidade</strong> com LGPD
-                </div>
-            </details>
-            
-            <details style="background: #2a4a75; border: 1px solid #F8D96D; border-radius: 8px; margin-bottom: 10px; padding: 0;">
-                <summary style="color: #FFFFFF; font-weight: bold; cursor: pointer; outline: none; padding: 15px; list-style: none; display: flex; align-items: center; justify-content: space-between;">
-                    <span>⚡ 5. Quão rápida é a análise?</span>
-                    <span style="font-size: 0.8em; margin-left: 10px;">▼</span>
-                </summary>
-                <div style="color: #FFFFFF; padding: 0 15px 15px 15px; border-top: 1px solid #F8D96D; margin-top: 0;">
-                    <br>
-                    Nossa análise é ultra-rápida:<br><br>
-                    • <strong>Segundos</strong> para documentos simples<br>
-                    • <strong>Menos de 1 minuto</strong> para contratos complexos<br>
-                    • <strong>Resultados detalhados</strong> instantâneos<br>
-                    • <strong>IA aprende</strong> e fica mais rápida com o tempo
-                </div>
-            </details>
-        </div>
-    </div>
     """, unsafe_allow_html=True)
+    
+    # FAQ 1
+    with st.expander("🔍 1. Que tipos de documentos o sistema analisa?"):
+        st.markdown("""
+        <div class="faq-answer">
+            Nosso sistema especializado analisa:
+            • <strong>Contratos de Trabalho</strong> (CLT, PJ, estágio)
+            • <strong>Contratos de Locação</strong> (residencial, comercial)
+            • <strong>Notas Fiscais</strong> (serviços, produtos)
+            • <strong>Documentos diversos</strong> com cláusulas contratuais
+        </div>
+        """, unsafe_allow_html=True)
+    
+    # FAQ 2
+    with st.expander("⚖️ 2. Como funciona a análise jurídica?"):
+        st.markdown("""
+        <div class="faq-answer">
+            Nossa IA utiliza:
+            • <strong>100+ padrões jurídicos</strong> atualizados
+            • <strong>Inteligência Artificial</strong> que aprende
+            • <strong>Análise profunda</strong> de cláusulas
+            • <strong>Base legal</strong> para cada problema
+            • <strong>Recomendações</strong> práticas e específicas
+        </div>
+        """, unsafe_allow_html=True)
+    
+    # FAQ 3 - CORRIGIDA
+    with st.expander("📄 3. Posso analisar vários documentos de uma vez?"):
+        st.markdown("""
+        <div class="faq-answer">
+            Atualmente, o sistema analisa um documento por vez.
+        </div>
+        """, unsafe_allow_html=True)
+    
+    # FAQ 4
+    with st.expander("🔒 4. Meus documentos são seguros?"):
+        st.markdown("""
+        <div class="faq-answer">
+            Sim! Suas informações estão protegidas:
+            • <strong>Privacidade total</strong> dos dados
+            • <strong>Armazenamento seguro</strong> local
+            • <strong>Compartilhamento opcional</strong> apenas com seu consentimento
+            • <strong>Conformidade</strong> com LGPD
+        </div>
+        """, unsafe_allow_html=True)
+    
+    # FAQ 5
+    with st.expander("⚡ 5. Quão rápida é a análise?"):
+        st.markdown("""
+        <div class="faq-answer">
+            Nossa análise é ultra-rápida:
+            • <strong>Segundos</strong> para documentos simples
+            • <strong>Menos de 1 minuto</strong> para contratos complexos
+            • <strong>Resultados detalhados</strong> instantâneos
+            • <strong>IA aprende</strong> e fica mais rápida com o tempo
+        </div>
+        """, unsafe_allow_html=True)
+    
+    st.markdown("</div>", unsafe_allow_html=True)
     
     # Footer - Versão Python Streamlit puro
     st.markdown("---")
