@@ -132,14 +132,6 @@
             margin: 20px 0;
             font-size: 0.9em;
         }
-        .warning-box {
-            background: rgba(255, 107, 107, 0.1);
-            border: 2px solid #ff6b6b;
-            padding: 15px;
-            border-radius: 10px;
-            margin: 20px 0;
-            font-size: 0.9em;
-        }
         .checkbox-group {
             margin: 20px 0;
         }
@@ -290,7 +282,7 @@
                     <div class="checkbox-group">
                         <input type="checkbox" id="aceite-termos" required>
                         <label for="aceite-termos">
-                            Li e concordo com a <a href="privacidade.html" target="_blank">Política de Privacidade</a> e autorizo o tratamento dos meus dados conforme descrito.
+                            Li e concordo com a <a href="privacidade.html">Política de Privacidade</a> e autorizo o tratamento dos meus dados conforme descrito.
                         </label>
                     </div>
                     
@@ -352,22 +344,20 @@
             setTimeout(limparMensagens, 5000);
         }
         
-        // Simulação de login (autenticação local)
+        // Login - apenas validação local
         document.getElementById('login-form').addEventListener('submit', function(e) {
             e.preventDefault();
             const email = document.getElementById('login-email').value;
             const senha = document.getElementById('login-senha').value;
             
             if (email && senha) {
-                mostrarSucesso('✅ Login realizado com sucesso! Bem-vindo ao Burocrata de Bolso.');
-                // Aqui você pode adicionar a lógica de autenticação real
-                // Por enquanto, apenas mostra mensagem de sucesso
+                mostrarSucesso('Login realizado com sucesso! Bem-vindo ao Burocrata de Bolso.');
             } else {
-                mostrarErro('❌ Preencha todos os campos');
+                mostrarErro('Preencha todos os campos');
             }
         });
         
-        // Simulação de cadastro
+        // Cadastro - apenas validação local
         document.getElementById('cadastro-form').addEventListener('submit', function(e) {
             e.preventDefault();
             const nome = document.getElementById('cad-nome').value;
@@ -377,26 +367,24 @@
             const aceite = document.getElementById('aceite-termos').checked;
             
             if (!aceite) {
-                mostrarErro('❌ É necessário aceitar a Política de Privacidade para criar uma conta.');
+                mostrarErro('É necessário aceitar a Política de Privacidade para criar uma conta.');
                 return;
             }
             
             if (senha !== confirmar) {
-                mostrarErro('❌ As senhas não coincidem');
+                mostrarErro('As senhas não coincidem');
                 return;
             }
             
             if (senha.length < 6) {
-                mostrarErro('❌ A senha deve ter no mínimo 6 caracteres');
+                mostrarErro('A senha deve ter no mínimo 6 caracteres');
                 return;
             }
             
             if (nome && email && senha) {
-                mostrarSucesso('✅ Conta criada com sucesso! Bem-vindo ao Burocrata de Bolso.');
-                // Aqui você pode adicionar a lógica de cadastro real
-                // Por enquanto, apenas mostra mensagem de sucesso
+                mostrarSucesso('Conta criada com sucesso! Bem-vindo ao Burocrata de Bolso.');
             } else {
-                mostrarErro('❌ Preencha todos os campos');
+                mostrarErro('Preencha todos os campos');
             }
         });
     </script>
