@@ -862,7 +862,7 @@ def mostrar_faq_rodape():
         <div style="text-align: center;">
             <a href="mailto:contatoburocrata@outlook.com" 
                style="color: #F8D96D; text-decoration: none; font-weight: bold; font-size: 1.1em;">
-                📧 contatoburocrata@outlook.com
+                📧 E-mail / Contato
             </a>
         </div>
         """, unsafe_allow_html=True)
@@ -873,7 +873,7 @@ def mostrar_faq_rodape():
             <a href="https://instagram.com/burocratadebolso" 
                target="_blank"
                style="color: #F8D96D; text-decoration: none; font-weight: bold; font-size: 1.1em;">
-                📷 @burocratadebolso
+                📷 Instagram
             </a>
         </div>
         """, unsafe_allow_html=True)
