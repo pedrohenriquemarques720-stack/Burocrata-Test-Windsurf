@@ -271,26 +271,6 @@
     </header>
 
     <div class="container">
-        <div class="features">
-            <div class="feature-card">
-                <div class="feature-icon">📄</div>
-                <h3 class="feature-title">Análise Inteligente</h3>
-                <p>IA avançada para análise de contratos, notas fiscais e documentos jurídicos com precisão e rapidez.</p>
-            </div>
-            
-            <div class="feature-card">
-                <div class="feature-icon">🔒</div>
-                <h3 class="feature-title">Segurança Total</h3>
-                <p>Seus documentos são protegidos com criptografia e armazenamento seguro local, em conformidade com LGPD.</p>
-            </div>
-            
-            <div class="feature-card">
-                <div class="feature-icon">⚡</div>
-                <h3 class="feature-title">Resultado Rápido</h3>
-                <p>Análises em segundos com relatórios detalhados e recomendações práticas para suas decisões.</p>
-            </div>
-        </div>
-
         <div class="auth-container">
             <!-- Card de Login -->
             <div class="auth-card" id="login-card">
@@ -362,6 +342,26 @@
             </div>
         </div>
 
+        <div class="features">
+            <div class="feature-card">
+                <div class="feature-icon">📄</div>
+                <h3 class="feature-title">Análise Inteligente</h3>
+                <p>IA avançada para análise de contratos, notas fiscais e documentos jurídicos com precisão e rapidez.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🔒</div>
+                <h3 class="feature-title">Segurança Total</h3>
+                <p>Seus documentos são protegidos com criptografia e armazenamento seguro local, em conformidade com LGPD.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3 class="feature-title">Resultado Rápido</h3>
+                <p>Análises em segundos com relatórios detalhados e recomendações práticas para suas decisões.</p>
+            </div>
+        </div>
+
         <!-- FAQ Section -->
         <div class="faq-container">
             <h3>📋 Perguntas Frequentes</h3>
@@ -417,19 +417,19 @@
             document.getElementById('login-card').classList.remove('hidden');
         }
         
-        // Login - redireciona para o Streamlit
+        // Login - redireciona para o Streamlit na mesma aba
         document.getElementById('login-form').addEventListener('submit', function(e) {
             e.preventDefault();
             const email = document.getElementById('login-email').value;
             const senha = document.getElementById('login-senha').value;
             
             if (email && senha) {
-                // Redireciona para o Streamlit local
-                window.open('http://localhost:8501', '_blank');
+                // Redireciona para o Streamlit local na mesma aba
+                window.location.href = 'http://localhost:8501';
             }
         });
         
-        // Cadastro - redireciona para o Streamlit
+        // Cadastro - redireciona para o Streamlit na mesma aba
         document.getElementById('cadastro-form').addEventListener('submit', function(e) {
             e.preventDefault();
             const nome = document.getElementById('cad-nome').value;
@@ -454,8 +454,8 @@
             }
             
             if (nome && email && senha) {
-                // Redireciona para o Streamlit local
-                window.open('http://localhost:8501', '_blank');
+                // Redireciona para o Streamlit local na mesma aba
+                window.location.href = 'http://localhost:8501';
             }
         });
     </script>
