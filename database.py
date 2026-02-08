@@ -58,7 +58,7 @@ def init_database():
             INSERT INTO usuarios (nome, email, senha_hash, plano, burocreds)
             VALUES (?, ?, ?, ?, ?)
         ''', ("Pedro Henrique (Conta Especial)", conta_especial_email, senha_especial_hash, 'PRO', 999999))
-        print(f"✅ Conta especial criada: {conta_especial_email}")
+        print(f"[OK] Conta especial criada: {conta_especial_email}")
     else:
         # Atualizar senha da conta existente
         c.execute('''
@@ -66,7 +66,7 @@ def init_database():
             SET senha_hash = ?
             WHERE email = ?
         ''', (senha_especial_hash, conta_especial_email))
-        print(f"✅ Senha da conta especial atualizada")
+        print(f"[OK] Senha da conta especial atualizada")
     
     conn.commit()
     conn.close()
