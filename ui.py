@@ -123,12 +123,20 @@ def mostrar_tela_login():
             
             st.info("ℹ️ **Importante:** Novas contas começam com 0 BuroCreds. Para adquirir créditos, entre em contato com o suporte.")
             
+            # Checkbox de consentimento da política de privacidade
+            consentimento = st.checkbox("✅ Li e concordo com a [Política de Privacidade](privacidade.html) e autorizo o tratamento dos meus dados conforme descrito.", key="consentimento_privacidade")
+            
+            if not consentimento:
+                st.warning("⚠️ É necessário aceitar a Política de Privacidade para criar uma conta.")
+            
             col1, col2 = st.columns(2)
             
             with col1:
                 if st.button("🎉 Criar Conta", use_container_width=True, key="btn_criar"):
                     if nome and email and senha and confirmar_senha:
-                        if senha != confirmar_senha:
+                        if not consentimento:
+                            st.error("❌ É necessário aceitar a Política de Privacidade para criar uma conta.")
+                        elif senha != confirmar_senha:
                             st.error("❌ As senhas não coincidem")
                         elif len(senha) < 6:
                             st.error("❌ A senha deve ter no mínimo 6 caracteres")
@@ -804,6 +812,8 @@ def mostrar_faq_rodape():
             • <strong>Armazenamento seguro</strong> local
             • <strong>Compartilhamento opcional</strong> apenas com seu consentimento
             • <strong>Conformidade</strong> com LGPD
+            <br><br>
+            📋 <strong>Para mais detalhes:</strong> Consulte nossa <a href="privacidade.html" target="_blank" style="color: #F8D96D;">Política de Privacidade</a>
         </div>
         """, unsafe_allow_html=True)
     
@@ -862,7 +872,7 @@ def mostrar_faq_rodape():
         <div style="text-align: center;">
             <a href="mailto:contatoburocrata@outlook.com" 
                style="color: #F8D96D; text-decoration: none; font-weight: bold; font-size: 1.1em;">
-                📧 E-mail / Contato
+                📧 contatoburocrata@outlook.com
             </a>
         </div>
         """, unsafe_allow_html=True)
@@ -873,7 +883,7 @@ def mostrar_faq_rodape():
             <a href="https://instagram.com/burocratadebolso" 
                target="_blank"
                style="color: #F8D96D; text-decoration: none; font-weight: bold; font-size: 1.1em;">
-                📷 Instagram
+                📷 @burocratadebolso
             </a>
         </div>
         """, unsafe_allow_html=True)
