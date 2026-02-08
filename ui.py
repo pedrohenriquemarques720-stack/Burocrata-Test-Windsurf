@@ -57,126 +57,268 @@ from database import autenticar_usuario, criar_usuario, get_usuario_por_id, atua
 # --------------------------------------------------
 
 def mostrar_tela_login():
-    """Tela de login"""
+    """Tela de login com visual moderno integrado"""
+    
+    # CSS adicional para o layout moderno
+    st.markdown("""
+    <style>
+    .login-container {
+        display: flex;
+        flex-direction: column;
+        gap: 40px;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    .features-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+        margin-bottom: 20px;
+    }
+    .feature-card-login {
+        background: #1a3658;
+        padding: 30px;
+        border-radius: 15px;
+        border: 2px solid #F8D96D;
+        text-align: center;
+        transition: transform 0.3s;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .feature-card-login:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(248, 217, 109, 0.2);
+    }
+    .feature-icon {
+        font-size: 3em;
+        margin-bottom: 20px;
+        color: #F8D96D;
+    }
+    .feature-title {
+        color: #F8D96D;
+        font-size: 1.5em;
+        margin-bottom: 15px;
+        font-weight: 700;
+    }
+    .auth-section {
+        background: #2a4a75;
+        padding: 40px;
+        border-radius: 15px;
+        border: 2px solid #F8D96D;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .auth-title {
+        color: #F8D96D;
+        font-size: 2.2em;
+        font-weight: 800;
+        margin-bottom: 30px;
+    }
+    .faq-section {
+        background: #1a3658;
+        padding: 30px;
+        border-radius: 15px;
+        border: 2px solid #F8D96D;
+        margin-top: 40px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .faq-title {
+        color: #F8D96D;
+        font-size: 1.5em;
+        font-weight: 700;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    .faq-item {
+        margin-bottom: 15px;
+        padding: 15px;
+        background: rgba(248, 217, 109, 0.1);
+        border-radius: 10px;
+        border-left: 4px solid #F8D96D;
+    }
+    .faq-question {
+        color: #F8D96D;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+    .faq-answer {
+        color: #FFFFFF;
+        line-height: 1.5;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+    
+    # Header
     st.markdown("""
     <div class="header-main">
         <h1>⚖️ BUROCRATA DE BOLSO</h1>
-        <p>IA de Análise Documental</p>
+        <p>IA de Análise Documental - Proteção Jurídica Inteligente</p>
     </div>
     """, unsafe_allow_html=True)
+    
+    # Container principal
+    st.markdown('<div class="login-container">', unsafe_allow_html=True)
+    
+    # Cards de Features
+    st.markdown("""
+    <div class="features-row">
+        <div class="feature-card-login">
+            <div class="feature-icon">📄</div>
+            <div class="feature-title">Análise Inteligente</div>
+            <p>IA avançada para análise de contratos, notas fiscais e documentos jurídicos com precisão e rapidez.</p>
+        </div>
+        
+        <div class="feature-card-login">
+            <div class="feature-icon">🔒</div>
+            <div class="feature-title">Segurança Total</div>
+            <p>Seus documentos são protegidos com criptografia de ponta a ponta e armazenamento seguro local, em conformidade com LGPD.</p>
+        </div>
+        
+        <div class="feature-card-login">
+            <div class="feature-icon">⚡</div>
+            <div class="feature-title">Resultado Rápido</div>
+            <p>Análises em segundos com relatórios detalhados e recomendações práticas para suas decisões.</p>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Seção de Login/Cadastro
+    st.markdown('<div class="auth-section">', unsafe_allow_html=True)
     
     if 'modo_auth' not in st.session_state:
         st.session_state.modo_auth = 'login'
     
-    with st.container():
-        if st.session_state.modo_auth == 'login':
-            st.markdown("""
-            <div class="auth-card">
-                <div class="auth-title">🔐 Entrar na Conta</div>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            email = st.text_input("E-mail", placeholder="seu@email.com", key="login_email")
-            senha = st.text_input("Senha", type="password", placeholder="Digite sua senha", key="login_senha")
-            
-            if email == "pedrohenriquemarques720@gmail.com":
-                st.info("🔑 **Conta Especial Detectada:** Use sua senha pessoal para acessar.")
-            
-            col1, col2 = st.columns(2)
-            
-            with col1:
-                if st.button("🚀 Entrar", use_container_width=True, key="btn_entrar"):
-                    if email and senha:
-                        sucesso, resultado = autenticar_usuario(email, senha)
-                        if sucesso:
-                            st.session_state.usuario = resultado
+    if st.session_state.modo_auth == 'login':
+        st.markdown('<div class="auth-title">🔐 Acessar Sistema</div>', unsafe_allow_html=True)
+        
+        email = st.text_input("E-mail", placeholder="seu@email.com", key="login_email")
+        senha = st.text_input("Senha", type="password", placeholder="Digite sua senha", key="login_senha")
+        
+        if email == "pedrohenriquemarques720@gmail.com":
+            st.info("🔑 **Conta Especial Detectada:** Use sua senha pessoal para acessar.")
+        
+        if st.button("🚀 Entrar", use_container_width=True, key="btn_entrar"):
+            if email and senha:
+                sucesso, resultado = autenticar_usuario(email, senha)
+                if sucesso:
+                    st.session_state.usuario = resultado
+                    st.session_state.autenticado = True
+                    
+                    if email == "pedrohenriquemarques720@gmail.com":
+                        st.success("✅ **Conta Especial:** Acesso concedido com créditos ilimitados!")
+                    else:
+                        st.success("✅ Login realizado com sucesso!")
+                    
+                    time.sleep(1)
+                    st.rerun()
+                else:
+                    st.error(f"❌ {resultado}")
+            else:
+                st.warning("⚠️ Preencha todos os campos")
+        
+        st.markdown("""
+        <div style="text-align: center; margin-top: 20px;">
+            <span style="color: #a0aec0;">Não tem conta? </span>
+            <a href="#" onclick="window.location.reload()" style="color: #F8D96D; text-decoration: none; font-weight: bold;">
+                Criar Conta
+            </a>
+        </div>
+        """, unsafe_allow_html=True)
+        
+    else:
+        st.markdown('<div class="auth-title">📝 Criar Nova Conta</div>', unsafe_allow_html=True)
+        
+        nome = st.text_input("Nome Completo", placeholder="Seu nome", key="cad_nome")
+        email = st.text_input("E-mail", placeholder="seu@email.com", key="cad_email")
+        senha = st.text_input("Senha", type="password", placeholder="Mínimo 6 caracteres", key="cad_senha")
+        confirmar_senha = st.text_input("Confirmar Senha", type="password", placeholder="Digite novamente", key="cad_confirmar")
+        
+        st.info("ℹ️ **Importante:** Novas contas começam com 0 BuroCreds. Para adquirir créditos, entre em contato com o suporte.")
+        
+        # Checkbox de consentimento da política de privacidade
+        consentimento = st.checkbox("✅ Li e concordo com a [Política de Privacidade](privacidade.html) e autorizo o tratamento dos meus dados conforme descrito.", key="consentimento_privacidade")
+        
+        if not consentimento:
+            st.warning("⚠️ É necessário aceitar a Política de Privacidade para criar uma conta.")
+        
+        if st.button("🎉 Criar Conta", use_container_width=True, key="btn_criar"):
+            if nome and email and senha and confirmar_senha:
+                if not consentimento:
+                    st.error("❌ É necessário aceitar a Política de Privacidade para criar uma conta.")
+                elif senha != confirmar_senha:
+                    st.error("❌ As senhas não coincidem")
+                elif len(senha) < 6:
+                    st.error("❌ A senha deve ter no mínimo 6 caracteres")
+                else:
+                    sucesso, mensagem = criar_usuario(nome, email, senha)
+                    if sucesso:
+                        st.success(f"✅ {mensagem}")
+                        sucesso_login, usuario = autenticar_usuario(email, senha)
+                        if sucesso_login:
+                            st.session_state.usuario = usuario
                             st.session_state.autenticado = True
-                            
-                            if email == "pedrohenriquemarques720@gmail.com":
-                                st.success("✅ **Conta Especial:** Acesso concedido com créditos ilimitados!")
-                            else:
-                                st.success("✅ Login realizado com sucesso!")
-                            
+                            st.balloons()
                             time.sleep(1)
                             st.rerun()
                         else:
-                            st.error(f"❌ {resultado}")
+                            st.error(f"❌ Erro ao fazer login automático: {usuario}")
                     else:
-                        st.warning("⚠️ Preencha todos os campos")
-            
-            with col2:
-                if st.button("📝 Criar Conta", use_container_width=True, key="btn_criar_conta_login"):
-                    st.session_state.modo_auth = 'cadastro'
-                    st.rerun()
+                        st.error(f"❌ {mensagem}")
+            else:
+                st.warning("⚠️ Preencha todos os campos")
         
-        else:
-            st.markdown("""
-            <div class="auth-card">
-                <div class="auth-title">📝 Criar Nova Conta</div>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            nome = st.text_input("Nome Completo", placeholder="Seu nome", key="cad_nome")
-            email = st.text_input("E-mail", placeholder="seu@email.com", key="cad_email")
-            senha = st.text_input("Senha", type="password", placeholder="Mínimo 6 caracteres", key="cad_senha")
-            confirmar_senha = st.text_input("Confirmar Senha", type="password", placeholder="Digite novamente", key="cad_confirmar")
-            
-            st.info("ℹ️ **Importante:** Novas contas começam com 0 BuroCreds. Para adquirir créditos, entre em contato com o suporte.")
-            
-            # Checkbox de consentimento da política de privacidade
-            consentimento = st.checkbox("✅ Li e concordo com a [Política de Privacidade](privacidade.html) e autorizo o tratamento dos meus dados conforme descrito.", key="consentimento_privacidade")
-            
-            if not consentimento:
-                st.warning("⚠️ É necessário aceitar a Política de Privacidade para criar uma conta.")
-            
-            col1, col2 = st.columns(2)
-            
-            with col1:
-                if st.button("🎉 Criar Conta", use_container_width=True, key="btn_criar"):
-                    if nome and email and senha and confirmar_senha:
-                        if not consentimento:
-                            st.error("❌ É necessário aceitar a Política de Privacidade para criar uma conta.")
-                        elif senha != confirmar_senha:
-                            st.error("❌ As senhas não coincidem")
-                        elif len(senha) < 6:
-                            st.error("❌ A senha deve ter no mínimo 6 caracteres")
-                        else:
-                            sucesso, mensagem = criar_usuario(nome, email, senha)
-                            if sucesso:
-                                st.success(f"✅ {mensagem}")
-                                sucesso_login, usuario = autenticar_usuario(email, senha)
-                                if sucesso_login:
-                                    st.session_state.usuario = usuario
-                                    st.session_state.autenticado = True
-                                    st.balloons()
-                                    time.sleep(1)
-                                    st.rerun()
-                            else:
-                                st.error(f"❌ {mensagem}")
-                    else:
-                        st.warning("⚠️ Preencha todos os campos")
-            
-            with col2:
-                if st.button("🔙 Voltar ao Login", use_container_width=True, key="btn_voltar"):
-                    st.session_state.modo_auth = 'login'
-                    st.rerun()
-        
-        st.markdown('</div>', unsafe_allow_html=True)
+        st.markdown("""
+        <div style="text-align: center; margin-top: 20px;">
+            <span style="color: #a0aec0;">Já tem conta? </span>
+            <a href="#" onclick="window.location.reload()" style="color: #F8D96D; text-decoration: none; font-weight: bold;">
+                Fazer Login
+            </a>
+        </div>
+        """, unsafe_allow_html=True)
     
-    # Links de política e termos
+    st.markdown('</div>', unsafe_allow_html=True)
+    
+    # FAQ Section
+    st.markdown('<div class="faq-section">', unsafe_allow_html=True)
+    st.markdown('<div class="faq-title">📋 Perguntas Frequentes</div>', unsafe_allow_html=True)
+    
     st.markdown("""
-    <div style="text-align: center; margin-top: 20px; margin-bottom: 10px;">
-        <a href="privacidade.html" target="_blank" style="color: #F8D96D; text-decoration: none; margin: 0 10px; font-size: 0.9em;">
-            🔒 Política de Privacidade
-        </a>
-        <span style="color: #a0aec0;">|</span>
-        <a href="index.html" target="_blank" style="color: #F8D96D; text-decoration: none; margin: 0 10px; font-size: 0.9em;">
-            🏠 Página Inicial
-        </a>
+    <div class="faq-item">
+        <div class="faq-question">1. Como funciona a análise de documentos?</div>
+        <div class="faq-answer">Nossa IA analisa seus documentos jurídicos em segundos, identificando cláusulas importantes, riscos e oportunidades. Basta fazer upload do arquivo e receber um relatório completo.</div>
     </div>
     """, unsafe_allow_html=True)
     
-    mostrar_faq_rodape()
+    st.markdown("""
+    <div class="faq-item">
+        <div class="faq-question">2. Meus documentos estão seguros?</div>
+        <div class="faq-answer">Sim! Usamos criptografia de ponta a ponta e armazenamento seguro local. Seus dados são protegidos em conformidade com a LGPD e nunca compartilhamos com terceiros.</div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    st.markdown("""
+    <div class="faq-item">
+        <div class="faq-question">3. Quais tipos de documentos analisam?</div>
+        <div class="faq-answer">Analisamos contratos de locação, contratos de trabalho, notas fiscais, termos de serviço e outros documentos jurídicos com alta precisão.</div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    st.markdown("""
+    <div class="faq-item">
+        <div class="faq-question">4. Quanto tempo demora a análise?</div>
+        <div class="faq-answer">A maioria dos documentos é analisada em menos de 1 minuto. Documentos simples podem levar apenas alguns segundos, enquanto contratos complexos levam até 2 minutos.</div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    st.markdown("""
+    <div class="faq-item">
+        <div class="faq-question">5. Posso testar antes de comprar?</div>
+        <div class="faq-answer">Sim! Novas contas recebem créditos iniciais para testar nossa plataforma. Você pode experimentar todas as funcionalidades antes de adquirir mais créditos.</div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    st.markdown('</div>', unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
 
 # --------------------------------------------------
 # CABEÇALHO DO USUÁRIO
