@@ -150,9 +150,82 @@
         </div>
 
         <div class="cta-section">
-            <h2 style="color: #F8D96D; margin-bottom: 20px;">Comece Agora!</h2>
-            <p style="margin-bottom: 30px;">Proteja seus interesses com análise documental profissional.</p>
-            <a href="https://www.burocratadebolso.com.br" class="cta-button" target="_blank">🚀 Acessar Sistema</a>
+            <h2 style="color: #F8D96D; margin-bottom: 20px;">Acessar Sistema</h2>
+            <p style="margin-bottom: 30px;">Entre na sua conta ou crie uma nova para começar.</p>
+            
+            <!-- Formulário de Login -->
+            <div id="login-form-container">
+                <form id="login-form" style="max-width: 400px; margin: 0 auto;">
+                    <div style="margin-bottom: 15px;">
+                        <input type="email" placeholder="E-mail" required 
+                               style="width: 100%; padding: 12px; border: 2px solid #F8D96D; 
+                                      border-radius: 8px; background: #2a4a75; color: white; 
+                                      font-size: 14px; box-sizing: border-box;">
+                    </div>
+                    <div style="margin-bottom: 20px;">
+                        <input type="password" placeholder="Senha" required 
+                               style="width: 100%; padding: 12px; border: 2px solid #F8D96D; 
+                                      border-radius: 8px; background: #2a4a75; color: white; 
+                                      font-size: 14px; box-sizing: border-box;">
+                    </div>
+                    <button type="submit" class="cta-button" style="width: 100%; margin-bottom: 15px;">
+                        🚀 Entrar
+                    </button>
+                </form>
+                
+                <div style="text-align: center; margin: 20px 0;">
+                    <span style="color: #a0aec0;">Não tem conta? </span>
+                    <a href="#" onclick="mostrarCadastro()" style="color: #F8D96D; text-decoration: none; font-weight: bold;">
+                        Criar Conta
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Formulário de Cadastro (inicialmente oculto) -->
+            <div id="cadastro-form-container" style="display: none;">
+                <form id="cadastro-form" style="max-width: 400px; margin: 0 auto;">
+                    <div style="margin-bottom: 15px;">
+                        <input type="text" placeholder="Nome Completo" required 
+                               style="width: 100%; padding: 12px; border: 2px solid #F8D96D; 
+                                      border-radius: 8px; background: #2a4a75; color: white; 
+                                      font-size: 14px; box-sizing: border-box;">
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <input type="email" placeholder="E-mail" required 
+                               style="width: 100%; padding: 12px; border: 2px solid #F8D96D; 
+                                      border-radius: 8px; background: #2a4a75; color: white; 
+                                      font-size: 14px; box-sizing: border-box;">
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <input type="password" placeholder="Senha (mínimo 6 caracteres)" required minlength="6"
+                               style="width: 100%; padding: 12px; border: 2px solid #F8D96D; 
+                                      border-radius: 8px; background: #2a4a75; color: white; 
+                                      font-size: 14px; box-sizing: border-box;">
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <input type="password" placeholder="Confirmar Senha" required 
+                               style="width: 100%; padding: 12px; border: 2px solid #F8D96D; 
+                                      border-radius: 8px; background: #2a4a75; color: white; 
+                                      font-size: 14px; box-sizing: border-box;">
+                    </div>
+                    <div style="margin-bottom: 20px; text-align: left;">
+                        <label style="color: #FFFFFF; font-size: 14px; display: flex; align-items: center;">
+                            <input type="checkbox" required style="margin-right: 8px;">
+                            Li e concordo com a <a href="privacidade.html" style="color: #F8D96D;">Política de Privacidade</a>
+                        </label>
+                    </div>
+                    <button type="submit" class="cta-button" style="width: 100%; margin-bottom: 15px;">
+                        🎉 Criar Conta
+                    </button>
+                </form>
+                
+                <div style="text-align: center; margin: 20px 0;">
+                    <span style="color: #a0aec0;">Já tem conta? </span>
+                    <a href="#" onclick="mostrarLogin()" style="color: #F8D96D; text-decoration: none; font-weight: bold;">
+                        Fazer Login
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -168,5 +241,29 @@
             <p>Criado por Pedro Graciano</p>
         </div>
     </footer>
+
+    <script>
+        function mostrarCadastro() {
+            document.getElementById('login-form-container').style.display = 'none';
+            document.getElementById('cadastro-form-container').style.display = 'block';
+        }
+        
+        function mostrarLogin() {
+            document.getElementById('cadastro-form-container').style.display = 'none';
+            document.getElementById('login-form-container').style.display = 'block';
+        }
+        
+        // Login - redireciona para o sistema
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            window.open('https://www.burocratadebolso.com.br', '_blank');
+        });
+        
+        // Cadastro - redireciona para o sistema
+        document.getElementById('cadastro-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            window.open('https://www.burocratadebolso.com.br', '_blank');
+        });
+    </script>
 </body>
 </html>
