@@ -155,6 +155,19 @@ def mostrar_tela_login():
         
         st.markdown('</div>', unsafe_allow_html=True)
     
+    # Links de política e termos
+    st.markdown("""
+    <div style="text-align: center; margin-top: 20px; margin-bottom: 10px;">
+        <a href="privacidade.html" target="_blank" style="color: #F8D96D; text-decoration: none; margin: 0 10px; font-size: 0.9em;">
+            🔒 Política de Privacidade
+        </a>
+        <span style="color: #a0aec0;">|</span>
+        <a href="index.html" target="_blank" style="color: #F8D96D; text-decoration: none; margin: 0 10px; font-size: 0.9em;">
+            🏠 Página Inicial
+        </a>
+    </div>
+    """, unsafe_allow_html=True)
+    
     mostrar_faq_rodape()
 
 # --------------------------------------------------
@@ -842,7 +855,7 @@ def mostrar_faq_rodape():
     """, unsafe_allow_html=True)
     
     # Links usando colunas Streamlit
-    col1, col2 = st.columns(2)
+    col1, col2, col3 = st.columns(3)
     
     with col1:
         st.markdown("""
@@ -861,6 +874,17 @@ def mostrar_faq_rodape():
                target="_blank"
                style="color: #F8D96D; text-decoration: none; font-weight: bold; font-size: 1.1em;">
                 📷 @burocratadebolso
+            </a>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col3:
+        st.markdown("""
+        <div style="text-align: center;">
+            <a href="privacidade.html" 
+               target="_blank"
+               style="color: #F8D96D; text-decoration: none; font-weight: bold; font-size: 1.1em;">
+                🔒 Política de Privacidade
             </a>
         </div>
         """, unsafe_allow_html=True)
