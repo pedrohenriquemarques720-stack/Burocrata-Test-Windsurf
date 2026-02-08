@@ -3,170 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Burocrata de Bolso - IA de Análise Documental</title>
+    <title>Burocrata de Bolso - Login</title>
+    <meta http-equiv="refresh" content="0; url=http://localhost:8501">
     <style>
         body {
             font-family: Arial, sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 0;
             background: #10263D;
             color: #FFFFFF;
-        }
-        .header {
-            background: #1a3658;
-            padding: 30px 0;
-            text-align: center;
-            border-bottom: 3px solid #F8D96D;
-        }
-        .header h1 {
-            color: #F8D96D;
-            font-size: 3em;
             margin: 0;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-        .header p {
-            color: #FFFFFF;
-            font-size: 1.2em;
-            margin: 10px 0 0 0;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin: 40px 0;
-        }
-        .feature-card {
-            background: #1a3658;
-            padding: 30px;
-            border-radius: 15px;
-            border: 2px solid #F8D96D;
-            text-align: center;
-            transition: transform 0.3s;
-        }
-        .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(248, 217, 109, 0.2);
-        }
-        .feature-icon {
-            font-size: 3em;
-            margin-bottom: 20px;
-            color: #F8D96D;
-        }
-        .feature-title {
-            color: #F8D96D;
-            font-size: 1.5em;
-            margin-bottom: 15px;
-        }
-        .cta-section {
-            background: #2a4a75;
-            padding: 40px;
-            border-radius: 15px;
-            text-align: center;
-            margin: 40px 0;
-            border: 2px solid #F8D96D;
-        }
-        .cta-button {
-            display: inline-block;
-            background: linear-gradient(135deg, #F8D96D, #d4b747);
-            color: #10263D;
-            padding: 15px 30px;
-            text-decoration: none;
-            border-radius: 10px;
-            font-weight: bold;
-            font-size: 1.1em;
-            transition: all 0.3s;
-            margin: 10px;
-        }
-        .cta-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(248, 217, 109, 0.4);
-        }
-        .footer {
-            background: #1a3658;
-            padding: 40px 20px;
-            text-align: center;
-            border-top: 3px solid #F8D96D;
-            margin-top: 40px;
-        }
-        .footer-links {
+            padding: 0;
             display: flex;
             justify-content: center;
-            gap: 30px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
         }
-        .footer-link {
+        .loading-container {
+            text-align: center;
+        }
+        .spinner {
+            border: 4px solid rgba(248, 217, 109, 0.3);
+            border-top: 4px solid #F8D96D;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        h1 {
+            color: #F8D96D;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        p {
+            color: #e2e8f0;
+            font-size: 1.1em;
+            margin-bottom: 20px;
+        }
+        .link {
             color: #F8D96D;
             text-decoration: none;
             font-weight: bold;
-            padding: 10px 20px;
             border: 2px solid #F8D96D;
-            border-radius: 20px;
+            padding: 10px 20px;
+            border-radius: 10px;
+            display: inline-block;
             transition: all 0.3s;
         }
-        .footer-link:hover {
+        .link:hover {
             background: rgba(248, 217, 109, 0.1);
             color: #FFE87C;
-            border-color: #FFE87C;
-        }
-        .copyright {
-            color: #a0aec0;
-            margin-top: 20px;
-            font-size: 0.9em;
         }
     </style>
 </head>
 <body>
-    <header class="header">
+    <div class="loading-container">
+        <div class="spinner"></div>
         <h1>⚖️ BUROCRATA DE BOLSO</h1>
-        <p>IA de Análise Documental - Proteção Jurídica Inteligente</p>
-    </header>
-
-    <div class="container">
-        <div class="features">
-            <div class="feature-card">
-                <div class="feature-icon">📄</div>
-                <h3 class="feature-title">Análise Inteligente</h3>
-                <p>IA avançada para análise de contratos, notas fiscais e documentos jurídicos com precisão e rapidez.</p>
-            </div>
-            
-            <div class="feature-card">
-                <div class="feature-icon">🔒</div>
-                <h3 class="feature-title">Segurança Total</h3>
-                <p>Seus documentos são protegidos com criptografia e armazenamento seguro local, em conformidade com LGPD.</p>
-            </div>
-            
-            <div class="feature-card">
-                <div class="feature-icon">⚡</div>
-                <h3 class="feature-title">Resultado Rápido</h3>
-                <p>Análises em segundos com relatórios detalhados e recomendações práticas para suas decisões.</p>
-            </div>
-        </div>
-
-        <div class="cta-section">
-            <h2 style="color: #F8D96D; margin-bottom: 20px;">Comece Agora!</h2>
-            <p style="margin-bottom: 30px;">Proteja seus interesses com análise documental profissional.</p>
-            <a href="#" class="cta-button">🚀 Acessar Sistema</a>
-        </div>
+        <p>Redirecionando para o sistema...</p>
+        <p style="font-size: 0.9em; color: #a0aec0;">
+            Se não for redirecionado automaticamente, 
+            <a href="http://localhost:8501" class="link">clique aqui</a>
+        </p>
     </div>
-
-    <footer class="footer">
-        <div class="footer-links">
-            <a href="privacidade.html" class="footer-link">🔒 Política de Privacidade</a>
-            <a href="mailto:contatoburocrata@outlook.com" class="footer-link">📧 Contato</a>
-            <a href="https://instagram.com/burocratadebolso" target="_blank" class="footer-link">📷 Instagram</a>
-        </div>
-        
-        <div class="copyright">
-            <p>© 2026 Burocrata de Bolso - Todos os direitos reservados</p>
-            <p>Criado por Pedro Graciano</p>
-        </div>
-    </footer>
 </body>
 </html>
