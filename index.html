@@ -271,77 +271,6 @@
     </header>
 
     <div class="container">
-        <div class="auth-container">
-            <!-- Card de Login -->
-            <div class="auth-card" id="login-card">
-                <div class="auth-title">🔐 Acessar Sistema</div>
-                
-                <form id="login-form">
-                    <div class="form-group">
-                        <label for="login-email">E-mail</label>
-                        <input type="email" id="login-email" placeholder="seu@email.com" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="login-senha">Senha</label>
-                        <input type="password" id="login-senha" placeholder="Digite sua senha" required>
-                    </div>
-                    
-                    <button type="submit" class="btn btn-primary">🚀 Entrar</button>
-                </form>
-                
-                <div style="text-align: center; margin: 20px 0;">
-                    <span style="color: #a0aec0;">Não tem conta? </span>
-                    <a href="#" onclick="mostrarCadastro()" style="color: #F8D96D; text-decoration: none; font-weight: bold;">
-                        Criar Conta
-                    </a>
-                </div>
-            </div>
-
-            <!-- Card de Cadastro -->
-            <div class="auth-card hidden" id="cadastro-card">
-                <div class="auth-title">📝 Criar Nova Conta</div>
-                
-                <form id="cadastro-form">
-                    <div class="form-group">
-                        <label for="cad-nome">Nome Completo</label>
-                        <input type="text" id="cad-nome" placeholder="Seu nome" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="cad-email">E-mail</label>
-                        <input type="email" id="cad-email" placeholder="seu@email.com" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="cad-senha">Senha</label>
-                        <input type="password" id="cad-senha" placeholder="Mínimo 6 caracteres" required minlength="6">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="cad-confirmar">Confirmar Senha</label>
-                        <input type="password" id="cad-confirmar" placeholder="Digite novamente" required>
-                    </div>
-                    
-                    <div class="checkbox-group">
-                        <input type="checkbox" id="aceite-termos" required>
-                        <label for="aceite-termos">
-                            Li e concordo com a <a href="privacidade.html">Política de Privacidade</a> e autorizo o tratamento dos meus dados conforme descrito.
-                        </label>
-                    </div>
-                    
-                    <button type="submit" class="btn btn-primary">🎉 Criar Conta</button>
-                </form>
-                
-                <div style="text-align: center; margin: 20px 0;">
-                    <span style="color: #a0aec0;">Já tem conta? </span>
-                    <a href="#" onclick="mostrarLogin()" style="color: #F8D96D; text-decoration: none; font-weight: bold;">
-                        Fazer Login
-                    </a>
-                </div>
-            </div>
-        </div>
-
         <div class="features">
             <div class="feature-card">
                 <div class="feature-icon">📄</div>
@@ -362,34 +291,10 @@
             </div>
         </div>
 
-        <!-- FAQ Section -->
-        <div class="faq-container">
-            <h3>📋 Perguntas Frequentes</h3>
-            
-            <div class="faq-question">1. Como funciona a análise de documentos?</div>
-            <div class="faq-answer">
-                Nossa IA analisa seus documentos jurídicos em segundos, identificando cláusulas importantes, riscos e oportunidades. Basta fazer upload do arquivo e receber um relatório completo.
-            </div>
-            
-            <div class="faq-question">2. Meus documentos estão seguros?</div>
-            <div class="faq-answer">
-                Sim! Usamos criptografia de ponta a ponta e armazenamento seguro local. Seus dados são protegidos em conformidade com a LGPD e nunca compartilhamos com terceiros.
-            </div>
-            
-            <div class="faq-question">3. Quais tipos de documentos analisam?</div>
-            <div class="faq-answer">
-                Analisamos contratos de locação, contratos de trabalho, notas fiscais, termos de serviço e outros documentos jurídicos com alta precisão.
-            </div>
-            
-            <div class="faq-question">4. Quanto tempo demora a análise?</div>
-            <div class="faq-answer">
-                A maioria dos documentos é analisada em menos de 1 minuto. Documentos simples podem levar apenas alguns segundos, enquanto contratos complexos levam até 2 minutos.
-            </div>
-            
-            <div class="faq-question">5. Posso testar antes de comprar?</div>
-            <div class="faq-answer">
-                Sim! Novas contas recebem créditos iniciais para testar nossa plataforma. Você pode experimentar todas as funcionalidades antes de adquirir mais créditos.
-            </div>
+        <div class="cta-section">
+            <h2 style="color: #F8D96D; margin-bottom: 20px;">Comece Agora!</h2>
+            <p style="margin-bottom: 30px;">Proteja seus interesses com análise documental profissional.</p>
+            <a href="https://www.burocratadebolso.com.br" class="cta-button" target="_self">🚀 Acessar Sistema</a>
         </div>
     </div>
 
@@ -405,59 +310,5 @@
             <p>Criado por Pedro Graciano</p>
         </div>
     </footer>
-
-    <script>
-        function mostrarCadastro() {
-            document.getElementById('login-card').classList.add('hidden');
-            document.getElementById('cadastro-card').classList.remove('hidden');
-        }
-        
-        function mostrarLogin() {
-            document.getElementById('cadastro-card').classList.add('hidden');
-            document.getElementById('login-card').classList.remove('hidden');
-        }
-        
-        // Login - redireciona para o Streamlit na mesma aba
-        document.getElementById('login-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const email = document.getElementById('login-email').value;
-            const senha = document.getElementById('login-senha').value;
-            
-            if (email && senha) {
-                // Redireciona para o Streamlit local na mesma aba
-                window.location.href = 'http://localhost:8501';
-            }
-        });
-        
-        // Cadastro - redireciona para o Streamlit na mesma aba
-        document.getElementById('cadastro-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const nome = document.getElementById('cad-nome').value;
-            const email = document.getElementById('cad-email').value;
-            const senha = document.getElementById('cad-senha').value;
-            const confirmar = document.getElementById('cad-confirmar').value;
-            const aceite = document.getElementById('aceite-termos').checked;
-            
-            if (!aceite) {
-                alert('É necessário aceitar a Política de Privacidade para criar uma conta.');
-                return;
-            }
-            
-            if (senha !== confirmar) {
-                alert('As senhas não coincidem');
-                return;
-            }
-            
-            if (senha.length < 6) {
-                alert('A senha deve ter no mínimo 6 caracteres');
-                return;
-            }
-            
-            if (nome && email && senha) {
-                // Redireciona para o Streamlit local na mesma aba
-                window.location.href = 'http://localhost:8501';
-            }
-        });
-    </script>
 </body>
 </html>
