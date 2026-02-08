@@ -3,155 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Burocrata de Bolso - Login</title>
+    <title>Burocrata de Bolso - IA de Análise Documental</title>
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #10263D 0%, #1a3658 100%);
-            color: #FFFFFF;
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
             margin: 0;
-            padding: 20px;
-            min-height: 100vh;
+            padding: 0;
+            background: #10263D;
+            color: #FFFFFF;
         }
         .header {
-            text-align: center;
+            background: #1a3658;
             padding: 30px 0;
-            margin-bottom: 20px;
+            text-align: center;
+            border-bottom: 3px solid #F8D96D;
         }
         .header h1 {
-            font-family: 'Arial Black', sans-serif;
-            font-size: 3em;
-            font-weight: 900;
             color: #F8D96D;
-            letter-spacing: 1px;
-            margin-bottom: 5px;
+            font-size: 3em;
+            margin: 0;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
         .header p {
-            font-family: 'Georgia', serif;
-            font-size: 1.2em;
             color: #FFFFFF;
-            font-weight: 300;
-            letter-spacing: 0.5px;
+            font-size: 1.2em;
+            margin: 10px 0 0 0;
         }
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 40px 20px;
         }
-        .auth-container {
-            display: flex;
-            gap: 40px;
-            justify-content: center;
-            align-items: flex-start;
-            flex-wrap: wrap;
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
         }
-        .auth-card {
-            background: rgba(26, 54, 88, 0.95);
+        .feature-card {
+            background: #1a3658;
+            padding: 30px;
             border-radius: 15px;
-            padding: 40px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            border: 3px solid #F8D96D;
-            max-width: 500px;
-            width: 100%;
-            backdrop-filter: blur(10px);
-        }
-        .auth-title {
-            color: #F8D96D;
-            font-size: 2.2em;
-            font-weight: 800;
-            text-align: center;
-            margin-bottom: 30px;
-            margin-top: 0;
-            padding-top: 0;
-        }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        .form-group label {
-            display: block;
-            color: #F8D96D;
-            font-weight: 600;
-            margin-bottom: 8px;
-            font-size: 1em;
-        }
-        .form-group input {
-            width: 100%;
-            padding: 12px 15px;
-            border-radius: 10px;
             border: 2px solid #F8D96D;
-            background-color: #2a4a75;
-            color: white;
-            font-size: 1em;
-            box-sizing: border-box;
-            transition: all 0.3s;
+            text-align: center;
+            transition: transform 0.3s;
         }
-        .form-group input::placeholder {
-            color: #a0aec0;
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(248, 217, 109, 0.2);
         }
-        .form-group input:focus {
-            outline: none;
-            border-color: #FFE87C;
-            box-shadow: 0 0 0 3px rgba(248, 217, 109, 0.3);
+        .feature-icon {
+            font-size: 3em;
+            margin-bottom: 20px;
+            color: #F8D96D;
         }
-        .btn {
-            width: 100%;
-            padding: 15px 30px;
-            border: none;
-            border-radius: 10px;
-            font-weight: 700;
-            font-size: 1.1em;
-            transition: all 0.3s;
-            cursor: pointer;
-            margin-bottom: 10px;
+        .feature-title {
+            color: #F8D96D;
+            font-size: 1.5em;
+            margin-bottom: 15px;
         }
-        .btn-primary {
+        .cta-section {
+            background: #2a4a75;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 40px 0;
+            border: 2px solid #F8D96D;
+        }
+        .cta-button {
+            display: inline-block;
             background: linear-gradient(135deg, #F8D96D, #d4b747);
             color: #10263D;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 1.1em;
+            transition: all 0.3s;
+            margin: 10px;
         }
-        .btn-primary:hover {
+        .cta-button:hover {
             transform: translateY(-3px);
             box-shadow: 0 10px 25px rgba(248, 217, 109, 0.4);
-            background: linear-gradient(135deg, #FFE87C, #F8D96D);
-        }
-        .btn-secondary {
-            background: linear-gradient(135deg, #2a4a75, #1a3658);
-            color: #F8D96D;
-            border: 2px solid #F8D96D;
-        }
-        .btn-secondary:hover {
-            background: linear-gradient(135deg, #3a5a85, #2a4a75);
-            color: #FFE87C;
-            border-color: #FFE87C;
-        }
-        .info-box {
-            background: rgba(74, 144, 226, 0.1);
-            border: 2px solid #4a90e2;
-            padding: 15px;
-            border-radius: 10px;
-            margin: 20px 0;
-            font-size: 0.9em;
-        }
-        .checkbox-group {
-            margin: 20px 0;
-        }
-        .checkbox-group input[type="checkbox"] {
-            margin-right: 10px;
-            transform: scale(1.2);
-        }
-        .checkbox-group label {
-            color: #FFFFFF;
-            font-size: 0.95em;
-            line-height: 1.4;
-        }
-        .checkbox-group a {
-            color: #F8D96D;
-            text-decoration: none;
-            font-weight: 600;
-        }
-        .checkbox-group a:hover {
-            color: #FFE87C;
-            text-decoration: underline;
         }
         .footer {
             background: #1a3658;
@@ -159,7 +93,6 @@
             text-align: center;
             border-top: 3px solid #F8D96D;
             margin-top: 40px;
-            border-radius: 15px;
         }
         .footer-links {
             display: flex;
@@ -187,38 +120,6 @@
             margin-top: 20px;
             font-size: 0.9em;
         }
-        .success-message {
-            background: rgba(34, 197, 94, 0.1);
-            border: 2px solid #22c55e;
-            color: #22c55e;
-            padding: 15px;
-            border-radius: 10px;
-            margin: 20px 0;
-            text-align: center;
-            font-weight: 600;
-        }
-        .error-message {
-            background: rgba(239, 68, 68, 0.1);
-            border: 2px solid #ef4444;
-            color: #ef4444;
-            padding: 15px;
-            border-radius: 10px;
-            margin: 20px 0;
-            text-align: center;
-            font-weight: 600;
-        }
-        .hidden {
-            display: none;
-        }
-        @media (max-width: 768px) {
-            .auth-container {
-                flex-direction: column;
-                align-items: center;
-            }
-            .header h1 {
-                font-size: 2.5em;
-            }
-        }
     </style>
 </head>
 <body>
@@ -228,74 +129,31 @@
     </header>
 
     <div class="container">
-        <div class="auth-container">
-            <!-- Card de Login -->
-            <div class="auth-card" id="login-card">
-                <div class="auth-title">🔐 Entrar na Conta</div>
-                
-                <form id="login-form">
-                    <div class="form-group">
-                        <label for="login-email">E-mail</label>
-                        <input type="email" id="login-email" placeholder="seu@email.com" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="login-senha">Senha</label>
-                        <input type="password" id="login-senha" placeholder="Digite sua senha" required>
-                    </div>
-                    
-                    <button type="submit" class="btn btn-primary">🚀 Entrar</button>
-                </form>
-                
-                <div class="info-box">
-                    <strong>💡 Dica:</strong> Novas contas começam com 0 BuroCreds. Para adquirir créditos, entre em contato com o suporte.
-                </div>
-                
-                <button type="button" class="btn btn-secondary" onclick="mostrarCadastro()">📝 Criar Conta</button>
+        <div class="features">
+            <div class="feature-card">
+                <div class="feature-icon">📄</div>
+                <h3 class="feature-title">Análise Inteligente</h3>
+                <p>IA avançada para análise de contratos, notas fiscais e documentos jurídicos com precisão e rapidez.</p>
             </div>
-
-            <!-- Card de Cadastro -->
-            <div class="auth-card hidden" id="cadastro-card">
-                <div class="auth-title">📝 Criar Nova Conta</div>
-                
-                <form id="cadastro-form">
-                    <div class="form-group">
-                        <label for="cad-nome">Nome Completo</label>
-                        <input type="text" id="cad-nome" placeholder="Seu nome" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="cad-email">E-mail</label>
-                        <input type="email" id="cad-email" placeholder="seu@email.com" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="cad-senha">Senha</label>
-                        <input type="password" id="cad-senha" placeholder="Mínimo 6 caracteres" required minlength="6">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="cad-confirmar">Confirmar Senha</label>
-                        <input type="password" id="cad-confirmar" placeholder="Digite novamente" required>
-                    </div>
-                    
-                    <div class="checkbox-group">
-                        <input type="checkbox" id="aceite-termos" required>
-                        <label for="aceite-termos">
-                            Li e concordo com a <a href="privacidade.html">Política de Privacidade</a> e autorizo o tratamento dos meus dados conforme descrito.
-                        </label>
-                    </div>
-                    
-                    <button type="submit" class="btn btn-primary">🎉 Criar Conta</button>
-                </form>
-                
-                <button type="button" class="btn btn-secondary" onclick="mostrarLogin()">🔙 Voltar ao Login</button>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🔒</div>
+                <h3 class="feature-title">Segurança Total</h3>
+                <p>Seus documentos são protegidos com criptografia e armazenamento seguro local, em conformidade com LGPD.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3 class="feature-title">Resultado Rápido</h3>
+                <p>Análises em segundos com relatórios detalhados e recomendações práticas para suas decisões.</p>
             </div>
         </div>
 
-        <!-- Mensagens de feedback -->
-        <div id="success-message" class="success-message hidden"></div>
-        <div id="error-message" class="error-message hidden"></div>
+        <div class="cta-section">
+            <h2 style="color: #F8D96D; margin-bottom: 20px;">Comece Agora!</h2>
+            <p style="margin-bottom: 30px;">Proteja seus interesses com análise documental profissional.</p>
+            <a href="#" class="cta-button">🚀 Acessar Sistema</a>
+        </div>
     </div>
 
     <footer class="footer">
@@ -310,83 +168,5 @@
             <p>Criado por Pedro Graciano</p>
         </div>
     </footer>
-
-    <script>
-        // Funções para alternar entre login e cadastro
-        function mostrarCadastro() {
-            document.getElementById('login-card').classList.add('hidden');
-            document.getElementById('cadastro-card').classList.remove('hidden');
-            limparMensagens();
-        }
-        
-        function mostrarLogin() {
-            document.getElementById('cadastro-card').classList.add('hidden');
-            document.getElementById('login-card').classList.remove('hidden');
-            limparMensagens();
-        }
-        
-        function limparMensagens() {
-            document.getElementById('success-message').classList.add('hidden');
-            document.getElementById('error-message').classList.add('hidden');
-        }
-        
-        function mostrarSucesso(mensagem) {
-            const elem = document.getElementById('success-message');
-            elem.textContent = mensagem;
-            elem.classList.remove('hidden');
-            setTimeout(limparMensagens, 5000);
-        }
-        
-        function mostrarErro(mensagem) {
-            const elem = document.getElementById('error-message');
-            elem.textContent = mensagem;
-            elem.classList.remove('hidden');
-            setTimeout(limparMensagens, 5000);
-        }
-        
-        // Login - apenas validação local
-        document.getElementById('login-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const email = document.getElementById('login-email').value;
-            const senha = document.getElementById('login-senha').value;
-            
-            if (email && senha) {
-                mostrarSucesso('Login realizado com sucesso! Bem-vindo ao Burocrata de Bolso.');
-            } else {
-                mostrarErro('Preencha todos os campos');
-            }
-        });
-        
-        // Cadastro - apenas validação local
-        document.getElementById('cadastro-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const nome = document.getElementById('cad-nome').value;
-            const email = document.getElementById('cad-email').value;
-            const senha = document.getElementById('cad-senha').value;
-            const confirmar = document.getElementById('cad-confirmar').value;
-            const aceite = document.getElementById('aceite-termos').checked;
-            
-            if (!aceite) {
-                mostrarErro('É necessário aceitar a Política de Privacidade para criar uma conta.');
-                return;
-            }
-            
-            if (senha !== confirmar) {
-                mostrarErro('As senhas não coincidem');
-                return;
-            }
-            
-            if (senha.length < 6) {
-                mostrarErro('A senha deve ter no mínimo 6 caracteres');
-                return;
-            }
-            
-            if (nome && email && senha) {
-                mostrarSucesso('Conta criada com sucesso! Bem-vindo ao Burocrata de Bolso.');
-            } else {
-                mostrarErro('Preencha todos os campos');
-            }
-        });
-    </script>
 </body>
 </html>
