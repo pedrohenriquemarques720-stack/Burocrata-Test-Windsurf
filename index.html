@@ -352,17 +352,16 @@
             setTimeout(limparMensagens, 5000);
         }
         
-        // Simulação de login (redireciona para o Streamlit)
+        // Simulação de login (autenticação local)
         document.getElementById('login-form').addEventListener('submit', function(e) {
             e.preventDefault();
             const email = document.getElementById('login-email').value;
             const senha = document.getElementById('login-senha').value;
             
             if (email && senha) {
-                mostrarSucesso('✅ Redirecionando para o sistema...');
-                setTimeout(() => {
-                    window.open('http://localhost:8501', '_blank');
-                }, 1500);
+                mostrarSucesso('✅ Login realizado com sucesso! Bem-vindo ao Burocrata de Bolso.');
+                // Aqui você pode adicionar a lógica de autenticação real
+                // Por enquanto, apenas mostra mensagem de sucesso
             } else {
                 mostrarErro('❌ Preencha todos os campos');
             }
@@ -393,10 +392,9 @@
             }
             
             if (nome && email && senha) {
-                mostrarSucesso('✅ Conta criada com sucesso! Redirecionando para o sistema...');
-                setTimeout(() => {
-                    window.open('http://localhost:8501', '_blank');
-                }, 1500);
+                mostrarSucesso('✅ Conta criada com sucesso! Bem-vindo ao Burocrata de Bolso.');
+                // Aqui você pode adicionar a lógica de cadastro real
+                // Por enquanto, apenas mostra mensagem de sucesso
             } else {
                 mostrarErro('❌ Preencha todos os campos');
             }
