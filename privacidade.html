@@ -160,10 +160,31 @@
             border-radius: 10px;
             margin: 20px 0;
         }
+        .back-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #F8D96D, #FFE87C);
+            color: #10263D;
+            padding: 12px 25px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        .back-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(248, 217, 109, 0.3);
+            color: #10263D;
+            text-decoration: none;
+        }
     </style>
 </head>
 <body>
     <div class="container">
+        <a href="index.html" class="back-button">← Voltar para a Página Principal</a>
+        
         <h1>🔒 Política de Privacidade</h1>
         <p class="subtitle"><strong>Burocrata de Bolso - Plataforma de IA para Análise Documental Jurídica</strong></p>
         
@@ -375,6 +396,7 @@
         </ul>
 
         <h3>8.3 Direitos de Eliminação e Anonimização</h3>
+        <ul>
             <li><strong>Eliminar dados:</strong> Solicitar remoção quando não houver obrigação legal</li>
             <li><strong>Anonimização:</strong> Converter dados em formato não identificável</li>
             <li><strong>Bloqueio:</strong> Suspender tratamento temporariamente</li>
@@ -473,6 +495,8 @@
             <p><strong>Última atualização:</strong> 8 de Fevereiro de 2026<br>
             <strong>Próxima revisão programada:</strong> 8 de Agosto de 2026</p>
         </div>
+        
+        <a href="index.html" class="back-button">← Voltar para a Página Principal</a>
     </div>
 </body>
 </html>
