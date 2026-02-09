@@ -1,14 +1,6 @@
 import re
 import unicodedata
-
-# Import opcional para compatibilidade com produção
-try:
-    import pdfplumber
-    PDFPLUMBER_AVAILABLE = True
-except ImportError:
-    PDFPLUMBER_AVAILABLE = False
-    print("Aviso: pdfplumber não disponível - função de extração limitada")
-
+import pdfplumber
 import streamlit as st
 
 def limpar_texto(texto):
@@ -35,11 +27,6 @@ def limpar_texto(texto):
 
 def extrair_texto_pdf(arquivo):
     """Extração ULTRA robusta de texto de PDF"""
-    # Verificar se pdfplumber está disponível
-    if not PDFPLUMBER_AVAILABLE:
-        st.error("❌ pdfplumber não disponível. Não é possível extrair texto de PDFs.")
-        return None
-    
     try:
         texto_total = ""
         
