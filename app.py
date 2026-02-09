@@ -12,7 +12,7 @@ import os
 
 # Import modules
 from database import init_database, criar_usuario, autenticar_usuario, get_usuario_por_id, atualizar_burocreds, registrar_analise, get_historico_usuario
-from detection import Detector
+from detection import SistemaDetecção
 from utils import limpar_texto, extrair_texto_pdf
 from ui import mostrar_tela_login, mostrar_cabecalho_usuario, mostrar_secao_analises, mostrar_faq_rodape, mostrar_tela_principal
 
@@ -87,8 +87,6 @@ st.markdown("""
         font-weight: 800;
         text-align: center;
         margin-bottom: 30px;
-        margin-top: 0;
-        padding-top: 0;
     }
     
     /* Perfil do usuário */
@@ -157,34 +155,10 @@ st.markdown("""
     .faq-container {
         background: #1a3658;
         border-radius: 15px;
-        padding: 25px 25px 25px 25px;
+        padding: 25px;
         box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         border: 2px solid #F8D96D;
         margin: 20px 0;
-        overflow: hidden; /* Evita que conteúdo vaze */
-    }
-    
-    /* CSS NUCLEAR para forçar título dentro */
-    .faq-container h3,
-    .faq-container > h3,
-    div.faq-container h3,
-    div[class*="faq-container"] h3 {
-        color: #F8D96D !important;
-        font-weight: 700 !important;
-        margin-bottom: 25px !important;
-        margin-top: 0 !important;
-        text-align: center !important;
-        padding-top: 0 !important;
-        position: relative !important;
-        display: block !important;
-        float: none !important;
-        clear: both !important;
-    }
-    
-    /* Forçar o container a conter o título */
-    .faq-container > h3:first-child {
-        margin-top: 0 !important;
-        padding-top: 0 !important;
     }
     
     .faq-question {
@@ -352,84 +326,6 @@ st.markdown("""
         background-color: #F8D96D !important;
         color: #10263D !important;
         font-weight: bold;
-    }
-    
-    /* Expanders - Corrigir título para branco */
-    .stExpander {
-        background: #1a3658;
-        border: 1px solid #F8D96D;
-        border-radius: 10px;
-    }
-    
-    .stExpander > div > div {
-        background: #1a3658 !important;
-    }
-    
-    /* Título do expander em branco */
-    .stExpander .streamlit-expanderHeader {
-        color: #FFFFFF !important;
-        font-weight: 600 !important;
-    }
-    
-    /* Forçar cor do texto do expander */
-    [data-testid="stExpander"] div[role="button"] {
-        color: #FFFFFF !important;
-    }
-    
-    [data-testid="stExpander"] div[role="button"]:hover {
-        color: #F8D96D !important;
-    }
-    
-    /* CSS adicional para forçar título branco */
-    .streamlit-expanderHeader {
-        color: #FFFFFF !important;
-    }
-    
-    .streamlit-expanderHeader span {
-        color: #FFFFFF !important;
-    }
-    
-    div[data-testid="stExpander"] > div > div > div > span {
-        color: #FFFFFF !important;
-    }
-    
-    /* Forçar cor em todos os níveis */
-    [data-baseweb="expander"] > div > div > div > span {
-        color: #FFFFFF !important;
-    }
-    
-    button[data-testid="stExpanderToggle"] > span {
-        color: #FFFFFF !important;
-    }
-    
-    /* CSS mais agressivo - forçar tudo branco */
-    * [data-testid="stExpander"] * {
-        color: #FFFFFF !important;
-    }
-    
-    * [data-baseweb="expander"] * {
-        color: #FFFFFF !important;
-    }
-    
-    /* Especificamente para os spans dentro dos expanders */
-    div[data-testid="stExpander"] span,
-    div[data-testid="stExpander"] span *,
-    button[data-testid="stExpanderToggle"] span,
-    button[data-testid="stExpanderToggle"] span * {
-        color: #FFFFFF !important;
-    }
-    
-    /* CSS NUCLEAR - forçar tudo */
-    div[class*="expander"] *,
-    button[class*="expander"] *,
-    div[id*="expander"] *,
-    span[class*="expander"] * {
-        color: #FFFFFF !important;
-    }
-    
-    /* Forçar cor do texto em toda página */
-    .stExpander * {
-        color: #FFFFFF !important;
     }
     
     /* Scrollbar personalizada */
