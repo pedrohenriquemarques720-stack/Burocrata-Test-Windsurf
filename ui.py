@@ -174,66 +174,32 @@ def mostrar_tela_login():
             <p>Seus documentos são protegidos com criptografia de ponta a ponta e armazenamento seguro local, em conformidade com LGPD.</p>
         </div>
         
-        <div class="feature-card-login">
-            <div class="feature-icon">⚡</div>
-            <div class="feature-title">Resultado Rápido</div>
-            <p>Análises em segundos com relatórios detalhados e recomendações práticas para suas decisões.</p>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-    
-    # Seção de Login/Cadastro
-    st.markdown('<div class="auth-section">', unsafe_allow_html=True)
     
     if 'modo_auth' not in st.session_state:
         st.session_state.modo_auth = 'login'
     
-    if st.session_state.modo_auth == 'login':
-        st.markdown('<div class="auth-title">🔐 Acessar Sistema</div>', unsafe_allow_html=True)
-        
-        email = st.text_input("E-mail", placeholder="seu@email.com", key="login_email")
-        senha = st.text_input("Senha", type="password", placeholder="Digite sua senha", key="login_senha")
-        
-        if email == "pedrohenriquemarques720@gmail.com":
-            st.info("🔑 **Conta Especial Detectada:** Use sua senha pessoal para acessar.")
-        
-        if st.button("🚀 Entrar", use_container_width=True, key="btn_entrar"):
-            if email and senha:
-                sucesso, resultado = autenticar_usuario(email, senha)
-                if sucesso:
-                    st.session_state.usuario = resultado
-                    st.session_state.autenticado = True
-                    
-                    if email == "pedrohenriquemarques720@gmail.com":
-                        st.success("✅ **Conta Especial:** Acesso concedido com créditos ilimitados!")
-                    else:
-                        st.success("✅ Login realizado com sucesso!")
-                    
-                    time.sleep(1)
-                    st.rerun()
-                else:
-                    st.error(f"❌ {resultado}")
-            else:
-                st.warning("⚠️ Preencha todos os campos")
-        
-        st.markdown("""
-        <div style="text-align: center; margin-top: 20px;">
-            <span style="color: #a0aec0;">Não tem conta? </span>
-            <a href="#" onclick="window.location.reload()" style="color: #F8D96D; text-decoration: none; font-weight: bold;">
-                Criar Conta
-            </a>
-        </div>
-        """, unsafe_allow_html=True)
-        
-    else:
-        st.markdown('<div class="auth-title">📝 Criar Nova Conta</div>', unsafe_allow_html=True)
-        
-        nome = st.text_input("Nome Completo", placeholder="Seu nome", key="cad_nome")
-        email = st.text_input("E-mail", placeholder="seu@email.com", key="cad_email")
-        senha = st.text_input("Senha", type="password", placeholder="Mínimo 6 caracteres", key="cad_senha")
-        confirmar_senha = st.text_input("Confirmar Senha", type="password", placeholder="Digite novamente", key="cad_confirmar")
-        
-        st.info("ℹ️ **Importante:** Novas contas começam com 0 BuroCreds. Para adquirir créditos, entre em contato com o suporte.")
+    with st.container():
+        if st.session_state.modo_auth == 'login':
+            st.markdown("""
+            <div class="auth-card">
+                <div class="auth-title">🔐 Entrar na Conta</div>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            email = st.text_input("E-mail", placeholder="seu@email.com", key="login_email")
+            senha = st.text_input("Senha", type="password", placeholder="Digite sua senha", key="login_senha")
+            
+            if email == "pedrohenriquemarques720@gmail.com":
+                st.info("🔑 **Conta Especial Detectada:** Use sua senha pessoal para acessar.")
+            
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                if st.button("🚀 Entrar", use_container_width=True, key="btn_entrar"):
+                    if email and senha:
+                        sucesso, resultado = autenticar_usuario(email, senha)
+                        if sucesso:
+                            st.session_state.usuario = resultado
         
         # Checkbox de consentimento da política de privacidade
         consentimento = st.checkbox("✅ Li e concordo com a [Política de Privacidade](privacidade.html) e autorizo o tratamento dos meus dados conforme descrito.", key="consentimento_privacidade")
