@@ -1,173 +1,71 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Burocrata de Bolso - IA de Análise Documental</title>
+    <meta name="description" content="Burocrata de Bolso: IA para interpretação de contratos e documentos jurídicos.">
+    <title>Burocrata de Bolso - Inteligência em Contratos</title>
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-0000000000000000" crossorigin="anonymous"></script>
+
     <style>
-        body {
+        body, html { 
+            margin: 0; 
+            padding: 0; 
+            height: 100%; 
+            overflow: hidden; 
             font-family: Arial, sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 0;
-            background: #10263D;
-            color: #FFFFFF;
+            background-color: #0E1117; /* Cor escura padrão do Streamlit para evitar flashes brancos */
         }
-        .header {
-            background: #1a3658;
-            padding: 30px 0;
-            text-align: center;
-            border-bottom: 3px solid #F8D96D;
-        }
-        .header h1 {
-            color: #F8D96D;
-            font-size: 3em;
-            margin: 0;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0,0.3);
-        }
-        .header p {
-            color: #FFFFFF;
-            font-size: 1.2em;
-            margin: 10px 0 0 0;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin: 40px 0;
-        }
-        .feature-card {
-            background: #1a3658;
-            padding: 30px;
-            border-radius: 15px;
-            border: 2px solid #F8D96D;
-            text-align: center;
-            transition: transform 0.3s;
-        }
-        .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(248, 217, 109, 0.2);
-        }
-        .feature-icon {
-            font-size: 3em;
-            margin-bottom: 20px;
-            color: #F8D96D;
-        }
-        .feature-title {
-            color: #F8D96D;
-            font-size: 1.5em;
-            margin-bottom: 15px;
-        }
-        .cta-section {
-            background: #2a4a75;
-            padding: 40px;
-            border-radius: 15px;
-            text-align: center;
-            margin: 40px 0;
-            border: 2px solid #F8D96D;
-        }
-        .cta-button {
-            display: inline-block;
-            background: linear-gradient(135deg, #F8D96D, #d4b747);
-            color: #10263D;
-            padding: 15px 30px;
-            text-decoration: none;
-            border-radius: 10px;
-            font-weight: bold;
-            font-size: 1.1em;
-            transition: all 0.3s;
-            margin: 10px;
-        }
-        .cta-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(248, 217, 109, 0.4);
-            background: linear-gradient(135deg, #FFE87C, #F8D96D);
-        }
-        .footer {
-            background: #1a3658;
-            padding: 40px 20px;
-            text-align: center;
-            border-top: 3px solid #F8D96D;
-            margin-top: 40px;
-        }
-        .footer-links {
-            display: flex;
+        
+        /* Área do Anúncio no Topo */
+        #ads-container { 
+            height: 100px; 
+            background: #f0f2f6; 
+            display: flex; 
+            align-items: center; 
             justify-content: center;
-            gap: 30px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
+            border-bottom: 1px solid #ddd;
         }
-        .footer-link {
-            color: #F8D96D;
-            text-decoration: none;
-            font-weight: bold;
-            padding: 10px 20px;
-            border: 2px solid #F8D96D;
-            border-radius: 20px;
-            transition: all 0.3s;
+
+        /* O App do Streamlit ocupando o restante da tela */
+        #app-frame { 
+            width: 100%; 
+            height: calc(100% - 130px); /* Ajustado para dar espaço ao topo e rodapé */
+            border: none; 
         }
-        .footer-link:hover {
-            background: rgba(248, 217, 109, 0.1);
-            color: #FFE87C;
-            border-color: #FFE87C;
+
+        /* Rodapé profissional */
+        footer { 
+            height: 30px; 
+            background: #ffffff; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 12px; 
+            border-top: 1px solid #eee;
         }
-        .copyright {
-            color: #a0aec0;
-            margin-top: 20px;
-            font-size: 0.9em;
+        
+        footer a { 
+            color: #555; 
+            text-decoration: none; 
+            margin: 0 10px;
         }
+        footer a:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
-    <header class="header">
-        <h1>⚖️ BUROCRATA DE BOLSO</h1>
-        <p>IA de Análise Documental - Proteção Jurídica Inteligente</p>
-    </header>
 
-    <div class="container">
-        <div class="features">
-            <div class="feature-card">
-                <div class="feature-icon">📄</div>
-                <h3 class="feature-title">Análise Inteligente</h3>
-                <p>IA avançada para análise de contratos, notas fiscais e documentos jurídicos com precisão e rapidez.</p>
-            </div>
-            
-            <div class="feature-card">
-                <div class="feature-icon">🔒</div>
-                <h3 class="feature-title">Segurança Total</h3>
-                <p>Seus documentos são protegidos com criptografia e armazenamento seguro local, em conformidade com LGPD.</p>
-            </div>
-            
-            <div class="feature-card">
-                <div class="feature-icon">⚡</div>
-                <h3 class="feature-title">Resultado Rápido</h3>
-                <p>Análises em segundos com relatórios detalhados e recomendações práticas para suas decisões.</p>
-            </div>
-        </div>
-
-        <div class="cta-section">
-            <h2 style="color: #F8D96D; margin-bottom: 20px;">Comece Agora!</h2>
-            <p style="margin-bottom: 30px;">Proteja seus interesses com análise documental profissional.</p>
-            <a href="https://www.burocratadebolso.com.br" class="cta-button" target="_self">🚀 Acessar Sistema</a>
-        </div>
+    <div id="ads-container">
+        <span style="color: #999; font-size: 12px;">Publicidade (Google Ads)</span>
     </div>
 
-    <footer class="footer">
-        <div class="footer-links">
-            <a href="privacidade.html" class="footer-link">🔒 Política de Privacidade</a>
-            <a href="mailto:contatoburocrata@outlook.com" class="footer-link">📧 Contato</a>
-            <a href="https://instagram.com/burocratadebolso" target="_blank" class="footer-link">📷 Instagram</a>
-        </div>
-        
-        <div class="copyright">
-            <p>© 2026 Burocrata de Bolso - Todos os direitos reservados</p>
-            <p>Criado por Pedro Graciano</p>
-        </div>
+    <iframe id="app-frame" src="https://burocrata.streamlit.app/?embed=true"></iframe>
+
+    <footer>
+        <span>© 2026 Burocrata de Bolso</span>
+        <a href="privacidade.html" target="_blank">Política de Privacidade</a>
     </footer>
+
 </body>
 </html>
