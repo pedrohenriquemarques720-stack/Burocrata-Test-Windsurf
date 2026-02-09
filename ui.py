@@ -3,7 +3,7 @@ Módulo de interface do usuário do Burocrata de Bolso
 """
 import streamlit as st
 import time
-from config import USER_CONFIG, MESSAGES, CONTACT_CONFIG, is_special_account
+from config import USER_CONFIG, MESSAGES, CONTACT_CONFIG, DOMAIN_CONFIG, is_special_account
 from database import autenticar_usuario, criar_usuario, get_usuario_por_id
 from utils import validar_email, formatar_data, calcular_score_cor
 
@@ -742,11 +742,17 @@ def mostrar_faq_rodape():
         
         st.markdown('</div>', unsafe_allow_html=True)
     
-    # Links sociais
+    # Links sociais e domínio
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
         st.markdown(f"""
         <div class="social-links">
+            <a href="{DOMAIN_CONFIG['production_url']}" target="_blank" class="social-link">
+                🌐 Site Oficial
+            </a>
+            <a href="{DOMAIN_CONFIG['streamlit_url']}" target="_blank" class="social-link">
+                ☁️ App Streamlit
+            </a>
             <a href="{CONTACT_CONFIG['instagram']}" target="_blank" class="social-link">
                 📷 Instagram
             </a>
@@ -757,10 +763,14 @@ def mostrar_faq_rodape():
         """, unsafe_allow_html=True)
     
     # Rodapé final
-    st.markdown("""
+    st.markdown(f"""
     <div style="text-align: center; color: #FFFFFF; margin-top: 30px; padding: 20px;">
         <p><strong>⚖️ Burocrata de Bolso</strong> • IA de análise documental • v2.1</p>
-        <p style="font-size: 0.9em;">Para suporte técnico: contatoburocrata@outlook.com</p>
+        <p style="font-size: 0.9em;">
+            🌐 <a href="{DOMAIN_CONFIG['production_url']}" style="color: #F8D96D; text-decoration: none;">{DOMAIN_CONFIG['domain']}</a> • 
+            ☁️ <a href="{DOMAIN_CONFIG['streamlit_url']}" style="color: #F8D96D; text-decoration: none;">App Streamlit</a>
+        </p>
+        <p style="font-size: 0.9em;">Para suporte técnico: <a href="mailto:{CONTACT_CONFIG['email']}" style="color: #F8D96D;">{CONTACT_CONFIG['email']}</a></p>
         <p style="font-size: 0.8em; color: #F8D96D; margin-top: 10px;">
             © 2026 Burocrata de Bolso. Todos os direitos reservados.
         </p>
