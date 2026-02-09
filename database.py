@@ -1,199 +1,250 @@
-import re
-from utils import limpar_texto
+import sqlite3
+import hashlib
 
-class SistemaDetecção:
-    """Sistema altamente especializado em detecção de problemas jurídicos"""
+# --------------------------------------------------
+# CONFIGURAÇÃO DO BANCO DE DADOS SQLITE
+# --------------------------------------------------
+DB_PATH = 'usuarios_burocrata.db'
+
+def hash_senha(senha):
+    """Gera hash da senha usando SHA-256"""
+    return hashlib.sha256(senha.encode()).hexdigest()
+
+def init_database():
+    """Inicializa o banco de dados SQLite"""
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
     
-    def __init__(self):
-        # Padrões extremamente específicos para cada tipo de violação
-        self.padroes = {
-            'CONTRATO_LOCACAO': {
-                'nome': 'Contrato de Locação',
-                'padroes': [
-                    {
-                        'regex': r'multa.*correspondente.*12.*meses.*aluguel|multa.*12.*meses|doze.*meses.*aluguel|multa.*integral.*12.*meses',
-                        'descricao': '🚨🚨🚨 MULTA DE 12 MESES DE ALUGUEL - ILEGAL!',
-                        'gravidade': 'CRÍTICA',
-                        'lei': 'Lei 8.245/1991, Art. 4º: Multa máxima = 2 meses de aluguel',
-                        'detalhe': 'A lei do inquilinato PROÍBE multas superiores a 2 meses de aluguel.'
-                    },
-                    {
-                        'regex': r'depósito.*caução.*três.*meses|caução.*3.*meses|três.*meses.*aluguel.*caução|3.*meses.*depósito|caução.*excessiva',
-                        'descricao': '🚨🚨 CAUÇÃO DE 3 MESES - ILEGAL!',
-                        'gravidade': 'CRÍTICA',
-                        'lei': 'Lei 8.245/1991, Art. 37: Caução máxima = 1 mês de aluguel',
-                        'detalhe': 'Limite legal é apenas 1 mês de aluguel como caução.'
-                    },
-                    {
-                        'regex': r'reajuste.*trimestral|reajuste.*a.*cada.*3.*meses|reajuste.*mensalmente|reajuste.*mensal|aumento.*mensal',
-                        'descricao': '🚨 REAJUSTE TRIMESTRAL/MENSAL - ILEGAL!',
-                        'gravidade': 'CRÍTICA',
-                        'lei': 'Lei 8.245/1991, Art. 7º: Reajuste mínimo anual (12 meses)',
-                        'detalhe': 'Reajustes só podem ser feitos a cada 12 meses no mínimo.'
-                    }
-                ]
-            },
-            'CONTRATO_TRABALHO': {
-                'nome': 'Contrato de Trabalho',
-                'padroes': [
-                    {
-                        'regex': r'salário.*mensal.*bruto.*R\$\s*900|R\$\s*900[,\.]00|900.*reais|novecentos.*reais|salário.*R\$\s*800|800.*reais',
-                        'descricao': '🚨🚨🚨 SALÁRIO ABAIXO DO MÍNIMO - TRABALHO ESCRAVO!',
-                        'gravidade': 'CRÍTICA',
-                        'lei': 'Constituição Federal Art. 7º IV',
-                        'detalhe': f'Salário mínimo atual (2024): R$ 1.412,00. R$ 900 é 36% ABAIXO! R$ 800 é 43% ABAIXO!'
-                    },
-                    {
-                        'regex': r'jornada.*das\s*08:00.*às\s*20:00|08:00.*20:00|das\s*08.*às\s*20|jornada.*60.*horas.*semanais|60.*horas.*semanais',
-                        'descricao': '🚨🚨 JORNADA EXCESSIVA - ILEGAL!',
-                        'gravidade': 'CRÍTICA',
-                        'lei': 'CLT Art. 58: Máximo 8h diárias / 44h semanais',
-                        'detalhe': '12h diárias = 50% ACIMA do limite! 60h semanais = 36% ACIMA do limite de 44h!'
-                    }
-                ]
+    # Tabela de usuários
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS usuarios (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nome TEXT NOT NULL,
+            email TEXT UNIQUE NOT NULL,
+            senha_hash TEXT NOT NULL,
+            plano TEXT DEFAULT 'FREE',
+            burocreds INTEGER DEFAULT 0,
+            data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            estado TEXT DEFAULT 'ATIVO'
+        )
+    ''')
+    
+    # Tabela de histórico de análises
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS historico_analises (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            usuario_id INTEGER,
+            nome_arquivo TEXT,
+            tipo_documento TEXT,
+            problemas_detectados INTEGER,
+            score_conformidade REAL,
+            data_analise TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (usuario_id) REFERENCES usuarios (id)
+        )
+    ''')
+    
+    # Criar conta especial com créditos infinitos
+    conta_especial_email = "pedrohenriquemarques720@gmail.com"
+    senha_especial_hash = hash_senha("Liz1808#")
+    
+    # Verificar se a conta especial já existe
+    c.execute("SELECT COUNT(*) FROM usuarios WHERE email = ?", (conta_especial_email,))
+    resultado = c.fetchone()
+    
+    if resultado and resultado[0] == 0:
+        # Criar conta especial com créditos altíssimos
+        c.execute('''
+            INSERT INTO usuarios (nome, email, senha_hash, plano, burocreds)
+            VALUES (?, ?, ?, ?, ?)
+        ''', ("Pedro Henrique (Conta Especial)", conta_especial_email, senha_especial_hash, 'PRO', 999999))
+        print(f"Conta especial criada: {conta_especial_email}")
+    else:
+        # Atualizar senha da conta existente
+        c.execute('''
+            UPDATE usuarios 
+            SET senha_hash = ?
+            WHERE email = ?
+        ''', (senha_especial_hash, conta_especial_email))
+        print(f"Senha da conta especial atualizada")
+    
+    conn.commit()
+    conn.close()
+
+# --------------------------------------------------
+# FUNÇÕES DE AUTENTICAÇÃO
+# --------------------------------------------------
+
+def criar_usuario(nome, email, senha):
+    """Cria um novo usuário no sistema"""
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+        
+        # Verifica se email já existe
+        c.execute("SELECT COUNT(*) FROM usuarios WHERE email = ?", (email,))
+        if c.fetchone()[0] > 0:
+            conn.close()
+            return False, "E-mail já cadastrado"
+        
+        # Cria usuário com 0 BuroCreds iniciais
+        senha_hash = hash_senha(senha)
+        burocreds_iniciais = 0
+        
+        c.execute('''
+            INSERT INTO usuarios (nome, email, senha_hash, plano, burocreds)
+            VALUES (?, ?, ?, ?, ?)
+        ''', (nome, email, senha_hash, 'FREE', burocreds_iniciais))
+        
+        conn.commit()
+        conn.close()
+        return True, "Usuário criado com sucesso!"
+        
+    except Exception as e:
+        return False, f"Erro ao criar usuário: {str(e)}"
+
+def autenticar_usuario(email, senha):
+    """Autentica um usuário pelo email e senha"""
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+        
+        senha_hash = hash_senha(senha)
+        
+        c.execute('''
+            SELECT id, nome, email, plano, burocreds, estado 
+            FROM usuarios 
+            WHERE email = ? AND senha_hash = ? AND estado = 'ATIVO'
+        ''', (email, senha_hash))
+        
+        resultado = c.fetchone()
+        conn.close()
+        
+        if resultado:
+            return True, {
+                'id': resultado[0],
+                'nome': resultado[1],
+                'email': resultado[2],
+                'plano': resultado[3],
+                'burocreds': resultado[4],
+                'estado': resultado[5]
             }
-        }
-        
-        # Termos para detecção rápida de tipo
-        self.indicadores_tipo = {
-            'CONTRATO_LOCACAO': [
-                'locação', 'aluguel', 'locador', 'locatário', 'imóvel residencial',
-                'caução', 'fiador', 'benfeitorias', 'multa rescisória', 'inquilino',
-                'proprietário', 'Lei 8.245/1991', 'Lei do Inquilinato'
-            ],
-            'CONTRATO_TRABALHO': [
-                'empregador', 'empregado', 'CLT', 'salário', 'jornada',
-                'horas extras', 'FGTS', 'férias', '13º salário', 'funcionário',
-                'trabalhador', 'contrato de trabalho', 'carteira de trabalho'
-            ]
-        }
-        
-        # Detecção especial para violações numeradas
-        self.violacoes_numeradas = [
-            (r'Viol.*\d+.*:', 'VIOLACAO_CLT', '🚨 VIOLAÇÃO À CLT', 'CRÍTICA'),
-        ]
-    
-    def detectar_tipo_documento(self, texto):
-        """Detecção ULTRA precisa do tipo de documento"""
-        if not texto:
-            return 'DESCONHECIDO'
-        
-        texto_limpo = limpar_texto(texto).lower()
-        
-        # Verificação direta por termos chave
-        if 'empregador' in texto_limpo and 'empregado' in texto_limpo:
-            return 'CONTRATO_TRABALHO'
-        
-        if 'locação' in texto_limpo or ('locador' in texto_limpo and 'locatário' in texto_limpo):
-            return 'CONTRATO_LOCACAO'
-        
-        # Contagem de termos
-        scores = {}
-        for doc_type, termos in self.indicadores_tipo.items():
-            score = 0
-            for termo in termos:
-                if termo.lower() in texto_limpo:
-                    score += 3
-            scores[doc_type] = score
-        
-        # Escolher o tipo com maior score
-        if scores:
-            tipo_detectado = max(scores.items(), key=lambda x: x[1])
-            if tipo_detectado[1] > 0:
-                return tipo_detectado[0]
-        
-        return 'DESCONHECIDO'
-    
-    def analisar_documento(self, texto):
-        """Análise super agressiva e abrangente"""
-        if not texto or len(texto) < 50:
-            return [], 'DESCONHECIDO', self._calcular_metricas([])
-        
-        texto_limpo = limpar_texto(texto).lower()
-        problemas = []
-        
-        # Determinar tipo de documento
-        tipo_doc = self.detectar_tipo_documento(texto_limpo)
-        
-        # Análise específica por tipo
-        if tipo_doc in self.padroes:
-            for padrao in self.padroes[tipo_doc]['padroes']:
-                try:
-                    if re.search(padrao['regex'], texto_limpo, re.IGNORECASE | re.DOTALL):
-                        problemas.append({
-                            'tipo': self.padroes[tipo_doc]['nome'],
-                            'problema_id': padrao['regex'][:50],
-                            'descricao': padrao['descricao'],
-                            'detalhe': padrao['detalhe'],
-                            'lei': padrao['lei'],
-                            'gravidade': padrao['gravidade'],
-                            'posicao': 0
-                        })
-                except:
-                    continue
-        
-        # Remover duplicatas
-        problemas_unicos = []
-        problemas_vistos = set()
-        for problema in problemas:
-            chave = (problema['descricao'], problema['lei'])
-            if chave not in problemas_vistos:
-                problemas_vistos.add(chave)
-                problemas_unicos.append(problema)
-        
-        return problemas_unicos, tipo_doc, self._calcular_metricas(problemas_unicos)
-    
-    def _calcular_metricas(self, problemas):
-        """Cálculo agressivo de métricas"""
-        total = len(problemas)
-        criticos = sum(1 for p in problemas if 'CRÍTICA' in p.get('gravidade', ''))
-        altos = sum(1 for p in problemas if 'ALTA' in p.get('gravidade', ''))
-        medios = sum(1 for p in problemas if 'MÉDIA' in p.get('gravidade', ''))
-        info = sum(1 for p in problemas if 'INFO' in p.get('gravidade', ''))
-        
-        # Penalização EXTREMA
-        score = 100
-        score -= criticos * 40  # -40 por crítica
-        score -= altos * 25     # -25 por alta
-        score -= medios * 10    # -10 por média
-        score -= info * 0       # info não penaliza
-        
-        score = max(0, min(100, score))
-        
-        # Status ULTRA alarmante para problemas
-        if criticos >= 5:
-            status = '🚨🚨🚨 DOCUMENTO CRIMINAL - DENUNCIE!'
-            cor = '#8B0000'
-            nivel_risco = 'RISCO EXTREMO'
-        elif criticos >= 3:
-            status = '🚨🚨🚨 DOCUMENTO CRIMINOSO - NÃO ASSINE!'
-            cor = '#FF0000'
-            nivel_risco = 'RISCO MÁXIMO'
-        elif criticos >= 1:
-            status = '🚨🚨 MÚLTIPLAS VIOLAÇÕES GRAVES - PERIGO!'
-            cor = '#FF4500'
-            nivel_risco = 'ALTO RISCO'
-        elif altos >= 2:
-            status = '🚨 VIOLAÇÕES SÉRIAS - CONSULTE UM ADVOGADO!'
-            cor = '#FF8C00'
-            nivel_risco = 'RISCO ELEVADO'
-        elif total > 0:
-            status = '⚠️ PROBLEMAS DETECTADOS - REVISE COM CUIDADO'
-            cor = '#FFD700'
-            nivel_risco = 'RISCO MODERADO'
         else:
-            status = '✅ DOCUMENTO APARENTEMENTE REGULAR'
-            cor = '#27AE60'
-            nivel_risco = 'BAIXO RISCO'
+            return False, "E-mail ou senha incorretos"
+            
+    except Exception as e:
+        return False, f"Erro na autenticação: {str(e)}"
+
+def get_usuario_por_id(usuario_id):
+    """Obtém informações do usuário pelo ID"""
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
         
-        return {
-            'total': total,
-            'criticos': criticos,
-            'altos': altos,
-            'medios': medios,
-            'info': info,
-            'score': round(score, 1),
-            'status': status,
-            'cor': cor,
-            'nivel_risco': nivel_risco
-        }
+        c.execute('''
+            SELECT id, nome, email, plano, burocreds, estado 
+            FROM usuarios 
+            WHERE id = ?
+        ''', (usuario_id,))
+        
+        resultado = c.fetchone()
+        conn.close()
+        
+        if resultado:
+            return {
+                'id': resultado[0],
+                'nome': resultado[1],
+                'email': resultado[2],
+                'plano': resultado[3],
+                'burocreds': resultado[4],
+                'estado': resultado[5]
+            }
+        else:
+            return None
+            
+    except Exception as e:
+        import streamlit as st
+        st.error(f"Erro ao obter usuário: {e}")
+        return None
+
+def atualizar_burocreds(usuario_id, quantidade):
+    """Atualiza os BuroCreds do usuário"""
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+        
+        # Para conta especial, não debita créditos
+        c.execute("SELECT email FROM usuarios WHERE id = ?", (usuario_id,))
+        usuario = c.fetchone()
+        
+        if usuario and usuario[0] == "pedrohenriquemarques720@gmail.com":
+            conn.close()
+            return True
+        
+        # Para usuários normais, atualiza normalmente
+        c.execute('''
+            UPDATE usuarios 
+            SET burocreds = burocreds + ? 
+            WHERE id = ?
+        ''', (quantidade, usuario_id))
+        
+        conn.commit()
+        conn.close()
+        return True
+    except Exception as e:
+        import streamlit as st
+        st.error(f"Erro ao atualizar BuroCreds: {e}")
+        return False
+
+# --------------------------------------------------
+# FUNÇÕES DO SISTEMA DE ANÁLISE
+# --------------------------------------------------
+
+def registrar_analise(usuario_id, nome_arquivo, tipo_documento, problemas, score):
+    """Registra uma análise no histórico"""
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+        
+        c.execute('''
+            INSERT INTO historico_analises 
+            (usuario_id, nome_arquivo, tipo_documento, problemas_detectados, score_conformidade)
+            VALUES (?, ?, ?, ?, ?)
+        ''', (usuario_id, nome_arquivo, tipo_documento, problemas, score))
+        
+        conn.commit()
+        conn.close()
+        return True
+    except Exception as e:
+        import streamlit as st
+        st.error(f"Erro ao registrar análise: {e}")
+        return False
+
+def get_historico_usuario(usuario_id, limit=5):
+    """Obtém histórico de análises do usuário"""
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+        
+        c.execute('''
+            SELECT nome_arquivo, tipo_documento, problemas_detectados, 
+                   score_conformidade, data_analise
+            FROM historico_analises
+            WHERE usuario_id = ?
+            ORDER BY data_analise DESC
+            LIMIT ?
+        ''', (usuario_id, limit))
+        
+        historico = []
+        for row in c.fetchall():
+            historico.append({
+                'arquivo': row[0],
+                'tipo': row[1],
+                'problemas': row[2],
+                'score': row[3],
+                'data': row[4]
+            })
+        
+        conn.close()
+        return historico
+    except:
+        return []
