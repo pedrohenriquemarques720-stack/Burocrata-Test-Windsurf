@@ -46,11 +46,20 @@ ANALYSIS_CONFIG = {
     'history_limit': 5
 }
 
+# Configurações de Domínio e Deploy
+DOMAIN_CONFIG = {
+    'domain': "www.burocratadebolso.com.br",
+    'streamlit_app': "burocratadefinitivo",
+    'streamlit_url': "https://burocratadefinitivo.streamlit.app",
+    'production_url': "https://www.burocratadebolso.com.br"
+}
+
 # Contato e Suporte
 CONTACT_CONFIG = {
     'email': "contatoburocrata@outlook.com",
     'instagram': "https://www.instagram.com/burocratadebolso/",
-    'support_response_time': "24h"
+    'support_response_time': "24h",
+    'whatsapp': "+55 11 99999-9999"  # Opcional: adicionar WhatsApp
 }
 
 # Mensagens do Sistema
