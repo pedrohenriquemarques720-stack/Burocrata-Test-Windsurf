@@ -5,9 +5,13 @@ enableCORS = false
 enableXsrfProtection = false
 maxUploadSize = 200
 maxMessageSize = 200
+enableWebsocketCompression = false
+enableCaching = false
 
 [browser]
 gatherUsageStats = false
+serverAddress = "localhost"
+serverPort = 8501
 
 [theme]
 primaryColor = "#F8D96D"
