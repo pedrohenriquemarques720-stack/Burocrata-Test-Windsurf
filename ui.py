@@ -433,9 +433,9 @@ def mostrar_tela_principal():
     
     st.markdown("""
     <div style="text-align: center; margin: 30px 0;">
-        <div style="font-size: 2em; color: #F8D96D; margin-bottom: 10px;">📄</div>
-        <h3 style="color: #F8D96D;">Envie seu documento para análise</h3>
-        <p style="color: #FFFFFF;">Formatos suportados: PDF • Até 10MB</p>
+        <div style="font-size: 2em; color: #F8D96D; margin-bottom: 10px;">PDF</div>
+        <h3 style="color: #F8D96D;">Envie seu documento para analise</h3>
+        <p style="color: #FFFFFF;">Formatos suportados: PDF • Ate 10MB</p>
     </div>
     """, unsafe_allow_html=True)
     
@@ -444,14 +444,14 @@ def mostrar_tela_principal():
     if arquivo:
         if not is_conta_especial and st.session_state.usuario['burocreds'] < 10:
             st.error("""
-            ❌ **Saldo insuficiente!** 
+            Saldo insuficiente! 
             
-            Você precisa de pelo menos **10 BuroCreds** para realizar uma análise.
+            Voce precisa de pelo menos 10 BuroCreds para realizar uma analise.
             
-            **Solução:** Entre em contato com o suporte para adquirir créditos.
+            Solucao: Entre em contato com o suporte para adquirir creditos.
             """)
         else:
-            with st.spinner(f"🔍 Analisando juridicamente '{arquivo.name}'..."):
+            with st.spinner(f"Analisando juridicamente '{arquivo.name}'..."):
                 texto = extrair_texto_pdf(arquivo)
                 
                 if texto:
@@ -471,18 +471,18 @@ def mostrar_tela_principal():
                             st.session_state.usuario['burocreds'] -= 10
                     
                     # Mostrar resumo da análise
-                    st.markdown("### 📊 Resultados da Análise Jurídica")
+                    st.markdown("### Resultados da Analise Juridica")
                     
                     st.markdown(f"""
                     <div class="metric-card">
                         <div style="display: flex; align-items: center; margin-bottom: 15px;">
-                            <div style="font-size: 2em; margin-right: 15px;">⚖️</div>
+                            <div style="font-size: 2em; margin-right: 15px;">&nbsp;</div>
                             <div>
                                 <h3 style="color: {metricas['cor']}; margin: 0;">{metricas['status']}</h3>
                                 <p style="color: #FFFFFF; margin: 5px 0 0 0;">
                                     <strong>Documento:</strong> {arquivo.name}
                                     {f"• <strong>Tipo:</strong> {detector.padroes.get(tipo_doc, {}).get('nome', 'Documento')}" if tipo_doc != 'DESCONHECIDO' else ''}
-                                    • <strong>Nível de Risco:</strong> {metricas['nivel_risco']}
+                                    • <strong>Nivel de Risco:</strong> {metricas['nivel_risco']}
                                 </p>
                             </div>
                         </div>
