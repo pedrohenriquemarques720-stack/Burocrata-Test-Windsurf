@@ -61,28 +61,28 @@ def mostrar_tela_login():
                     st.rerun()
         
         else:
-            st.markdown('<div class="auth-title">📝 Criar Nova Conta</div>', unsafe_allow_html=True)
+            st.markdown('<div class="auth-title">Criar Nova Conta</div>', unsafe_allow_html=True)
             
             nome = st.text_input("Nome Completo", placeholder="Seu nome", key="cad_nome")
             email = st.text_input("E-mail", placeholder="seu@email.com", key="cad_email")
-            senha = st.text_input("Senha", type="password", placeholder="Mínimo 6 caracteres", key="cad_senha")
+            senha = st.text_input("Senha", type="password", placeholder="Minimo 6 caracteres", key="cad_senha")
             confirmar_senha = st.text_input("Confirmar Senha", type="password", placeholder="Digite novamente", key="cad_confirmar")
             
-            st.info("ℹ️ **Importante:** Novas contas começam com 0 BuroCreds. Para adquirir créditos, entre em contato com o suporte.")
+            st.info("Importante: Novas contas comecam com 0 BuroCreds. Para adquirir creditos, entre em contato com o suporte.")
             
             col1, col2 = st.columns(2)
             
             with col1:
-                if st.button("🎉 Criar Conta", use_container_width=True, key="btn_criar"):
+                if st.button("Criar Conta", use_container_width=True, key="btn_criar"):
                     if nome and email and senha and confirmar_senha:
                         if senha != confirmar_senha:
-                            st.error("❌ As senhas não coincidem")
+                            st.error("As senhas nao coincidem")
                         elif len(senha) < 6:
-                            st.error("❌ A senha deve ter no mínimo 6 caracteres")
+                            st.error("A senha deve ter no minimo 6 caracteres")
                         else:
                             sucesso, mensagem = criar_usuario(nome, email, senha)
                             if sucesso:
-                                st.success(f"✅ {mensagem}")
+                                st.success(f"{mensagem}")
                                 sucesso_login, usuario = autenticar_usuario(email, senha)
                                 if sucesso_login:
                                     st.session_state.usuario = usuario
@@ -91,12 +91,12 @@ def mostrar_tela_login():
                                     time.sleep(1)
                                     st.rerun()
                             else:
-                                st.error(f"❌ {mensagem}")
+                                st.error(f"{mensagem}")
                     else:
-                        st.warning("⚠️ Preencha todos os campos")
+                        st.warning("Preencha todos os campos")
             
             with col2:
-                if st.button("🔙 Voltar ao Login", use_container_width=True, key="btn_voltar"):
+                if st.button("Voltar ao Login", use_container_width=True, key="btn_voltar"):
                     st.session_state.modo_auth = 'login'
                     st.rerun()
         
@@ -105,11 +105,11 @@ def mostrar_tela_login():
     mostrar_faq_rodape()
 
 # --------------------------------------------------
-# CABEÇALHO DO USUÁRIO
+# CABECALHO DO USUARIO
 # --------------------------------------------------
 
 def mostrar_cabecalho_usuario():
-    """Mostra o cabeçalho simplificado com informações do usuário"""
+    """Mostra o cabecalho simplificado com informacoes do usuario"""
     usuario = st.session_state.usuario
     
     is_conta_especial = usuario['email'] == "pedrohenriquemarques720@gmail.com"
@@ -121,7 +121,7 @@ def mostrar_cabecalho_usuario():
             st.markdown(f"""
             <div class="user-profile">
                 <h3 style="color: #F8D96D; margin: 0; font-size: 1.8em;">
-                    👤 {usuario['nome']}
+                    {usuario['nome']}
                 </h3>
                 <p style="color: #FFFFFF; margin: 5px 0 0 0;">{usuario['email']}</p>
             </div>
@@ -136,7 +136,7 @@ def mostrar_cabecalho_usuario():
                       text-align: center;
                       box-shadow: 0 5px 15px rgba(0,0,0,0.3);">
                 <div style="font-size: 2em; color: #F8D96D; font-weight: 700;">
-                    {'∞' if is_conta_especial else usuario['burocreds']}
+                    {'ILIMITADO' if is_conta_especial else usuario['burocreds']}
                 </div>
                 <div style="color: #FFFFFF; font-size: 0.9em;">BuroCreds</div>
             </div>
@@ -144,33 +144,33 @@ def mostrar_cabecalho_usuario():
     
     col1, col2 = st.columns(2)
     with col1:
-        if st.button("🔄 Atualizar Dados", use_container_width=True, key="btn_atualizar"):
+        if st.button("Atualizar Dados", use_container_width=True, key="btn_atualizar"):
             usuario_atualizado = get_usuario_por_id(usuario['id'])
             if usuario_atualizado:
                 st.session_state.usuario = usuario_atualizado
-                st.success("✅ Dados atualizados!")
+                st.success("Dados atualizados!")
                 time.sleep(0.5)
                 st.rerun()
     
     with col2:
-        if st.button("🚪 Sair", use_container_width=True, key="btn_sair"):
+        if st.button("Sair", use_container_width=True, key="btn_sair"):
             for key in list(st.session_state.keys()):
                 del st.session_state[key]
             st.rerun()
 
 # --------------------------------------------------
-# SEÇÃO: O QUE ANALISAMOS
+# SECAO: O QUE ANALISAMOS
 # --------------------------------------------------
 
 def mostrar_secao_analises():
-    """Mostra a seção com os tipos de documentos que analisamos"""
+    """Mostra a secao com os tipos de documentos que analisamos"""
     st.markdown("""
     <div style="text-align: center; margin: 40px 0 30px 0;">
         <h2 style="color: #F8D96D; font-size: 2.2em; margin-bottom: 10px;">
-            📋 O QUE ANALISAMOS
+            O QUE ANALISAMOS
         </h2>
         <p style="color: #FFFFFF; font-size: 1.1em; max-width: 800px; margin: 0 auto;">
-            Nossa inteligência artificial verifica os pontos mais importantes dos seus documentos jurídicos
+            Nossa inteligencia artificial verifica os pontos mais importantes dos seus documentos juridicos
         </p>
     </div>
     """, unsafe_allow_html=True)
@@ -180,41 +180,27 @@ def mostrar_secao_analises():
     with col1:
         with st.container():
             st.markdown('<div class="analise-card">', unsafe_allow_html=True)
-            st.markdown('<div class="analise-icon">🏠</div>', unsafe_allow_html=True)
-            st.markdown('<div class="analise-title">Contrato de Locação</div>', unsafe_allow_html=True)
+            st.markdown('<div class="analise-icon">CASA</div>', unsafe_allow_html=True)
+            st.markdown('<div class="analise-title">Contrato de Locacao</div>', unsafe_allow_html=True)
             
             st.markdown("""
             <div class="analise-item">
                 <div class="analise-item-title">Valor do Aluguel e Reajuste</div>
-                <div class="analise-item-desc">Onde dói no bolso (ou entra o dinheiro).</div>
+                <div class="analise-item-desc">Verificacao de valores e periodos permitidos.</div>
             </div>
             """, unsafe_allow_html=True)
             
             st.markdown("""
             <div class="analise-item">
-                <div class="analise-item-title">Vigência e Prazo</div>
-                <div class="analise-item-desc">Quanto tempo dura o "felizes para sempre".</div>
+                <div class="analise-item-title">Vigencia e Prazo</div>
+                <div class="analise-item-desc">Analise do prazo contratual.</div>
             </div>
             """, unsafe_allow_html=True)
             
             st.markdown("""
             <div class="analise-item">
-                <div class="analise-item-title">Conservação e Reformas</div>
-                <div class="analise-item-desc">Quem paga pelo cano que estourou.</div>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            st.markdown("""
-            <div class="analise-item">
-                <div class="analise-item-title">Multas e Rescisão</div>
-                <div class="analise-item-desc">O preço de sair antes da hora.</div>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            st.markdown("""
-            <div class="analise-item">
-                <div class="analise-item-title">Garantia Locatória</div>
-                <div class="analise-item-desc">O famoso fiador, caução ou seguro.</div>
+                <div class="analise-item-title">Conservacao e Reformas</div>
+                <div class="analise-item-desc">Responsabilidades de manutencao.</div>
             </div>
             """, unsafe_allow_html=True)
             
@@ -223,41 +209,27 @@ def mostrar_secao_analises():
     with col2:
         with st.container():
             st.markdown('<div class="analise-card">', unsafe_allow_html=True)
-            st.markdown('<div class="analise-icon">💼</div>', unsafe_allow_html=True)
+            st.markdown('<div class="analise-icon">TRABALHO</div>', unsafe_allow_html=True)
             st.markdown('<div class="analise-title">Contrato de Emprego</div>', unsafe_allow_html=True)
             
             st.markdown("""
             <div class="analise-item">
-                <div class="analise-item-title">Remuneração e Benefícios</div>
-                <div class="analise-item-desc">Salário, VR, VT e os mimos.</div>
+                <div class="analise-item-title">Remuneracao e Beneficios</div>
+                <div class="analise-item-desc">Salario e beneficios contratados.</div>
             </div>
             """, unsafe_allow_html=True)
             
             st.markdown("""
             <div class="analise-item">
                 <div class="analise-item-title">Jornada de Trabalho</div>
-                <div class="analise-item-desc">O horário de bater o ponto.</div>
+                <div class="analise-item-desc">Horarios e carga horaria.</div>
             </div>
             """, unsafe_allow_html=True)
             
             st.markdown("""
             <div class="analise-item">
-                <div class="analise-item-title">Atribuições do Cargo</div>
-                <div class="analise-item-desc">O que, afinal, você foi contratado para fazer.</div>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            st.markdown("""
-            <div class="analise-item">
-                <div class="analise-item-title">Confidencialidade</div>
-                <div class="analise-item-desc">O que acontece na empresa, morre na empresa.</div>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            st.markdown("""
-            <div class="analise-item">
-                <div class="analise-item-title">Aviso Prévio e Rescisão</div>
-                <div class="analise-item-desc">As regras do adeus.</div>
+                <div class="analise-item-title">Atribuicoes do Cargo</div>
+                <div class="analise-item-desc">Funcoes e responsabilidades.</div>
             </div>
             """, unsafe_allow_html=True)
             
@@ -266,166 +238,39 @@ def mostrar_secao_analises():
     with col3:
         with st.container():
             st.markdown('<div class="analise-card">', unsafe_allow_html=True)
-            st.markdown('<div class="analise-icon">🧾</div>', unsafe_allow_html=True)
-            st.markdown('<div class="analise-title">Notas Fiscais</div>', unsafe_allow_html=True)
+            st.markdown('<div class="analise-icon">DOCUMENTO</div>', unsafe_allow_html=True)
+            st.markdown('<div class="analise-title">Outros Documentos</div>', unsafe_allow_html=True)
             
             st.markdown("""
             <div class="analise-item">
-                <div class="analise-item-title">Dados do Emissor/Destinatário</div>
-                <div class="analise-item-desc">Quem vendeu e quem comprou.</div>
+                <div class="analise-item-title">Notas Fiscais</div>
+                <div class="analise-item-desc">Validacao de documentos fiscais.</div>
             </div>
             """, unsafe_allow_html=True)
             
             st.markdown("""
             <div class="analise-item">
-                <div class="analise-item-title">Itens e Serviços</div>
-                <div class="analise-item-desc">A lista de compras detalhada.</div>
+                <div class="analise-item-title">Contratos em Geral</div>
+                <div class="analise-item-desc">Analise de clausulas contratuais.</div>
             </div>
             """, unsafe_allow_html=True)
             
             st.markdown("""
             <div class="analise-item">
-                <div class="analise-item-title">Impostos e Tributação</div>
-                <div class="analise-item-desc">A fatia que fica para o governo.</div>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            st.markdown("""
-            <div class="analise-item">
-                <div class="analise-item-title">Valor Total e Descontos</div>
-                <div class="analise-item-desc">O número final da conta.</div>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            st.markdown("""
-            <div class="analise-item">
-                <div class="analise-item-title">Status de Pagamento</div>
-                <div class="analise-item-desc">Se já caiu na conta ou se ainda é promessa.</div>
+                <div class="analise-item-title">Documentos Juridicos</div>
+                <div class="analise-item-desc">Verificacao de legalidade.</div>
             </div>
             """, unsafe_allow_html=True)
             
             st.markdown('</div>', unsafe_allow_html=True)
-    
-    st.markdown("<div style='margin: 40px 0;'></div>", unsafe_allow_html=True)
-
-# --------------------------------------------------
-# FAQ NO RODAPÉ
-# --------------------------------------------------
-
-def mostrar_faq_rodape():
-    """Mostra a seção de FAQ no rodapé"""
-    st.markdown("---")
-    
-    with st.container():
-        st.markdown('<div class="faq-container">', unsafe_allow_html=True)
-        
-        st.markdown('<h3 style="color: #F8D96D; text-align: center; margin-bottom: 20px;">❓ Perguntas Frequentes</h3>', unsafe_allow_html=True)
-        
-        st.markdown('<div class="faq-question">1. Como adquirir BuroCreds?</div>', unsafe_allow_html=True)
-        st.markdown('<div class="faq-answer">Assista a videos<strong> ou nos contate pelo contatoburocrata@outlook.com</strong> solicitando créditos. Você receberá instruções para pagamento e ativação.</div>', unsafe_allow_html=True)
-        
-        st.markdown('<div class="faq-question">2. Quanto custa cada análise?</div>', unsafe_allow_html=True)
-        st.markdown('<div class="faq-answer">Cada análise de documento custa <strong>10 BuroCreds</strong>.</div>', unsafe_allow_html=True)
-        
-        st.markdown('<div class="faq-question">3. Posso analisar vários documentos de uma vez?</div>', unsafe_allow_html=True)
-        st.markdown('<div class="faq-answer">Atualmente, o sistema analisa um documento por vez. Cada análise consome 10 BuroCreds.</div>', unsafe_allow_html=True)
-        
-        st.markdown('<div class="faq-question">4. Quais tipos de documentos são suportados?</div>', unsafe_allow_html=True)
-        st.markdown('<div class="faq-answer">Analisamos contratos de locação, emprego, serviços e compra e venda em formato PDF.</div>', unsafe_allow_html=True)
-        
-        st.markdown('<div class="faq-question">5. Como funciona o Plano PRO?</div>', unsafe_allow_html=True)
-        st.markdown('<div class="faq-answer">O Plano PRO oferece análises profundas e recursos avançados.</div>', unsafe_allow_html=True)
-        
-        st.markdown('<div class="faq-question">6. Precisa de suporte ou tem reclamações?</div>', unsafe_allow_html=True)
-        st.markdown('<div class="faq-answer">Entre em contato: <strong>contatoburocrata@outlook.com</strong> - Respondemos em até 24h.</div>', unsafe_allow_html=True)
-        
-        st.markdown('</div>', unsafe_allow_html=True)
-    
-    # Links sociais
-    col1, col2, col3 = st.columns([1, 2, 1])
-    with col2:
-        st.markdown("""
-        <div class="social-links">
-            <a href="https://www.instagram.com/burocratadebolso/" target="_blank" class="social-link">
-                📷 Instagram
-            </a>
-            <a href="mailto:contatoburocrata@outlook.com" class="social-link">
-                📧 E-mail
-            </a>
-        </div>
-        """, unsafe_allow_html=True)
-    
-    # Rodapé final
-    st.markdown("""
-    <div style="text-align: center; color: #FFFFFF; margin-top: 30px; padding: 20px;">
-        <p><strong>⚖️ Burocrata de Bolso</strong> • IA de análise documental • v2.1</p>
-        <p style="font-size: 0.9em;">Para suporte técnico: contatoburocrata@outlook.com</p>
-        <p style="font-size: 0.8em; color: #F8D96D; margin-top: 10px;">
-            © 2026 Burocrata de Bolso. Todos os direitos reservados.
-        </p>
-    </div>
-    """, unsafe_allow_html=True)
 
 # --------------------------------------------------
 # TELA PRINCIPAL
 # --------------------------------------------------
 
 def mostrar_tela_principal():
-    """Tela principal após login"""
-    
-    st.markdown("""
-    <div class="header-main">
-        <h1>⚖️ BUROCRATA DE BOLSO</h1>
-        <p>IA de Análise Documental</p>
-    </div>
-    """, unsafe_allow_html=True)
-    
+    """Tela principal do aplicativo"""
     mostrar_cabecalho_usuario()
-    
-    is_conta_especial = st.session_state.usuario['email'] == "pedrohenriquemarques720@gmail.com"
-    
-    hora = datetime.now().hour
-    if hora < 12:
-        saudacao = "Bom dia"
-    elif hora < 18:
-        saudacao = "Boa tarde"
-    else:
-        saudacao = "Boa noite"
-    
-    nome_usuario = st.session_state.usuario['nome'].split()[0]
-    
-    if is_conta_especial:
-        st.markdown(f"""
-        <div style="background: #F8D96D;
-                    padding: 25px;
-                    border-radius: 15px;
-                    margin: 20px 0;
-                    text-align: center;
-                    box-shadow: 0 10px 30px rgba(248, 217, 109, 0.3);">
-            <h3 style="color: #10263D; margin-top: 0; font-size: 1.8em;">
-                👋 {saudacao}, {nome_usuario}!
-            </h3>
-            <p style="color: #10263D; margin-bottom: 0; font-size: 1.1em; font-weight: 600;">
-                🚀 <strong>Modo Desenvolvedor Ativo:</strong> Você tem <strong>créditos ilimitados</strong> para testar o sistema.
-            </p>
-        </div>
-        """, unsafe_allow_html=True)
-    else:
-        st.markdown(f"""
-        <div style="background: #F8D96D;
-                    padding: 25px;
-                    border-radius: 15px;
-                    margin: 20px 0;
-                    text-align: center;
-                    box-shadow: 0 10px 30px rgba(248, 217, 109, 0.3);">
-            <h3 style="color: #10263D; margin-top: 0; font-size: 1.8em;">
-                👋 {saudacao}, {nome_usuario}!
-            </h3>
-            <p style="color: #10263D; margin-bottom: 0; font-size: 1.1em; font-weight: 600;">
-                Analise seus documentos com precisão jurídica. Cada análise custa <strong>10 BuroCreds</strong>.
-            </p>
-        </div>
-        """, unsafe_allow_html=True)
     
     mostrar_secao_analises()
     
@@ -442,6 +287,8 @@ def mostrar_tela_principal():
     arquivo = st.file_uploader("Selecione um arquivo PDF", type=["pdf"])
     
     if arquivo:
+        is_conta_especial = st.session_state.usuario['email'] == "pedrohenriquemarques720@gmail.com"
+        
         if not is_conta_especial and st.session_state.usuario['burocreds'] < 10:
             st.error("""
             Saldo insuficiente! 
@@ -470,7 +317,7 @@ def mostrar_tela_principal():
                             atualizar_burocreds(st.session_state.usuario['id'], -10)
                             st.session_state.usuario['burocreds'] -= 10
                     
-                    # Mostrar resumo da análise
+                    # Mostrar resumo da analise
                     st.markdown("### Resultados da Analise Juridica")
                     
                     st.markdown(f"""
@@ -489,163 +336,135 @@ def mostrar_tela_principal():
                     </div>
                     """, unsafe_allow_html=True)
                     
-                    # Métricas detalhadas
+                    # Metricas detalhadas
                     col1, col2, col3, col4, col5 = st.columns(5)
                     
                     with col1:
                         st.metric("Problemas Detectados", metricas['total'], delta_color="inverse")
                     
                     with col2:
-                        st.metric("Críticos", metricas['criticos'], delta_color="inverse")
+                        st.metric("Criticos", metricas['criticos'], delta_color="inverse")
                     
                     with col3:
                         st.metric("Altos", metricas['altos'], delta_color="inverse")
                     
                     with col4:
-                        st.metric("Score Conformidade", f"{metricas['score']}%")
+                        st.metric("Medios", metricas['medios'], delta_color="inverse")
                     
                     with col5:
-                        if is_conta_especial:
-                            st.metric("BuroCreds Restantes", "∞")
-                        else:
-                            st.metric("BuroCreds Restantes", st.session_state.usuario['burocreds'], delta=-10)
+                        st.metric("Score", f"{metricas['score']:.1f}%", delta_color="inverse")
                     
-                    # Detalhes dos problemas detectados
-                    if problemas:
-                        st.markdown("### ⚖️ Problemas Jurídicos Detectados")
+                    # Problemas detalhados
+                    problemas_criticos = [p for p in problemas if p['nivel'] == 'CRITICO']
+                    problemas_altos = [p for p in problemas if p['nivel'] == 'ALTO']
+                    problemas_medios = [p for p in problemas if p['nivel'] == 'MEDIO']
+                    
+                    if problemas_criticos:
+                        st.markdown("#### Problemas Criticos (Acao Imediata)")
+                        for i, problema in enumerate(problemas_criticos, 1):
+                            st.markdown(f"""
+                            <div style="background: rgba(231, 76, 60, 0.15);
+                                      border-left: 4px solid #E74C3C;
+                                      padding: 20px;
+                                      border-radius: 10px;
+                                      margin: 10px 0;">
+                                <h4 style="color: #E74C3C; margin-top: 0;">
+                                    {i}. {problema['titulo']}
+                                </h4>
+                                <p style="margin: 5px 0; color: #FFFFFF;">
+                                    <strong>Base Legal:</strong> {problema['lei']}
+                                </p>
+                                <p style="margin: 5px 0; color: #e2e8f0; font-size: 0.9em;">
+                                    {problema.get('detalhe', '')}
+                                </p>
+                            </div>
+                            """, unsafe_allow_html=True)
+                    
+                    if problemas_altos:
+                        st.markdown("#### Problemas Altos (Atencao Necessaria)")
+                        for i, problema in enumerate(problemas_altos, 1):
+                            st.markdown(f"""
+                            <div style="background: rgba(243, 156, 18, 0.15);
+                                      border-left: 4px solid #F39C12;
+                                      padding: 20px;
+                                      border-radius: 10px;
+                                      margin: 10px 0;">
+                                <h4 style="color: #F39C12; margin-top: 0;">
+                                    {i}. {problema['titulo']}
+                                </h4>
+                                <p style="margin: 5px 0; color: #FFFFFF;">
+                                    <strong>Base Legal:</strong> {problema['lei']}
+                                </p>
+                                <p style="margin: 5px 0; color: #e2e8f0; font-size: 0.9em;">
+                                    {problema.get('detalhe', '')}
+                                </p>
+                            </div>
+                            """, unsafe_allow_html=True)
+                    
+                    if problemas_medios:
+                        st.markdown("#### Problemas Medios (Revisao Recomendada)")
+                        for i, problema in enumerate(problemas_medios, 1):
+                            st.markdown(f"""
+                            <div style="background: rgba(241, 196, 15, 0.15);
+                                      border-left: 4px solid #F1C40F;
+                                      padding: 20px;
+                                      border-radius: 10px;
+                                      margin: 10px 0;">
+                                <h4 style="color: #F1C40F; margin-top: 0;">
+                                    {i}. {problema['titulo']}
+                                </h4>
+                                <p style="margin: 5px 0; color: #FFFFFF;">
+                                    <strong>Base Legal:</strong> {problema['lei']}
+                                </p>
+                                <p style="margin: 5px 0; color: #e2e8f0; font-size: 0.9em;">
+                                    {problema.get('detalhe', '')}
+                                </p>
+                            </div>
+                            """, unsafe_allow_html=True)
+                    
+                    if not problemas:
+                        st.success("""
+                        Parabens! Nenhum problema significativo foi detectado neste documento.
                         
-                        # Agrupar por gravidade
-                        problemas_criticos = [p for p in problemas if p['gravidade'] == 'CRÍTICA']
-                        problemas_altos = [p for p in problemas if p['gravidade'] == 'ALTA']
-                        problemas_medios = [p for p in problemas if p['gravidade'] == 'MÉDIA']
+                        O documento parece estar em conformidade com a legislacao vigente.
+                        """)
+                    
+                    # Acoes recomendadas
+                    if problemas:
+                        st.markdown("---")
+                        st.markdown("### Acoes Recomendadas")
                         
                         if problemas_criticos:
-                            st.markdown("#### 🔴 Problemas Críticos (Requerem Atenção Imediata)")
-                            for i, problema in enumerate(problemas_criticos, 1):
-                                st.markdown(f"""
-                                <div style="background: rgba(231, 76, 60, 0.15);
-                                          border-left: 4px solid #E74C3C;
-                                          padding: 20px;
-                                          border-radius: 10px;
-                                          margin: 10px 0;
-                                          box-shadow: 0 3px 10px rgba(0,0,0,0.2);">
-                                    <div style="display: flex; align-items: flex-start;">
-                                        <div style="font-size: 1.5em; margin-right: 15px; color: #E74C3C;">🔴</div>
-                                        <div style="flex: 1;">
-                                            <h4 style="margin: 0 0 8px 0; color: #E74C3C;">
-                                                {problema['descricao']}
-                                            </h4>
-                                            <p style="margin: 5px 0; color: #FFFFFF;">
-                                                <strong>Base Legal:</strong> {problema['lei']}
-                                            </p>
-                                            <p style="margin: 5px 0; color: #e2e8f0; font-size: 0.9em;">
-                                                {problema.get('detalhe', '')}
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                                """, unsafe_allow_html=True)
+                            st.warning("""
+                            **Urgente:** Procure um advogado imediatamente para regularizar os pontos criticos.
+                            """)
                         
                         if problemas_altos:
-                            st.markdown("#### 🟠 Problemas Altos (Ajustes Necessários)")
-                            for i, problema in enumerate(problemas_altos, 1):
-                                st.markdown(f"""
-                                <div style="background: rgba(243, 156, 18, 0.15);
-                                          border-left: 4px solid #F39C12;
-                                          padding: 20px;
-                                          border-radius: 10px;
-                                          margin: 10px 0;
-                                          box-shadow: 0 3px 10px rgba(0,0,0,0.2);">
-                                    <div style="display: flex; align-items: flex-start;">
-                                        <div style="font-size: 1.5em; margin-right: 15px; color: #F39C12;">🟠</div>
-                                        <div style="flex: 1;">
-                                            <h4 style="margin: 0 0 8px 0; color: #F39C12;">
-                                                {problema['descricao']}
-                                            </h4>
-                                            <p style="margin: 5px 0; color: #FFFFFF;">
-                                                <strong>Base Legal:</strong> {problema['lei']}
-                                            </p>
-                                            <p style="margin: 5px 0; color: #e2e8f0; font-size: 0.9em;">
-                                                {problema.get('detalhe', '')}
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                                """, unsafe_allow_html=True)
+                            st.info("""
+                            **Recomendado:** Revise os pontos destacados com um profissional juridico.
+                            """)
                         
                         if problemas_medios:
-                            st.markdown("#### 🟡 Problemas Médios (Revisão Recomendada)")
-                            for i, problema in enumerate(problemas_medios, 1):
-                                st.markdown(f"""
-                                <div style="background: rgba(241, 196, 15, 0.15);
-                                          border-left: 4px solid #F1C40F;
-                                          padding: 20px;
-                                          border-radius: 10px;
-                                          margin: 10px 0;
-                                          box-shadow: 0 3px 10px rgba(0,0,0,0.2);">
-                                    <div style="display: flex; align-items: flex-start;">
-                                        <div style="font-size: 1.5em; margin-right: 15px; color: #F1C40F;">🟡</div>
-                                        <div style="flex: 1;">
-                                            <h4 style="margin: 0 0 8px 0; color: #F1C40F;">
-                                                {problema['descricao']}
-                                            </h4>
-                                            <p style="margin: 5px 0; color: #FFFFFF;">
-                                                <strong>Base Legal:</strong> {problema['lei']}
-                                            </p>
-                                            <p style="margin: 5px 0; color: #e2e8f0; font-size: 0.9em;">
-                                                {problema.get('detalhe', '')}
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                                """, unsafe_allow_html=True)
-                        
-                        # Recomendação jurídica
-                        st.markdown("""
-                        <div style="background: #1a3658;
-                                  padding: 20px;
-                                  border-radius: 15px;
-                                  margin: 20px 0;
-                                  border: 2px solid #F8D96D;">
-                            <h4 style="color: #F8D96D; margin-top: 0;">💡 Recomendação Jurídica</h4>
-                            <p style="color: #FFFFFF; margin-bottom: 0;">
-                                <strong>Atenção:</strong> Esta análise identifica potenciais problemas jurídicos com base na legislação brasileira vigente. 
-                                Para validação completa e assessoria jurídica personalizada, recomenda-se a consulta com um advogado especializado.
-                            </p>
-                        </div>
-                        """, unsafe_allow_html=True)
-                    
-                    else:
-                        st.success("""
-                        ### ✅ Excelente! Nenhum problema jurídico detectado.
-                        
-                        Seu documento parece estar em conformidade com os padrões legais analisados.
-                        Para uma avaliação jurídica completa, ainda recomenda-se consultar um advogado.
-                        """)
-                        st.balloons()
-                    
-                    # Botão para nova análise
-                    st.markdown("---")
-                    if st.button("🔄 Realizar Nova Análise", use_container_width=True, type="primary"):
-                        st.rerun()
-                    
+                            st.info("""
+                            **Sugestao:** Considere ajustar os itens de medio risco para maior seguranca.
+                            """)
                 else:
                     st.error("""
-                    ❌ **Não foi possível analisar o documento**
+                    Nao foi possivel analisar o documento
                     
-                    Possíveis causas:
-                    - O arquivo PDF está corrompido
-                    - O PDF está protegido por senha
-                    - O arquivo está em formato de imagem (não contém texto)
-                    - O arquivo está muito grande
+                    Possiveis causas:
+                    - O arquivo PDF esta corrompido
+                    - O PDF esta protegido por senha
+                    - O arquivo esta em formato de imagem (nao contem texto)
+                    - O arquivo esta muito grande
                     
-                    **Solução:** Certifique-se de que o PDF contém texto selecionável.
+                    Solucao: Certifique-se de que o PDF contem texto selecionavel.
                     """)
     
-    # Histórico de análises
+    # Historico de analises
     historico = get_historico_usuario(st.session_state.usuario['id'])
     if historico:
-        with st.expander("📜 Histórico de Análises (Últimas 5)", expanded=False):
+        with st.expander("Historico de Analises (Ultimas 5)", expanded=False):
             for item in historico:
                 score_cor = "#27AE60" if item['score'] >= 80 else "#F39C12" if item['score'] >= 60 else "#E74C3C"
                 
@@ -663,7 +482,7 @@ def mostrar_tela_principal():
                                 <span style="background: #2a4a75; padding: 2px 8px; border-radius: 4px; margin-right: 10px;">
                                     {item['tipo'] or 'Geral'}
                                 </span>
-                                <span>⚖️ {item['problemas']} problemas</span>
+                                <span>Problemas: {item['problemas']}</span>
                             </div>
                         </div>
                         <div style="text-align: right;">
@@ -678,6 +497,8 @@ def mostrar_tela_principal():
                 </div>
                 """, unsafe_allow_html=True)
     
+    is_conta_especial = st.session_state.usuario['email'] == "pedrohenriquemarques720@gmail.com"
+    
     if not is_conta_especial:
         st.markdown("---")
         st.markdown("""
@@ -686,13 +507,71 @@ def mostrar_tela_principal():
                     border-radius: 15px;
                     margin: 20px 0;
                     border: 2px solid #F8D96D;">
-            <h4 style="color: #F8D96D; margin-top: 0;">💰 Sobre os BuroCreds</h4>
+            <h4 style="color: #F8D96D; margin-top: 0;">Sobre os BuroCreds</h4>
             <ul style="color: #FFFFFF; margin-bottom: 0;">
-                <li>Cada análise custa <strong>10 BuroCreds</strong></li>
-                <li>Para adquirir créditos: <strong>Veja vídeos ou nos chame em contatoburocrata@outlook.com</strong></li>
-                <li>Plano PRO: Análises profundas + recursos avançados</li>
+                <li>Cada analise custa <strong>10 BuroCreds</strong></li>
+                <li>Para adquirir creditos: <strong>Veja videos ou nos chame em contatoburocrata@outlook.com</strong></li>
+                <li>Plano PRO: Analises profundas + recursos avancados</li>
             </ul>
         </div>
         """, unsafe_allow_html=True)
     
     mostrar_faq_rodape()
+
+# --------------------------------------------------
+# FAQ E RODAPE
+# --------------------------------------------------
+
+def mostrar_faq_rodape():
+    """Mostra o FAQ e rodape"""
+    st.markdown("---")
+    
+    with st.expander("❓ Perguntas Frequentes", expanded=False):
+        st.markdown("""
+        <div class="faq-container">
+            <div class="faq-question">O que sao BuroCreds?</div>
+            <div class="faq-answer">
+                BuroCreds sao creditos utilizados para realizar analises de documentos. Cada analise consome 10 creditos.
+            </div>
+            
+            <div class="faq-question">Como adquirir mais BuroCreds?</div>
+            <div class="faq-answer">
+                Entre em contato com nosso suporte pelo email contatoburocrata@outlook.com ou assista aos videos disponiveis.
+            </div>
+            
+            <div class="faq-question">O app substitui um advogado?</div>
+            <div class="faq-answer">
+                Nao. Nosso app fornece uma analise preliminar e nao substitui a consulta com um profissional qualificado.
+            </div>
+            
+            <div class="faq-question">Quais tipos de documentos analisam?</div>
+            <div class="faq-answer">
+                Analisamos contratos de locacao, contratos de trabalho, notas fiscais e outros documentos juridicos.
+            </div>
+            
+            <div class="faq-question">Meus dados estao seguros?</div>
+            <div class="faq-answer">
+                Sim. Utilizamos criptografia e seguidores as melhores praticas de seguranca para proteger suas informacoes.
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    st.markdown("""
+    <div style="text-align: center; margin: 40px 0 20px 0; padding: 20px; background: #1a3658; border-radius: 15px; border: 2px solid #F8D96D;">
+        <h3 style="color: #F8D96D; margin-top: 0;">Fale Conosco</h3>
+        <p style="color: #FFFFFF; margin: 10px 0;">
+            <strong>Email:</strong> contatoburocrata@outlook.com<br>
+            <strong>Instagram:</strong> @burocratadebolso
+        </p>
+        <p style="color: #e2e8f0; font-size: 0.9em; margin: 15px 0 0 0;">
+            Resposta em ate 24 horas uteis
+        </p>
+    </div>
+    
+    <div style="text-align: center; margin: 20px 0; color: #a0aec0; font-size: 0.8em;">
+        <p>&copy; 2026 Burocrata de Bolso. Todos os direitos reservados.</p>
+        <p style="margin: 5px 0;">
+            Esta aplicacao fornece analise preliminar e nao substitui a consulta com um advogado qualificado.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
