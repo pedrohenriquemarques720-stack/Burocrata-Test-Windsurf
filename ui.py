@@ -439,36 +439,20 @@ def mostrar_tela_principal():
     </div>
     """, unsafe_allow_html=True)
     
-    arquivo = st.file_uploader(
-        "Selecione um arquivo PDF", 
-        type=["pdf"], 
-        key="file_uploader",
-        help="Envie documentos em formato PDF (máximo 20MB)",
-        accept_multiple_files=False
-    )
+    arquivo = st.file_uploader("Selecione um arquivo PDF", type=["pdf"])
     
     if arquivo:
-        try:
-            # Verificar tamanho do arquivo (limite de 20MB)
-            arquivo.seek(0, 2)  # Ir para o fim
-            tamanho = arquivo.tell()
-            arquivo.seek(0)  # Voltar ao início
+        if not is_conta_especial and st.session_state.usuario['burocreds'] < 10:
+            st.error("""
+            ❌ **Saldo insuficiente!** 
             
-            if tamanho > 20 * 1024 * 1024:  # 20MB
-                st.error("❌ **Arquivo muito grande!** O limite máximo é 20MB.")
-                return
+            Você precisa de pelo menos **10 BuroCreds** para realizar uma análise.
             
-            if not is_conta_especial and st.session_state.usuario['burocreds'] < 10:
-                st.error("""
-                ❌ **Saldo insuficiente!** 
-                
-                Você precisa de pelo menos **10 BuroCreds** para realizar uma análise.
-                
-                **Solução:** Entre em contato com o suporte para adquirir créditos.
-                """)
-            else:
-                with st.spinner(f"🔍 Analisando juridicamente '{arquivo.name}'..."):
-                    texto = extrair_texto_pdf(arquivo)
+            **Solução:** Entre em contato com o suporte para adquirir créditos.
+            """)
+        else:
+            with st.spinner(f"🔍 Analisando juridicamente '{arquivo.name}'..."):
+                texto = extrair_texto_pdf(arquivo)
                 
                 if texto:
                     problemas, tipo_doc, metricas = detector.analisar_documento(texto)
@@ -657,21 +641,6 @@ def mostrar_tela_principal():
                     
                     **Solução:** Certifique-se de que o PDF contém texto selecionável.
                     """)
-        
-        except Exception as e:
-            st.error(f"""
-            ❌ **Erro no upload do arquivo!**
-            
-            **Possíveis causas:**
-            - Arquivo corrompido ou inválido
-            - Formato não suportado (use apenas PDF)
-            - Problema de conexão
-            
-            **Detalhes técnicos:** {str(e)}
-            
-            **Solução:** Tente novamente com outro arquivo ou entre em contato com o suporte.
-            """)
-            return
     
     # Histórico de análises
     historico = get_historico_usuario(st.session_state.usuario['id'])
