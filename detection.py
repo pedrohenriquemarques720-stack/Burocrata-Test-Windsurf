@@ -34,7 +34,7 @@ def limpar_texto(texto):
     
     return texto
 
-class Detector:
+class SistemaDetecção:
     """Sistema de detecção de problemas jurídicos - VERSÃO 2.0"""
     
     def __init__(self):
@@ -926,3 +926,4 @@ class Detector:
             'tipo_documento': 'DESCONHECIDO',
             'problemas': []
         }
+
