@@ -1,10 +1,27 @@
+"""
+Funções utilitárias do Burocrata de Bolso
+"""
 import re
 import unicodedata
 import pdfplumber
 import streamlit as st
+import hashlib
+from typing import Optional
 
-def limpar_texto(texto):
-    """Limpa texto removendo caracteres especiais e normalizando"""
+def hash_senha(senha: str) -> str:
+    """Gera hash da senha usando SHA-256"""
+    return hashlib.sha256(senha.encode()).hexdigest()
+
+def limpar_texto(texto: Optional[str]) -> str:
+    """
+    Limpa texto removendo caracteres especiais e normalizando
+    
+    Args:
+        texto: Texto a ser limpo
+        
+    Returns:
+        Texto limpo e normalizado
+    """
     if not texto:
         return ""
     
@@ -25,8 +42,16 @@ def limpar_texto(texto):
     
     return texto.strip()
 
-def extrair_texto_pdf(arquivo):
-    """Extração ULTRA robusta de texto de PDF"""
+def extrair_texto_pdf(arquivo) -> Optional[str]:
+    """
+    Extração robusta de texto de PDF
+    
+    Args:
+        arquivo: Arquivo PDF uploaded
+        
+    Returns:
+        Texto extraído ou None em caso de erro
+    """
     try:
         texto_total = ""
         
@@ -113,3 +138,67 @@ def extrair_texto_pdf(arquivo):
     except Exception as e:
         st.error(f"❌ Erro crítico ao processar PDF: {str(e)}")
         return None
+
+def validar_email(email: str) -> bool:
+    """
+    Valida formato de e-mail
+    
+    Args:
+        email: E-mail a ser validado
+        
+    Returns:
+        True se e-mail for válido
+    """
+    pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+    return re.match(pattern, email) is not None
+
+def formatar_data(data) -> str:
+    """
+    Formata data para exibição
+    
+    Args:
+        data: Data a ser formatada
+        
+    Returns:
+        Data formatada como string
+    """
+    if hasattr(data, 'strftime'):
+        return data.strftime('%d/%m/%Y %H:%M')
+    elif isinstance(data, str):
+        return data
+    else:
+        return str(data)
+
+def calcular_score_cor(score: float) -> str:
+    """
+    Retorna cor baseada no score
+    
+    Args:
+        score: Score de conformidade (0-100)
+        
+    Returns:
+        Cor hexadecimal
+    """
+    if score >= 80:
+        return "#27AE60"  # Verde
+    elif score >= 60:
+        return "#F39C12"  # Amarelo
+    else:
+        return "#E74C3C"  # Vermelho
+
+def obter_saudacao() -> str:
+    """
+    Obtém saudação baseada na hora atual
+    
+    Returns:
+        Saudação apropriada
+    """
+    from datetime import datetime
+    hora = datetime.now().hour
+    
+    if hora < 12:
+        return "Bom dia"
+    elif hora < 18:
+        return "Boa tarde"
+    else:
+        return "Boa noite"
