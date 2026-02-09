@@ -267,7 +267,7 @@ class SmartDetector:
                         force_learning=True
                     )
                     
-                    print(f"   ✅ Problemas detectados: {resultado['total']}")
+                    print(f"   Problemas detectados: {resultado['total']}")
                     print(f"   [APRENDIZADO] Padroes aprendidos: {resultado['learning_info']['new_patterns']}")
                     
             except Exception as e:
