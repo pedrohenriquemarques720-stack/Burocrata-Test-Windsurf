@@ -26,6 +26,18 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
+# Configurar cabeçalhos de segurança para evitar erros 403
+def configure_security():
+    """Configura cabeçalhos de segurança"""
+    st.markdown("""
+    <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' 'unsafe-eval'; script-src * 'unsafe-inline' 'unsafe-eval';">
+    <meta http-equiv="Access-Control-Allow-Origin" content="*">
+    <meta http-equiv="Access-Control-Allow-Methods" content="GET, POST, PUT, DELETE, OPTIONS">
+    <meta http-equiv="Access-Control-Allow-Headers" content="Content-Type, Authorization">
+    """, unsafe_allow_html=True)
+
+configure_security()
+
 # --------------------------------------------------
 # CSS PERSONALIZADO - TEMA AZUL ESCURO COM DOURADO
 # --------------------------------------------------
