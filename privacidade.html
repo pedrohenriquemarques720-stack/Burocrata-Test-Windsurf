@@ -9,6 +9,14 @@
         h1 { color: #2c3e50; }
         h2 { color: #34495e; margin-top: 20px; }
         .back-btn { display: inline-block; margin-bottom: 20px; text-decoration: none; color: #007bff; }
+        .faq-section { margin-top: 30px; }
+        .faq-item { margin-bottom: 10px; border: 1px solid #ddd; border-radius: 5px; overflow: hidden; }
+        .faq-question { background: #f8f9fa; padding: 15px; cursor: pointer; font-weight: bold; border: none; width: 100%; text-align: left; display: flex; justify-content: space-between; align-items: center; transition: background 0.3s; }
+        .faq-question:hover { background: #e9ecef; }
+        .faq-answer { padding: 0 15px; max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out, padding 0.3s ease-out; background: white; }
+        .faq-answer.active { padding: 15px; max-height: 500px; transition: max-height 0.3s ease-in, padding 0.3s ease-in; }
+        .faq-icon { transition: transform 0.3s; }
+        .faq-icon.active { transform: rotate(180deg); }
     </style>
 </head>
 <body>
@@ -36,6 +44,79 @@
 
     <h2>4. Contato</h2>
     <p>Para questões sobre privacidade, entre em contato através dos canais oficiais do aplicativo.</p>
+
+    <div class="faq-section">
+        <h2>Perguntas Frequentes</h2>
+        
+        <div class="faq-item">
+            <button class="faq-question" onclick="toggleFAQ(this)">
+                <span>Meus documentos são armazenados após a análise?</span>
+                <span class="faq-icon">▼</span>
+            </button>
+            <div class="faq-answer">
+                <p>Não. Os documentos são processados de forma volátil. Após a análise, os arquivos são completamente removidos de nossos servidores e não são armazenados em nenhum banco de dados.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question" onclick="toggleFAQ(this)">
+                <span>Vocês usam meus documentos para treinar IA?</span>
+                <span class="faq-icon">▼</span>
+            </button>
+            <div class="faq-answer">
+                <p>Nunca. Não utilizamos seus contratos ou documentos particulares para treinar modelos de inteligência artificial de terceiros. Seus dados são usados apenas para sua análise específica.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question" onclick="toggleFAQ(this)">
+                <span>Como os anúncios funcionam no app?</span>
+                <span class="faq-icon">▼</span>
+            </button>
+            <div class="faq-answer">
+                <p>Utilizamos Google AdSense para manter a versão gratuita. O Google pode usar cookies para exibir anúncios relevantes baseados em seu histórico de navegação. Você pode desativar cookies nas configurações do seu navegador.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question" onclick="toggleFAQ(this)">
+                <span>Meus dados de pagamento são seguros?</span>
+                <span class="faq-icon">▼</span>
+            </button>
+            <div class="faq-answer">
+                <p>Sim. Todos os dados de pagamento são processados por parceiros de pagamento seguros e criptografados. Não temos acesso aos dados completos do seu cartão de crédito.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question" onclick="toggleFAQ(this)">
+                <span>Posso solicitar exclusão dos meus dados?</span>
+                <span class="faq-icon">▼</span>
+            </button>
+            <div class="faq-answer">
+                <p>Sim. Como não armazenamos seus documentos após a análise, a maioria dos dados já é excluída automaticamente. Para outras solicitações de exclusão, entre em contato através dos canais oficiais do aplicativo.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleFAQ(button) {
+            const answer = button.nextElementSibling;
+            const icon = button.querySelector('.faq-icon');
+            
+            // Fecha outros FAQs abertos (opcional - comentar se quiser múltiplos abertos)
+            document.querySelectorAll('.faq-answer.active').forEach(item => {
+                if (item !== answer) {
+                    item.classList.remove('active');
+                    item.previousElementSibling.querySelector('.faq-icon').classList.remove('active');
+                }
+            });
+            
+            // Alterna o FAQ atual
+            answer.classList.toggle('active');
+            icon.classList.toggle('active');
+        }
+    </script>
 
 </body>
 </html>
