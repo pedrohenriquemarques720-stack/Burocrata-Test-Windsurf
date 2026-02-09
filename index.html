@@ -15,10 +15,9 @@
             height: 100%; 
             overflow: hidden; 
             font-family: Arial, sans-serif;
-            background-color: #0E1117; /* Cor escura padrão do Streamlit para evitar flashes brancos */
+            background-color: #0E1117; 
         }
         
-        /* Área do Anúncio no Topo */
         #ads-container { 
             height: 100px; 
             background: #f0f2f6; 
@@ -28,14 +27,12 @@
             border-bottom: 1px solid #ddd;
         }
 
-        /* O App do Streamlit ocupando o restante da tela */
         #app-frame { 
             width: 100%; 
-            height: calc(100% - 130px); /* Ajustado para dar espaço ao topo e rodapé */
+            height: calc(100% - 130px); 
             border: none; 
         }
 
-        /* Rodapé profissional */
         footer { 
             height: 30px; 
             background: #ffffff; 
@@ -51,7 +48,6 @@
             text-decoration: none; 
             margin: 0 10px;
         }
-        footer a:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
@@ -60,11 +56,15 @@
         <span style="color: #999; font-size: 12px;">Publicidade (Google Ads)</span>
     </div>
 
-    <iframe id="app-frame" src="https://burocrata.streamlit.app/?embed=true"></iframe>
+    <iframe 
+        id="app-frame" 
+        src="https://burocratadefinitivo.streamlit.app/?embedded=true"
+        sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-modals">
+    </iframe>
 
     <footer>
         <span>© 2026 Burocrata de Bolso</span>
-        <a href="privacidade.html" target="_blank">Política de Privacidade</a>
+        <a href="#">Política de Privacidade</a>
     </footer>
 
 </body>
