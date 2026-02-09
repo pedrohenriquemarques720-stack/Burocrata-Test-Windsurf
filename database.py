@@ -1,11 +1,10 @@
 import sqlite3
 import hashlib
-import os
 
 # --------------------------------------------------
 # CONFIGURAÇÃO DO BANCO DE DADOS SQLITE
 # --------------------------------------------------
-DB_PATH = os.path.join(os.getcwd(), 'usuarios_burocrata.db')
+DB_PATH = 'usuarios_burocrata.db'
 
 def hash_senha(senha):
     """Gera hash da senha usando SHA-256"""
@@ -58,7 +57,7 @@ def init_database():
             INSERT INTO usuarios (nome, email, senha_hash, plano, burocreds)
             VALUES (?, ?, ?, ?, ?)
         ''', ("Pedro Henrique (Conta Especial)", conta_especial_email, senha_especial_hash, 'PRO', 999999))
-        print(f"[OK] Conta especial criada: {conta_especial_email}")
+        print(f"✅ Conta especial criada: {conta_especial_email}")
     else:
         # Atualizar senha da conta existente
         c.execute('''
@@ -66,7 +65,7 @@ def init_database():
             SET senha_hash = ?
             WHERE email = ?
         ''', (senha_especial_hash, conta_especial_email))
-        print(f"[OK] Senha da conta especial atualizada")
+        print(f"✅ Senha da conta especial atualizada")
     
     conn.commit()
     conn.close()
