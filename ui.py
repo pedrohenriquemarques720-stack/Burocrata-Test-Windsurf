@@ -13,8 +13,8 @@ def mostrar_tela_login():
     """Tela de login"""
     st.markdown("""
     <div class="header-main">
-        <h1>⚖️ BUROCRATA DE BOLSO</h1>
-        <p>IA de Análise Documental</p>
+        <h1>BUROCRATA DE BOLSO</h1>
+        <p>IA de Analise Documental</p>
     </div>
     """, unsafe_allow_html=True)
     
@@ -25,18 +25,18 @@ def mostrar_tela_login():
         st.markdown('<div class="auth-card">', unsafe_allow_html=True)
         
         if st.session_state.modo_auth == 'login':
-            st.markdown('<div class="auth-title">🔐 Entrar na Conta</div>', unsafe_allow_html=True)
+            st.markdown('<div class="auth-title">Entrar na Conta</div>', unsafe_allow_html=True)
             
             email = st.text_input("E-mail", placeholder="seu@email.com", key="login_email")
             senha = st.text_input("Senha", type="password", placeholder="Digite sua senha", key="login_senha")
             
             if email == "pedrohenriquemarques720@gmail.com":
-                st.info("🔑 **Conta Especial Detectada:** Use sua senha pessoal para acessar.")
+                st.info("Conta Especial Detectada: Use sua senha pessoal para acessar.")
             
             col1, col2 = st.columns(2)
             
             with col1:
-                if st.button("🚀 Entrar", use_container_width=True, key="btn_entrar"):
+                if st.button("Entrar", use_container_width=True, key="btn_entrar"):
                     if email and senha:
                         sucesso, resultado = autenticar_usuario(email, senha)
                         if sucesso:
@@ -44,19 +44,19 @@ def mostrar_tela_login():
                             st.session_state.autenticado = True
                             
                             if email == "pedrohenriquemarques720@gmail.com":
-                                st.success("✅ **Conta Especial:** Acesso concedido com créditos ilimitados!")
+                                st.success("Conta Especial: Acesso concedido com creditos ilimitados!")
                             else:
-                                st.success("✅ Login realizado com sucesso!")
+                                st.success("Login realizado com sucesso!")
                             
                             time.sleep(1)
                             st.rerun()
                         else:
-                            st.error(f"❌ {resultado}")
+                            st.error(f"{resultado}")
                     else:
-                        st.warning("⚠️ Preencha todos os campos")
+                        st.warning("Preencha todos os campos")
             
             with col2:
-                if st.button("📝 Criar Conta", use_container_width=True, key="btn_criar_conta_login"):
+                if st.button("Criar Conta", use_container_width=True, key="btn_criar_conta_login"):
                     st.session_state.modo_auth = 'cadastro'
                     st.rerun()
         
