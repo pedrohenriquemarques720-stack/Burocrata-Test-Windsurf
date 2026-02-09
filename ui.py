@@ -1,7 +1,7 @@
 import streamlit as st
 import time
 from datetime import datetime
-from detection import SistemaDetecção
+from detection import Detector
 from database import autenticar_usuario, criar_usuario, get_usuario_por_id, atualizar_burocreds, registrar_analise, get_historico_usuario
 from utils import extrair_texto_pdf
 
@@ -429,7 +429,7 @@ def mostrar_tela_principal():
     
     mostrar_secao_analises()
     
-    detector = SistemaDetecção()
+   detector = Detector()
     
     st.markdown("""
     <div style="text-align: center; margin: 30px 0;">
@@ -696,3 +696,4 @@ def mostrar_tela_principal():
         """, unsafe_allow_html=True)
     
     mostrar_faq_rodape()
+
