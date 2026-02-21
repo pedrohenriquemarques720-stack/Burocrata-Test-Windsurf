@@ -5,12 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Burocrata de Bolso - Pagamento</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             background: #10263D;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -20,13 +15,7 @@
             align-items: center;
             justify-content: center;
         }
-        
-        .container {
-            max-width: 500px;
-            width: 90%;
-            margin: 20px;
-        }
-        
+        .container { max-width: 500px; width: 90%; margin: 20px; }
         .card {
             background: #1a3658;
             border-radius: 20px;
@@ -34,30 +23,20 @@
             border: 3px solid #F8D96D;
             box-shadow: 0 20px 40px rgba(0,0,0,0.5);
         }
-        
         h1 {
             color: #F8D96D;
             text-align: center;
             margin-bottom: 30px;
             font-size: 2em;
         }
-        
         .dados-compra {
             background: #0f2a40;
             border-radius: 15px;
             padding: 20px;
             margin-bottom: 30px;
         }
-        
-        .dados-compra p {
-            margin: 10px 0;
-            font-size: 1.1em;
-        }
-        
-        .dados-compra strong {
-            color: #F8D96D;
-        }
-        
+        .dados-compra p { margin: 10px 0; font-size: 1.1em; }
+        .dados-compra strong { color: #F8D96D; }
         .btn-pagar {
             background: linear-gradient(135deg, #F8D96D, #d4b747);
             color: #10263D;
@@ -71,12 +50,10 @@
             margin: 20px 0;
             transition: all 0.3s;
         }
-        
         .btn-pagar:hover {
             transform: translateY(-3px);
             box-shadow: 0 15px 30px rgba(248, 217, 109, 0.4);
         }
-        
         .btn-voltar {
             background: transparent;
             color: #F8D96D;
@@ -86,20 +63,14 @@
             font-weight: 600;
             width: 100%;
             cursor: pointer;
-            transition: all 0.3s;
             margin-top: 20px;
         }
-        
-        .btn-voltar:hover {
-            background: rgba(248, 217, 109, 0.1);
-        }
-        
+        .btn-voltar:hover { background: rgba(248, 217, 109, 0.1); }
         .loading {
             display: none;
             text-align: center;
             padding: 30px;
         }
-        
         .loading-spinner {
             border: 4px solid rgba(248, 217, 109, 0.2);
             border-top-color: #F8D96D;
@@ -109,60 +80,22 @@
             animation: spin 1s linear infinite;
             margin: 20px auto;
         }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        .opcoes-pagamento {
-            margin: 20px 0;
-        }
-        
-        .pix-info, .cartao-info {
-            background: #2a4a75;
-            border-radius: 10px;
-            padding: 20px;
-            margin: 20px 0;
-        }
-        
-        .pix-info code {
-            background: #10263D;
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .status {
             padding: 15px;
-            border-radius: 5px;
-            display: block;
-            margin: 15px 0;
-            word-break: break-all;
-            color: #F8D96D;
-            font-size: 0.9em;
+            border-radius: 10px;
+            margin: 20px 0;
+            display: none;
         }
-        
-        .btn-copiar {
-            background: #F8D96D;
-            color: #10263D;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 10px;
-            font-weight: 600;
-        }
-        
-        .status-sucesso {
+        .status.sucesso {
             background: rgba(39, 174, 96, 0.2);
             border: 1px solid #27AE60;
-            padding: 20px;
-            border-radius: 10px;
-            margin: 20px 0;
-            text-align: center;
+            display: block;
         }
-        
-        .status-erro {
+        .status.erro {
             background: rgba(231, 76, 60, 0.2);
             border: 1px solid #E74C3C;
-            padding: 20px;
-            border-radius: 10px;
-            margin: 20px 0;
-            text-align: center;
+            display: block;
         }
     </style>
 </head>
@@ -175,37 +108,19 @@
                 <p><strong>Pacote:</strong> <span id="pacote-nome">Carregando...</span></p>
                 <p><strong>Valor:</strong> R$ <span id="pacote-valor">0</span></p>
                 <p><strong>Créditos:</strong> <span id="pacote-creditos">0</span></p>
-                <p><strong>Usuário:</strong> <span id="usuario-email">carregando...</span></p>
+                <p><strong>Seu e-mail:</strong> <span id="usuario-email">carregando...</span></p>
             </div>
             
             <div class="loading" id="loading">
                 <div class="loading-spinner"></div>
-                <p>Processando pagamento...</p>
+                <p>Processando...</p>
             </div>
             
-            <button class="btn-pagar" id="btn-pagar" onclick="iniciarPagamento()">
-                💳 Pagar com Mercado Pago
+            <button class="btn-pagar" id="btn-pagar" onclick="redirecionarPagamento()">
+                💳 Ir para o Mercado Pago
             </button>
             
-            <div class="opcoes-pagamento" id="opcoes-teste">
-                <div class="pix-info">
-                    <h3 style="color: #F8D96D; margin-bottom: 10px;">✅ PIX (Teste)</h3>
-                    <p>Use esta chave para pagamento via PIX:</p>
-                    <code id="pix-codigo">00020126580014br.gov.bcb.pix0136burocrata@mercadopago.com.br5204000053039865802BR5925Burocrata de Bolso6009Sao Paulo62070503***6304E2D1</code>
-                    <button class="btn-copiar" onclick="copiarPix()">📋 Copiar código PIX</button>
-                </div>
-                
-                <div class="cartao-info">
-                    <h3 style="color: #F8D96D; margin-bottom: 10px;">💳 Cartão de Crédito (Teste)</h3>
-                    <p><strong>Número:</strong> 5031 4332 1540 6351</p>
-                    <p><strong>Validade:</strong> 12/2030</p>
-                    <p><strong>CVV:</strong> 123</p>
-                    <p><strong>Nome:</strong> Qualquer nome</p>
-                    <p><strong>CPF:</strong> 123.456.789-09</p>
-                </div>
-            </div>
-            
-            <div id="status-pagamento"></div>
+            <div id="status-mensagem" class="status"></div>
             
             <button class="btn-voltar" onclick="window.location.href='index.html'">
                 ← Voltar para Loja
@@ -214,13 +129,20 @@
     </div>
 
     <script>
-        // ===== PEGAR DADOS DA URL =====
+        // Pegar dados da URL
         const urlParams = new URLSearchParams(window.location.search);
         const pacote = urlParams.get('pacote') || 'bronze';
         const valor = urlParams.get('valor') || '15';
         const creditos = urlParams.get('creditos') || '30';
         
-        // ===== RECUPERAR USUÁRIO =====
+        // IDs dos links do Mercado Pago (SUBSTITUA PELOS SEUS)
+        const LINKS_MP = {
+        'bronze': 'https://mpago.la/2ss4rSt',
+        'prata': 'https://mpago.la/1UFjmFD',
+        'pro': 'https://mpago.la/32FZG95'
+        };
+        
+        // Recuperar usuário
         let usuarioAtual = null;
         try {
             const usuarioSalvo = sessionStorage.getItem('usuarioLogado');
@@ -231,14 +153,14 @@
             console.error('Erro ao carregar usuário:', e);
         }
         
-        // ===== NOMES DOS PACOTES =====
+        // Nomes dos pacotes
         const nomes = {
             'bronze': 'Bronze',
             'prata': 'Prata',
             'pro': 'PRO (Mensal)'
         };
         
-        // ===== MOSTRAR DADOS NA TELA =====
+        // Mostrar dados na tela
         document.getElementById('pacote-nome').textContent = nomes[pacote] || pacote;
         document.getElementById('pacote-valor').textContent = valor;
         document.getElementById('pacote-creditos').textContent = 
@@ -246,72 +168,47 @@
         document.getElementById('usuario-email').textContent = 
             usuarioAtual ? usuarioAtual.email : 'Não logado';
         
-        // ===== FUNÇÃO PARA COPIAR PIX =====
-        window.copiarPix = function() {
-            const pixCode = document.getElementById('pix-codigo').textContent;
-            navigator.clipboard.writeText(pixCode).then(() => {
-                alert('✅ Código PIX copiado!');
-            }).catch(() => {
-                alert('❌ Erro ao copiar. Copie manualmente.');
-            });
-        };
-        
-        // ===== FUNÇÃO PARA INICIAR PAGAMENTO =====
-        window.iniciarPagamento = function() {
-            document.getElementById('loading').style.display = 'block';
-            document.getElementById('btn-pagar').style.display = 'none';
-            
-            // Simular processo de pagamento
-            setTimeout(() => {
-                document.getElementById('loading').style.display = 'none';
-                
-                // Mostrar mensagem de sucesso
-                document.getElementById('status-pagamento').innerHTML = `
-                    <div class="status-sucesso">
-                        <h3 style="color: #27AE60;">✅ Pagamento Simulado com Sucesso!</h3>
-                        <p>Em produção, você seria redirecionado para o Mercado Pago.</p>
-                        <p><strong>Créditos simulados adicionados!</strong></p>
-                        <button onclick="window.location.href='index.html'" 
-                                style="background: #27AE60; color: white; border: none; padding: 10px 20px; border-radius: 5px; margin-top: 10px; cursor: pointer;">
-                            Voltar para Loja
-                        </button>
-                    </div>
-                `;
-                
-                // Esconder opções de teste
-                document.getElementById('opcoes-teste').style.display = 'none';
-            }, 2000);
-        };
-        
-        // ===== VERIFICAR SE NÃO ESTÁ LOGADO =====
+        // Verificar se está logado
         if (!usuarioAtual) {
-            document.getElementById('status-pagamento').innerHTML = `
-                <div class="status-erro">
-                    <h3 style="color: #E74C3C;">❌ Usuário não logado</h3>
-                    <p>Faça login primeiro para comprar.</p>
-                    <button onclick="window.location.href='index.html'" 
-                            style="background: #E74C3C; color: white; border: none; padding: 10px 20px; border-radius: 5px; margin-top: 10px; cursor: pointer;">
-                        Ir para Login
-                    </button>
-                </div>
-            `;
+            mostrarMensagem('❌ Faça login primeiro', 'erro');
             document.getElementById('btn-pagar').style.display = 'none';
         }
         
-        // ===== CONTA ESPECIAL =====
+        // Conta especial
         if (usuarioAtual && usuarioAtual.email === 'pedrohenriquemarques720@gmail.com') {
-            document.getElementById('status-pagamento').innerHTML = `
-                <div class="status-sucesso">
-                    <h3 style="color: #F8D96D;">🎮 Modo Programador</h3>
-                    <p>Você já tem acesso ilimitado!</p>
-                    <button onclick="window.location.href='index.html'" 
-                            style="background: #F8D96D; color: #10263D; border: none; padding: 10px 20px; border-radius: 5px; margin-top: 10px; cursor: pointer;">
-                        Voltar para Loja
-                    </button>
-                </div>
-            `;
+            mostrarMensagem('🎮 Modo Programador ativo - Créditos ilimitados', 'sucesso');
             document.getElementById('btn-pagar').style.display = 'none';
         }
+        
+        function redirecionarPagamento() {
+            // Salvar intenção de compra
+            const compraInfo = {
+                pacote: pacote,
+                creditos: creditos,
+                usuarioId: usuarioAtual.id,
+                usuarioEmail: usuarioAtual.email,
+                data: new Date().toISOString()
+            };
+            localStorage.setItem('compraPendente', JSON.stringify(compraInfo));
+            
+            // Redirecionar para o link do Mercado Pago
+            window.location.href = LINKS_MP[pacote];
+        }
+        
+        function mostrarMensagem(texto, tipo) {
+            const statusDiv = document.getElementById('status-mensagem');
+            statusDiv.textContent = texto;
+            statusDiv.className = 'status ' + tipo;
+        }
+        
+        // Verificar se voltou de um pagamento
+        window.onload = function() {
+            const compraPendente = localStorage.getItem('compraPendente');
+            if (compraPendente && window.location.search.includes('status=approved')) {
+                mostrarMensagem('✅ Pagamento detectado! Os créditos serão liberados em instantes.', 'sucesso');
+                localStorage.removeItem('compraPendente');
+            }
+        };
     </script>
 </body>
 </html>
