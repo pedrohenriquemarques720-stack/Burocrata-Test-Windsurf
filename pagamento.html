@@ -97,6 +97,29 @@
             border: 1px solid #E74C3C;
             display: block;
         }
+        .status.info {
+            background: rgba(52, 152, 219, 0.2);
+            border: 1px solid #3498DB;
+            display: block;
+        }
+        .progresso {
+            height: 4px;
+            background: rgba(248, 217, 109, 0.2);
+            border-radius: 2px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+        .progresso-bar {
+            height: 100%;
+            background: #F8D96D;
+            width: 0%;
+            transition: width 0.3s;
+        }
+        .timer {
+            font-size: 0.9em;
+            color: #F8D96D;
+            margin-top: 5px;
+        }
     </style>
 </head>
 <body>
@@ -122,6 +145,13 @@
             
             <div id="status-mensagem" class="status"></div>
             
+            <div id="progresso-container" style="display: none;">
+                <div class="progresso">
+                    <div class="progresso-bar" id="progresso-bar"></div>
+                </div>
+                <div class="timer" id="timer">Aguardando confirmação...</div>
+            </div>
+            
             <button class="btn-voltar" onclick="window.location.href='index.html'">
                 ← Voltar para Loja
             </button>
@@ -129,21 +159,24 @@
     </div>
 
     <script>
-        // Pegar dados da URL
+        // ===== CONFIGURAÇÃO =====
+        const LINKS_MP = {
+            'bronze': 'https://mpago.la/2ss4rSt',
+            'prata': 'https://mpago.la/1UFjmFD',
+            'pro': 'https://mpago.la/32FZG95'
+        };
+        
+        // ===== PEGAR DADOS DA URL =====
         const urlParams = new URLSearchParams(window.location.search);
         const pacote = urlParams.get('pacote') || 'bronze';
         const valor = urlParams.get('valor') || '15';
         const creditos = urlParams.get('creditos') || '30';
         
-        // IDs dos links do Mercado Pago (SUBSTITUA PELOS SEUS)
-        const LINKS_MP = {
-        'bronze': 'https://mpago.la/2ss4rSt',
-        'prata': 'https://mpago.la/1UFjmFD',
-        'pro': 'https://mpago.la/32FZG95'
-        };
-        
-        // Recuperar usuário
+        // ===== RECUPERAR USUÁRIO =====
         let usuarioAtual = null;
+        let intervalVerificacao = null;
+        let tempoEspera = 0;
+        
         try {
             const usuarioSalvo = sessionStorage.getItem('usuarioLogado');
             if (usuarioSalvo) {
@@ -153,14 +186,14 @@
             console.error('Erro ao carregar usuário:', e);
         }
         
-        // Nomes dos pacotes
+        // ===== NOMES DOS PACOTES =====
         const nomes = {
             'bronze': 'Bronze',
             'prata': 'Prata',
             'pro': 'PRO (Mensal)'
         };
         
-        // Mostrar dados na tela
+        // ===== MOSTRAR DADOS NA TELA =====
         document.getElementById('pacote-nome').textContent = nomes[pacote] || pacote;
         document.getElementById('pacote-valor').textContent = valor;
         document.getElementById('pacote-creditos').textContent = 
@@ -168,44 +201,177 @@
         document.getElementById('usuario-email').textContent = 
             usuarioAtual ? usuarioAtual.email : 'Não logado';
         
-        // Verificar se está logado
+        // ===== VERIFICAR SE ESTÁ LOGADO =====
         if (!usuarioAtual) {
             mostrarMensagem('❌ Faça login primeiro', 'erro');
             document.getElementById('btn-pagar').style.display = 'none';
         }
         
-        // Conta especial
+        // ===== CONTA ESPECIAL =====
         if (usuarioAtual && usuarioAtual.email === 'pedrohenriquemarques720@gmail.com') {
             mostrarMensagem('🎮 Modo Programador ativo - Créditos ilimitados', 'sucesso');
             document.getElementById('btn-pagar').style.display = 'none';
         }
         
-        function redirecionarPagamento() {
-            // Salvar intenção de compra
-            const compraInfo = {
-                pacote: pacote,
-                creditos: creditos,
-                usuarioId: usuarioAtual.id,
-                usuarioEmail: usuarioAtual.email,
-                data: new Date().toISOString()
-            };
-            localStorage.setItem('compraPendente', JSON.stringify(compraInfo));
-            
-            // Redirecionar para o link do Mercado Pago
-            window.location.href = LINKS_MP[pacote];
-        }
-        
+        // ===== FUNÇÃO PARA MOSTRAR MENSAGEM =====
         function mostrarMensagem(texto, tipo) {
             const statusDiv = document.getElementById('status-mensagem');
             statusDiv.textContent = texto;
             statusDiv.className = 'status ' + tipo;
         }
         
-        // Verificar se voltou de um pagamento
+        // ===== FUNÇÃO PARA SALVAR COMPRA NO SERVIDOR =====
+        async function salvarCompraNoServidor() {
+            try {
+                const response = await fetch('salvar-compra.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        usuario_id: usuarioAtual.id,
+                        pacote: pacote,
+                        creditos: creditos,
+                        valor: valor
+                    })
+                });
+                
+                const data = await response.json();
+                return data.success;
+            } catch (error) {
+                console.error('Erro ao salvar compra:', error);
+                return false;
+            }
+        }
+        
+        // ===== FUNÇÃO PARA VERIFICAR SE CRÉDITOS FORAM ADICIONADOS =====
+        async function verificarCreditos() {
+            if (!usuarioAtual) return false;
+            
+            try {
+                // Buscar dados atualizados do usuário
+                const response = await fetch(`verificar-creditos.php?usuario_id=${usuarioAtual.id}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Atualizar sessionStorage
+                    usuarioAtual.burocreditos = data.burocreditos;
+                    usuarioAtual.plano = data.plano;
+                    sessionStorage.setItem('usuarioLogado', JSON.stringify(usuarioAtual));
+                    
+                    // Se os créditos aumentaram, pagamento confirmado
+                    if (data.burocreditos > 0 || data.plano === 'PRO') {
+                        return true;
+                    }
+                }
+            } catch (error) {
+                console.error('Erro ao verificar créditos:', error);
+            }
+            
+            return false;
+        }
+        
+        // ===== FUNÇÃO PARA AGUARDAR CONFIRMAÇÃO =====
+        function aguardarConfirmacao() {
+            document.getElementById('progresso-container').style.display = 'block';
+            document.getElementById('btn-pagar').style.display = 'none';
+            
+            tempoEspera = 0;
+            const progressBar = document.getElementById('progresso-bar');
+            const timerDiv = document.getElementById('timer');
+            
+            intervalVerificacao = setInterval(async () => {
+                tempoEspera++;
+                
+                // Atualizar barra de progresso (simulação)
+                const progresso = Math.min((tempoEspera / 30) * 100, 100);
+                progressBar.style.width = progresso + '%';
+                timerDiv.textContent = `Aguardando confirmação... ${tempoEspera}s`;
+                
+                // Verificar a cada 5 segundos
+                if (tempoEspera % 5 === 0) {
+                    const confirmado = await verificarCreditos();
+                    
+                    if (confirmado) {
+                        clearInterval(intervalVerificacao);
+                        mostrarMensagem('✅ Pagamento confirmado! Créditos adicionados à sua conta.', 'sucesso');
+                        document.getElementById('progresso-container').style.display = 'none';
+                        
+                        // Botão para voltar
+                        setTimeout(() => {
+                            window.location.href = 'index.html';
+                        }, 3000);
+                    }
+                }
+                
+                // Tempo máximo de espera: 2 minutos
+                if (tempoEspera >= 120) {
+                    clearInterval(intervalVerificacao);
+                    mostrarMensagem('⚠️ Tempo limite excedido. Se você já pagou, os créditos serão liberados em breve.', 'info');
+                    document.getElementById('progresso-container').style.display = 'none';
+                    document.getElementById('btn-pagar').style.display = 'block';
+                }
+            }, 1000);
+        }
+        
+        // ===== FUNÇÃO PRINCIPAL DE REDIRECIONAMENTO =====
+        async function redirecionarPagamento() {
+            if (!usuarioAtual) {
+                alert('❌ Faça login primeiro');
+                return;
+            }
+            
+            // Mostrar loading
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('btn-pagar').style.display = 'none';
+            
+            // Salvar compra no servidor
+            const salvou = await salvarCompraNoServidor();
+            
+            if (salvou) {
+                // Salvar também no localStorage como backup
+                const compraInfo = {
+                    pacote: pacote,
+                    creditos: creditos,
+                    usuarioId: usuarioAtual.id,
+                    usuarioEmail: usuarioAtual.email,
+                    data: new Date().toISOString()
+                };
+                localStorage.setItem('compraPendente', JSON.stringify(compraInfo));
+                
+                // Redirecionar para o Mercado Pago
+                window.location.href = LINKS_MP[pacote];
+            } else {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('btn-pagar').style.display = 'block';
+                mostrarMensagem('❌ Erro ao processar compra. Tente novamente.', 'erro');
+            }
+        }
+        
+        // ===== INICIALIZAÇÃO =====
         window.onload = function() {
+            // Verificar se voltou do Mercado Pago
+            const urlStatus = window.location.search.includes('status=');
+            
+            if (urlStatus) {
+                // Esconder botão de pagar
+                document.getElementById('btn-pagar').style.display = 'none';
+                
+                if (window.location.search.includes('status=approved')) {
+                    mostrarMensagem('✅ Pagamento processado! Aguardando confirmação...', 'info');
+                    aguardarConfirmacao();
+                } else if (window.location.search.includes('status=failure')) {
+                    mostrarMensagem('❌ Pagamento não foi concluído. Tente novamente.', 'erro');
+                    document.getElementById('btn-pagar').style.display = 'block';
+                } else if (window.location.search.includes('status=pending')) {
+                    mostrarMensagem('⏳ Pagamento pendente. Aguardando confirmação...', 'info');
+                    aguardarConfirmacao();
+                }
+            }
+            
+            // Verificar se tem compra pendente no localStorage
             const compraPendente = localStorage.getItem('compraPendente');
-            if (compraPendente && window.location.search.includes('status=approved')) {
-                mostrarMensagem('✅ Pagamento detectado! Os créditos serão liberados em instantes.', 'sucesso');
+            if (compraPendente && !urlStatus) {
                 localStorage.removeItem('compraPendente');
             }
         };
