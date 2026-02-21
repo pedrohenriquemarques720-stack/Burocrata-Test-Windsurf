@@ -1,0 +1,417 @@
+// ===== ANIMAÇÕES JAVASCRIPT PROFISSIONAIS =====
+
+class AnimacoesProfissionais {
+    constructor() {
+        this.init();
+    }
+
+    init() {
+        this.initUploadAnimations();
+        this.initCardAnimations();
+        this.initButtonAnimations();
+        this.initMetricAnimations();
+        this.initParticleEffects();
+        this.initScrollAnimations();
+        this.initHover3DEffects();
+        this.initTypingEffect();
+        this.initCounterAnimations();
+    }
+
+    // ===== EFEITO 3D NO UPLOAD COM SEGUIMENTO DE MOUSE =====
+    initUploadAnimations() {
+        const uploadContainer = document.querySelector('.stFileUploader');
+        if (!uploadContainer) return;
+
+        // Criar partículas
+        this.createParticles(uploadContainer);
+
+        // Efeito 3D magnético
+        uploadContainer.addEventListener('mousemove', (e) => {
+            const rect = uploadContainer.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            // Cálculo mais suave para rotação 3D
+            const rotateY = ((x - centerX) / centerX) * 5; // Máximo 5 graus
+            const rotateX = ((centerY - y) / centerY) * 5;
+            
+            // Efeito de luz baseado na posição do mouse
+            const shineX = (x / rect.width) * 100;
+            const shineY = (y / rect.height) * 100;
+            
+            uploadContainer.style.transform = `
+                perspective(1000px) 
+                rotateX(${rotateX}deg) 
+                rotateY(${rotateY}deg) 
+                scale(1.02)
+                translateZ(10px)
+            `;
+            
+            // Efeito de brilho dinâmico
+            uploadContainer.style.background = `
+                radial-gradient(circle at ${shineX}% ${shineY}%, 
+                rgba(248, 217, 109, 0.2), 
+                #1a3658 70%)
+            `;
+        });
+
+        uploadContainer.addEventListener('mouseleave', () => {
+            uploadContainer.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1)';
+            uploadContainer.style.background = '';
+        });
+
+        uploadContainer.addEventListener('mouseenter', () => {
+            this.createRipple(uploadContainer);
+        });
+    }
+
+    // ===== CRIAÇÃO DE PARTÍCULAS FLUTUANTES =====
+    createParticles(container) {
+        const particlesContainer = document.createElement('div');
+        particlesContainer.className = 'particle-effect';
+        container.appendChild(particlesContainer);
+
+        for (let i = 0; i < 15; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            
+            // Posição aleatória
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.top = Math.random() * 100 + '%';
+            
+            // Tamanho aleatório
+            const size = Math.random() * 6 + 2;
+            particle.style.width = size + 'px';
+            particle.style.height = size + 'px';
+            
+            // Atraso aleatório na animação
+            particle.style.animationDelay = Math.random() * 3 + 's';
+            particle.style.animationDuration = (Math.random() * 3 + 2) + 's';
+            
+            // Opacidade aleatória
+            particle.style.opacity = Math.random() * 0.5;
+            
+            particlesContainer.appendChild(particle);
+        }
+    }
+
+    // ===== EFEITO RIPPLE AO CLICAR =====
+    createRipple(element) {
+        const ripple = document.createElement('span');
+        ripple.className = 'ripple-effect';
+        ripple.style.position = 'absolute';
+        ripple.style.top = '50%';
+        ripple.style.left = '50%';
+        ripple.style.width = '0';
+        ripple.style.height = '0';
+        ripple.style.transform = 'translate(-50%, -50%)';
+        ripple.style.borderRadius = '50%';
+        ripple.style.background = 'rgba(248, 217, 109, 0.4)';
+        ripple.style.transition = 'width 0.5s ease-out, height 0.5s ease-out, opacity 0.5s ease-out';
+        ripple.style.pointerEvents = 'none';
+        ripple.style.zIndex = '100';
+        
+        element.appendChild(ripple);
+        
+        setTimeout(() => {
+            ripple.style.width = '300px';
+            ripple.style.height = '300px';
+            ripple.style.opacity = '0';
+        }, 10);
+        
+        setTimeout(() => {
+            ripple.remove();
+        }, 600);
+    }
+
+    // ===== ANIMAÇÕES DOS CARDS COM EFEITO PARALLAX =====
+    initCardAnimations() {
+        const cards = document.querySelectorAll('.analise-card');
+        
+        cards.forEach((card, index) => {
+            // Atraso na animação baseado no índice
+            card.style.animationDelay = (index * 0.15) + 's';
+            
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                // Efeito parallax suave nos elementos internos
+                const icon = card.querySelector('.analise-icon');
+                const title = card.querySelector('.analise-title');
+                const items = card.querySelectorAll('.analise-item');
+                
+                if (icon) {
+                    const iconMoveX = (x - centerX) / 20;
+                    const iconMoveY = (y - centerY) / 20;
+                    icon.style.transform = `translate(${iconMoveX}px, ${iconMoveY}px) scale(1.1)`;
+                }
+                
+                if (title) {
+                    const titleMoveX = (x - centerX) / 30;
+                    title.style.transform = `translateX(${titleMoveX}px)`;
+                }
+                
+                items.forEach((item, i) => {
+                    const itemMoveX = (x - centerX) / (25 + i * 5);
+                    item.style.transform = `translateX(${itemMoveX}px)`;
+                });
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                const icon = card.querySelector('.analise-icon');
+                const title = card.querySelector('.analise-title');
+                const items = card.querySelectorAll('.analise-item');
+                
+                if (icon) icon.style.transform = '';
+                if (title) title.style.transform = '';
+                items.forEach(item => item.style.transform = '');
+            });
+            
+            // Efeito de clique
+            card.addEventListener('click', function(e) {
+                this.style.transform = 'scale(0.98)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 200);
+            });
+        });
+    }
+
+    // ===== ANIMAÇÕES DE BOTÕES COM EFEITO MAGNÉTICO =====
+    initButtonAnimations() {
+        const buttons = document.querySelectorAll('.btn, .nav-button, .btn-secondary');
+        
+        buttons.forEach(button => {
+            button.addEventListener('mousemove', (e) => {
+                const rect = button.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                // Efeito magnético: botão se move levemente em direção ao mouse
+                const moveX = (x - centerX) / 10;
+                const moveY = (y - centerY) / 10;
+                
+                button.style.transform = `translate(${moveX}px, ${moveY}px) scale(1.05)`;
+            });
+            
+            button.addEventListener('mouseleave', () => {
+                button.style.transform = '';
+            });
+        });
+    }
+
+    // ===== ANIMAÇÕES DE MÉTRICAS (CONTADORES) =====
+    initMetricAnimations() {
+        this.observeMetrics();
+    }
+
+    observeMetrics() {
+        const metricValues = document.querySelectorAll('.metric-value');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    this.animateCounter(entry.target);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+        
+        metricValues.forEach(metric => observer.observe(metric));
+    }
+
+    animateCounter(element) {
+        const target = parseInt(element.innerText) || 0;
+        if (target === 0 || target === 999999) return;
+        
+        let current = 0;
+        const increment = target / 50; // 50 frames
+        const timer = setInterval(() => {
+            current += increment;
+            if (current >= target) {
+                element.innerText = target;
+                clearInterval(timer);
+            } else {
+                element.innerText = Math.floor(current);
+            }
+        }, 20);
+    }
+
+    // ===== ANIMAÇÕES DE ENTRADA NO SCROLL =====
+    initScrollAnimations() {
+        const elements = document.querySelectorAll('.analise-card, .metric-item, .problema-item, .historico-item');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationPlayState = 'running';
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '50px' });
+        
+        elements.forEach(el => {
+            el.style.animationPlayState = 'paused';
+            observer.observe(el);
+        });
+    }
+
+    // ===== EFEITO DE DIGITAÇÃO NOS TÍTULOS =====
+    initTypingEffect() {
+        const titles = document.querySelectorAll('.analise-title');
+        
+        titles.forEach(title => {
+            const originalText = title.innerText;
+            if (originalText.length > 20) return;
+            
+            title.addEventListener('mouseenter', function() {
+                if (this.classList.contains('typing')) return;
+                
+                this.classList.add('typing');
+                const text = this.innerText;
+                this.innerText = '';
+                
+                let i = 0;
+                const timer = setInterval(() => {
+                    if (i < text.length) {
+                        this.innerText += text.charAt(i);
+                        i++;
+                    } else {
+                        clearInterval(timer);
+                        this.classList.remove('typing');
+                    }
+                }, 50);
+            });
+        });
+    }
+
+    // ===== CONTROLE DE ANIMAÇÕES DE UPLOAD =====
+    animarUploadSelecionado() {
+        const uploadContainer = document.querySelector('.stFileUploader');
+        if (uploadContainer) {
+            uploadContainer.style.animation = 'pulse-glow 1s ease';
+            
+            // Criar confetes de sucesso
+            this.createConfetti(uploadContainer);
+            
+            setTimeout(() => {
+                uploadContainer.style.animation = '';
+            }, 1000);
+        }
+    }
+
+    createConfetti(container) {
+        for (let i = 0; i < 10; i++) {
+            const confetti = document.createElement('div');
+            confetti.style.position = 'absolute';
+            confetti.style.width = '8px';
+            confetti.style.height = '8px';
+            confetti.style.background = `hsl(${Math.random() * 60 + 40}, 80%, 60%)`;
+            confetti.style.borderRadius = '50%';
+            confetti.style.left = Math.random() * 100 + '%';
+            confetti.style.top = '-10px';
+            confetti.style.animation = `confetti ${Math.random() * 2 + 1}s ease-out forwards`;
+            confetti.style.pointerEvents = 'none';
+            
+            container.appendChild(confetti);
+            
+            setTimeout(() => confetti.remove(), 3000);
+        }
+    }
+
+    animarLoading() {
+        const loadingEl = document.getElementById('loading');
+        if (loadingEl && loadingEl.style.display === 'block') {
+            const spinner = loadingEl.querySelector('.loading-spinner');
+            if (spinner) {
+                // Animar o spinner com variação de velocidade
+                spinner.style.animation = 'spinAdvanced 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite';
+                
+                // Criar partículas ao redor do spinner
+                this.createLoadingParticles(loadingEl);
+            }
+        }
+    }
+
+    createLoadingParticles(container) {
+        for (let i = 0; i < 5; i++) {
+            const particle = document.createElement('div');
+            particle.style.position = 'absolute';
+            particle.style.width = '4px';
+            particle.style.height = '4px';
+            particle.style.background = 'var(--color-gold)';
+            particle.style.borderRadius = '50%';
+            particle.style.left = '50%';
+            particle.style.top = '50%';
+            particle.style.transform = `rotate(${i * 72}deg) translateX(30px)`;
+            particle.style.animation = `rotate-slow 3s linear infinite`;
+            particle.style.opacity = '0.5';
+            
+            container.appendChild(particle);
+            
+            setTimeout(() => particle.remove(), 3000);
+        }
+    }
+}
+
+// ===== INICIALIZAÇÃO =====
+document.addEventListener('DOMContentLoaded', () => {
+    window.animacoes = new AnimacoesProfissionais();
+});
+
+// ===== FUNÇÕES GLOBAIS PARA INTEGRAÇÃO =====
+function animarUploadSelecionado() {
+    if (window.animacoes) {
+        window.animacoes.animarUploadSelecionado();
+    }
+}
+
+function animarLoading() {
+    if (window.animacoes) {
+        window.animacoes.animarLoading();
+    }
+}
+
+// Adicionar estilos CSS para animações extras
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes confetti {
+        0% {
+            transform: translateY(0) rotate(0deg);
+            opacity: 1;
+        }
+        100% {
+            transform: translateY(200px) rotate(720deg);
+            opacity: 0;
+        }
+    }
+    
+    .ripple-effect {
+        position: absolute;
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 100;
+    }
+    
+    .typing {
+        border-right: 2px solid var(--color-gold);
+        animation: blink 0.7s step-end infinite;
+    }
+    
+    @keyframes blink {
+        0%, 100% { border-color: transparent; }
+        50% { border-color: var(--color-gold); }
+    }
+`;
+document.head.appendChild(style);

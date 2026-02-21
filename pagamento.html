@@ -1,0 +1,130 @@
+<script>
+    // ===== CONFIGURAÇÃO =====
+    const API_URL = 'http://localhost:5000';  // URL do seu backend
+    
+    // Pegar dados da URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const pacote = urlParams.get('pacote');
+    const valor = urlParams.get('valor');
+    const creditos = urlParams.get('creditos');
+    
+    // Recuperar usuário logado
+    const usuarioSalvo = sessionStorage.getItem('usuarioLogado');
+    const usuarioAtual = usuarioSalvo ? JSON.parse(usuarioSalvo) : null;
+    
+    // Verificar se está logado
+    if (!usuarioAtual) {
+        alert('❌ Faça login primeiro');
+        window.location.href = 'index.html';
+    }
+    
+    // Nomes dos pacotes
+    const nomes = {
+        'bronze': 'Bronze',
+        'prata': 'Prata',
+        'pro': 'PRO (Mensal)'
+    };
+    
+    // Mostrar dados da compra
+    document.getElementById('pacote-nome').textContent = nomes[pacote] || pacote;
+    document.getElementById('pacote-valor').textContent = valor;
+    document.getElementById('pacote-creditos').textContent = 
+        creditos === 'ilimitado' ? 'Ilimitado' : creditos + ' créditos';
+    document.getElementById('usuario-email').textContent = 
+        usuarioAtual ? usuarioAtual.email : 'Não logado';
+    
+    // ===== FUNÇÃO PARA CRIAR PREFERÊNCIA E REDIRECIONAR =====
+    async function criarPagamento() {
+        document.getElementById('loading').style.display = 'block';
+        
+        try {
+            const response = await fetch(`${API_URL}/criar-preferencia`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    pacote: pacote,
+                    valor: valor,
+                    creditos: creditos,
+                    usuario_id: usuarioAtual.id,
+                    usuario_email: usuarioAtual.email,
+                    usuario_nome: usuarioAtual.nome
+                })
+            });
+            
+            const data = await response.json();
+            
+            if (data.success && data.init_point) {
+                // Redirecionar para o Mercado Pago
+                window.location.href = data.init_point;
+            } else {
+                throw new Error('Erro ao criar pagamento');
+            }
+            
+        } catch (error) {
+            console.error('Erro:', error);
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('mercadopago-checkout').innerHTML = `
+                <div style="background: #E74C3C; padding: 20px; border-radius: 10px; text-align: center;">
+                    <p>❌ Erro ao processar pagamento</p>
+                    <p>Use as opções de teste abaixo</p>
+                </div>
+            `;
+        }
+    }
+    
+    // ===== VERIFICAR SE CRÉDITOS FORAM ADICIONADOS =====
+    async function verificarCreditos() {
+        try {
+            const response = await fetch(`${API_URL}/status-pagamento/${usuarioAtual.id}`);
+            const data = await response.json();
+            
+            if (data.success) {
+                // Atualizar sessionStorage
+                usuarioAtual.burocreditos = data.burocreditos;
+                usuarioAtual.plano = data.plano;
+                sessionStorage.setItem('usuarioLogado', JSON.stringify(usuarioAtual));
+                
+                // Mostrar mensagem de sucesso
+                document.getElementById('status-pagamento').style.display = 'block';
+                document.getElementById('status-pagamento').style.background = 'rgba(39, 174, 96, 0.2)';
+                document.getElementById('status-pagamento').innerHTML = `
+                    <h3 style="color: #27AE60;">✅ Pagamento Confirmado!</h3>
+                    <p>Créditos adicionados à sua conta.</p>
+                    <button onclick="window.location.href='index.html'" 
+                            style="background: #27AE60; color: white; border: none; padding: 10px 20px; border-radius: 5px; margin-top: 10px; cursor: pointer;">
+                        Voltar para Loja
+                    </button>
+                `;
+            }
+        } catch (error) {
+            console.error('Erro ao verificar:', error);
+        }
+    }
+    
+    // ===== INICIAR =====
+    window.onload = function() {
+        // Se voltou do Mercado Pago com sucesso
+        if (window.location.search.includes('status=approved')) {
+            verificarCreditos();
+        }
+        
+        // Criar botão de pagamento
+        document.getElementById('mercadopago-checkout').innerHTML = `
+            <button onclick="criarPagamento()" 
+                    style="background: linear-gradient(135deg, #F8D96D, #d4b747); 
+                           color: #10263D; 
+                           border: none; 
+                           padding: 20px; 
+                           border-radius: 10px; 
+                           font-weight: 700; 
+                           font-size: 1.3em; 
+                           width: 100%; 
+                           cursor: pointer;
+                           margin: 20px 0;">
+                💳 Pagar com Mercado Pago
+            </button>
+        `;
+    };
+</script>
