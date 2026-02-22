@@ -90,6 +90,12 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        .info-webhook {
+            font-size: 0.8em;
+            color: #a0aec0;
+            text-align: center;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -113,11 +119,16 @@
                 💳 Ir para o AbacatePay
             </button>
             
+            <div class="info-webhook" id="webhook-info"></div>
+            
             <a href="javascript:history.back()" class="btn-voltar">← Voltar para Loja</a>
         </div>
     </div>
 
     <script>
+        // ===== CONFIGURAÇÃO =====
+        const API_URL = 'https://burocrata-backend.onrender.com'; // ALTERADO PARA O RENDER
+        
         // Pegar parâmetros da URL
         const urlParams = new URLSearchParams(window.location.search);
         const pacote = urlParams.get('pacote') || 'bronze';
@@ -125,16 +136,22 @@
         const creditos = urlParams.get('creditos') || '30';
         const email = urlParams.get('email') || '';
         
+        // Webhook configurado
+        const webhookId = 'webh_dev_ahdHbQwGkZ4qds2aphSSHwtH';
+        const webhookUrl = 'https://burocratadebolso.com.br/webhook/abacate';
+        
         // Preencher dados na página
         document.getElementById('pacote-nome').textContent = pacote.charAt(0).toUpperCase() + pacote.slice(1);
         document.getElementById('pacote-valor').textContent = valor;
         document.getElementById('pacote-creditos').textContent = creditos;
         document.getElementById('usuario-email').textContent = email || 'Não informado';
+        document.getElementById('webhook-info').innerHTML = `Webhook ID: ${webhookId}<br>URL: ${webhookUrl}`;
 
         function criarPagamento() {
             const btn = document.getElementById('btn-pagar');
             const loading = document.getElementById('loading');
             
+            // Mostrar loading
             btn.style.display = 'none';
             loading.style.display = 'block';
             
@@ -152,6 +169,7 @@
                 console.warn('Erro ao ler sessionStorage:', e);
             }
             
+            // Dados para enviar ao backend
             const dados = {
                 pacote: pacote,
                 valor: parseFloat(valor),
@@ -159,12 +177,14 @@
                 usuario_id: usuario_id,
                 usuario_email: email,
                 usuario_nome: usuario_nome,
-                usuario_cpf: ''
+                usuario_cpf: '' // Opcional
             };
             
-            console.log('📤 Enviando dados:', dados);
+            console.log('📤 Enviando dados para:', API_URL + '/criar-pagamento');
+            console.log('📤 Dados:', dados);
             
-            fetch('http://localhost:5000/criar-pagamento', {
+            // Chamar API do backend (AGORA USANDO API_URL)
+            fetch(API_URL + '/criar-pagamento', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -180,6 +200,7 @@
             .then(data => {
                 console.log('📥 Resposta:', data);
                 if (data.success && data.url_pagamento) {
+                    // Redirecionar para o AbacatePay
                     window.location.href = data.url_pagamento;
                 } else {
                     alert('Erro ao criar pagamento: ' + (data.error || 'Tente novamente'));
@@ -189,7 +210,7 @@
             })
             .catch(error => {
                 console.error('❌ Erro:', error);
-                alert('Erro de conexão com o servidor. Verifique se o backend está rodando em http://localhost:5000');
+                alert('Erro de conexão com o servidor. Verifique se o backend está rodando em ' + API_URL);
                 btn.style.display = 'block';
                 loading.style.display = 'none';
             });
