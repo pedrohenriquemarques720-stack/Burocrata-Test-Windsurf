@@ -15,7 +15,7 @@
             align-items: center;
             justify-content: center;
         }
-        .container { max-width: 500px; width: 90%; margin: 20px; }
+        .container { max-width: 600px; width: 90%; margin: 20px; }
         .card {
             background: #1a3658;
             border-radius: 20px;
@@ -44,6 +44,18 @@
             margin: 20px 0;
             text-align: center;
         }
+        .qr-code {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px auto;
+            max-width: 200px;
+        }
+        .qr-code img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
         .pix-codigo {
             background: #10263D;
             padding: 15px;
@@ -64,24 +76,9 @@
             cursor: pointer;
             width: 100%;
             font-size: 1.1em;
+            margin: 10px 0;
         }
         .btn-copiar:hover { transform: scale(1.02); }
-        .btn-confirmar {
-            background: #27AE60;
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 10px;
-            font-weight: bold;
-            cursor: pointer;
-            width: 100%;
-            font-size: 1.1em;
-            margin: 10px 0;
-            text-decoration: none;
-            display: inline-block;
-            text-align: center;
-        }
-        .btn-confirmar:hover { background: #2ecc71; }
         .btn-voltar {
             background: transparent;
             color: #F8D96D;
@@ -94,6 +91,21 @@
             margin-top: 20px;
         }
         .btn-voltar:hover { background: rgba(248, 217, 109, 0.1); }
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 30px;
+        }
+        .loading-spinner {
+            border: 4px solid rgba(248, 217, 109, 0.2);
+            border-top-color: #F8D96D;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
         .status {
             padding: 15px;
             border-radius: 10px;
@@ -107,6 +119,17 @@
             color: #27AE60;
             display: block;
         }
+        .status.erro {
+            background: rgba(231, 76, 60, 0.2);
+            border: 1px solid #E74C3C;
+            color: #E74C3C;
+            display: block;
+        }
+        .valor-destacado {
+            font-size: 1.5em;
+            color: #F8D96D;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -116,29 +139,36 @@
             
             <div id="dados-compra" class="dados-compra">
                 <p><strong>Pacote:</strong> <span id="pacote-nome">Carregando...</span></p>
-                <p><strong>Valor:</strong> R$ <span id="pacote-valor">0</span></p>
+                <p><strong>Valor:</strong> R$ <span id="pacote-valor" class="valor-destacado">0</span></p>
                 <p><strong>Créditos:</strong> <span id="pacote-creditos">0</span></p>
                 <p><strong>E-mail:</strong> <span id="usuario-email">carregando...</span></p>
             </div>
 
-            <div class="pix-area">
-                <h3 style="color: #F8D96D;">📱 PIX Copia e Cola</h3>
-                <p>Use a chave abaixo para pagar:</p>
-                <div class="pix-codigo" id="pix-codigo">carregando...</div>
-                <button class="btn-copiar" onclick="copiarPix()">📋 Copiar chave PIX</button>
-                <p style="font-size: 0.9em; margin-top: 10px; color: #a0aec0;">
-                    Pague via PIX usando esta chave aleatória
+            <div class="loading" id="loading">
+                <div class="loading-spinner"></div>
+                <p>Gerando seu Pix com valor fixo...</p>
+            </div>
+
+            <div id="pix-container" style="display: none;">
+                <div class="pix-area">
+                    <h3 style="color: #F8D96D;">📱 PIX com valor fixo</h3>
+                    <p>Valor: <strong id="pix-valor" style="color: #F8D96D; font-size: 1.2em;">R$ 15,00</strong></p>
+                    
+                    <div class="qr-code" id="qr-code-container">
+                        <img id="qr-code-img" src="" alt="QR Code Pix">
+                    </div>
+                    
+                    <p>Ou copie o código abaixo:</p>
+                    <div class="pix-codigo" id="pix-codigo">Carregando...</div>
+                    
+                    <button class="btn-copiar" onclick="copiarPix()">📋 Copiar código PIX</button>
+                </div>
+
+                <p style="text-align: center; margin: 20px 0; color: #a0aec0;">
+                    ⚡ O valor já está fixo em <strong id="valor-fixo-msg">R$ 15,00</strong>. Ao pagar, o banco já reconhece o valor automaticamente.
                 </p>
             </div>
 
-            <p style="text-align: center; margin: 20px 0; color: #a0aec0;">
-                Após pagar, clique no botão abaixo:
-            </p>
-
-            <button class="btn-confirmar" onclick="confirmarPagamento()">
-                ✅ JÁ PAGUEI - LIBERAR CRÉDITOS
-            </button>
-            
             <div id="status-mensagem" class="status"></div>
             
             <a href="index.html" class="btn-voltar">
@@ -147,14 +177,7 @@
         </div>
     </div>
 
-        <script>
-        // ===== CHAVES PIX =====
-        const CHAVES_PIX = {
-            'bronze': 'bff1474d-f72f-4112-b144-fe2739a74e1d',
-            'prata': '390381ac-75ec-42da-b1a5-780590828559',
-            'pro': '7552c5aa-1808-4adf-8abc-f1ea510ac273'
-        };
-
+    <script>
         // ===== PEGAR DADOS DA URL =====
         const urlParams = new URLSearchParams(window.location.search);
         const pacote = urlParams.get('pacote') || 'bronze';
@@ -162,66 +185,71 @@
         const creditos = urlParams.get('creditos') || '30';
         const email = urlParams.get('email') || '';
 
-        // ===== CARREGAR DADOS =====
-        document.getElementById('pacote-nome').textContent = pacote.charAt(0).toUpperCase() + pacote.slice(1);
-        document.getElementById('pacote-valor').textContent = valor;
-        document.getElementById('pacote-creditos').textContent = creditos === 'ilimitado' ? 'Ilimitado' : creditos;
+        // Nomes dos pacotes
+        const nomes = { 'bronze': 'Bronze', 'prata': 'Prata', 'pro': 'PRO' };
+        const valores = { 'bronze': '15,00', 'prata': '30,00', 'pro': '80,00' };
+
+        // ===== CARREGAR DADOS INICIAIS =====
+        document.getElementById('pacote-nome').textContent = nomes[pacote] || pacote;
+        document.getElementById('pacote-valor').textContent = valores[pacote] || valor;
+        document.getElementById('pacote-creditos').textContent = creditos === 'ilimitado' ? 'Ilimitado' : creditos + ' créditos';
         document.getElementById('usuario-email').textContent = email || 'Não informado';
-        document.getElementById('pix-codigo').textContent = CHAVES_PIX[pacote] || CHAVES_PIX['bronze'];
 
-        // ===== FUNÇÃO COPIAR PIX =====
-        function copiarPix() {
-            const pixCode = document.getElementById('pix-codigo').textContent;
-            navigator.clipboard.writeText(pixCode).then(() => {
-                mostrarMensagem('✅ Chave PIX copiada!', 'sucesso');
-            }).catch(() => {
-                alert('❌ Erro ao copiar. Copie manualmente.');
-            });
-        }
+        // Atualizar mensagens com o valor correto
+        document.getElementById('pix-valor').textContent = 'R$ ' + (valores[pacote] || valor);
+        document.getElementById('valor-fixo-msg').textContent = 'R$ ' + (valores[pacote] || valor);
 
-        // ===== FUNÇÃO CONFIRMAR PAGAMENTO =====
-        async function confirmarPagamento() {
+        // ===== GERAR PIX AO CARREGAR A PÁGINA =====
+        window.onload = function() {
             if (!email) {
                 mostrarMensagem('❌ E-mail não informado', 'erro');
                 return;
             }
 
-            mostrarMensagem('⏳ Processando pagamento...', 'info');
+            gerarPix();
+        };
+
+        async function gerarPix() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('pix-container').style.display = 'none';
 
             try {
-                const response = await fetch('confirmar-pagamento.php', {
+                const response = await fetch('gerar-pix.php', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        email: email,
-                        pacote: pacote
-                    })
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ pacote, email })
                 });
 
                 const data = await response.json();
 
+                document.getElementById('loading').style.display = 'none';
+
                 if (data.success) {
-                    mostrarMensagem(`✅ Pagamento confirmado! ${data.creditos_adicionados} créditos adicionados.`, 'sucesso');
+                    // Mostrar QR Code
+                    document.getElementById('qr-code-img').src = 'data:image/png;base64,' + data.qr_code_base64;
+                    document.getElementById('pix-codigo').textContent = data.qr_code;
+                    document.getElementById('pix-container').style.display = 'block';
                     
-                    // Atualizar créditos na sessionStorage se possível
-                    const usuarioSalvo = sessionStorage.getItem('usuarioLogado');
-                    if (usuarioSalvo) {
-                        const usuario = JSON.parse(usuarioSalvo);
-                        usuario.burocreditos = data.novo_total;
-                        sessionStorage.setItem('usuarioLogado', JSON.stringify(usuario));
-                    }
+                    mostrarMensagem('✅ Pix gerado com sucesso! Valor fixo: R$ ' + valores[pacote], 'sucesso');
                 } else {
-                    mostrarMensagem('❌ Erro: ' + (data.error || 'Erro desconhecido'), 'erro');
+                    mostrarMensagem('❌ Erro ao gerar Pix: ' + (data.error || 'Erro desconhecido'), 'erro');
                 }
             } catch (error) {
-                mostrarMensagem('❌ Erro ao conectar com o servidor', 'erro');
+                document.getElementById('loading').style.display = 'none';
+                mostrarMensagem('❌ Erro de conexão', 'erro');
                 console.error(error);
             }
         }
 
-        // ===== FUNÇÃO MOSTRAR MENSAGEM =====
+        function copiarPix() {
+            const pixCode = document.getElementById('pix-codigo').textContent;
+            navigator.clipboard.writeText(pixCode).then(() => {
+                mostrarMensagem('✅ Código PIX copiado!', 'sucesso');
+            }).catch(() => {
+                alert('❌ Erro ao copiar. Copie manualmente.');
+            });
+        }
+
         function mostrarMensagem(texto, tipo) {
             const statusDiv = document.getElementById('status-mensagem');
             statusDiv.textContent = texto;
@@ -232,3 +260,5 @@
             }, 5000);
         }
     </script>
+</body>
+</html>
