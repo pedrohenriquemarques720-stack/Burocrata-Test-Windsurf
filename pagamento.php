@@ -72,6 +72,24 @@
             text-align: center;
         }
         .btn-voltar:hover { background: rgba(248, 217, 109, 0.1); }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            display: none;
+        }
+        .spinner {
+            border: 4px solid rgba(248, 217, 109, 0.2);
+            border-top: 4px solid #F8D96D;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
@@ -86,15 +104,10 @@
             $creditos = isset($_GET['creditos']) ? $_GET['creditos'] : '30';
             $email = isset($_GET['email']) ? $_GET['email'] : '';
             
-            // LINKS DO MERCADO PAGO
-            $links = [
-                'bronze' => 'https://mpago.la/2ss4rSt',
-                'prata' => 'https://mpago.la/1UFjmFD',
-                'pro' => 'https://mpago.la/32FZG95'
-            ];
-            
-            // PEGAR LINK CORRETO
-            $link_atual = isset($links[$pacote]) ? $links[$pacote] : $links['bronze'];
+            // Para teste - pegar usuário da sessão se disponível
+            session_start();
+            $usuario_id = isset($_SESSION['usuario_id']) ? $_SESSION['usuario_id'] : 1;
+            $usuario_nome = isset($_SESSION['usuario_nome']) ? $_SESSION['usuario_nome'] : 'Cliente';
             ?>
 
             <div class="dados-compra">
@@ -104,16 +117,69 @@
                 <p><strong>E-mail:</strong> <?php echo htmlspecialchars($email) ?: 'Não informado'; ?></p>
             </div>
 
-            <a href="<?php echo $link_atual; ?>" target="_blank" class="btn-pagar">
-                💳 Ir para o Mercado Pago
-            </a>
+            <div id="loading" class="loading">
+                <div class="spinner"></div>
+                <p>🔍 Criando pagamento...</p>
+            </div>
+
+            <button id="btn-pagar" class="btn-pagar" onclick="criarPagamento()">
+                💳 Ir para o AbacatePay
+            </button>
             
             <p style="text-align: center; margin: 20px 0; color: #a0aec0;">
-                Você será redirecionado para o ambiente seguro do Mercado Pago
+                Você será redirecionado para o ambiente seguro do AbacatePay
             </p>
             
             <a href="index.html" class="btn-voltar">← Voltar para Loja</a>
         </div>
     </div>
+
+    <script>
+        function criarPagamento() {
+            const btn = document.getElementById('btn-pagar');
+            const loading = document.getElementById('loading');
+            
+            // Mostrar loading
+            btn.style.display = 'none';
+            loading.style.display = 'block';
+            
+            // Dados para enviar ao backend
+            const dados = {
+                pacote: '<?php echo $pacote; ?>',
+                valor: <?php echo $valor; ?>,
+                creditos: '<?php echo $creditos; ?>',
+                usuario_id: <?php echo $usuario_id; ?>,
+                usuario_email: '<?php echo $email; ?>',
+                usuario_nome: '<?php echo $usuario_nome; ?>',
+                usuario_cpf: '' // Opcional
+            };
+            
+            // Chamar API do backend
+            fetch('http://localhost:5000/criar-pagamento', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(dados)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.url_pagamento) {
+                    // Redirecionar para o AbacatePay
+                    window.location.href = data.url_pagamento;
+                } else {
+                    alert('Erro ao criar pagamento: ' + (data.error || 'Tente novamente'));
+                    btn.style.display = 'block';
+                    loading.style.display = 'none';
+                }
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                alert('Erro de conexão com o servidor');
+                btn.style.display = 'block';
+                loading.style.display = 'none';
+            });
+        }
+    </script>
 </body>
 </html>
