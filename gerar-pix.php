@@ -3,7 +3,7 @@
 header('Content-Type: application/json');
 
 // CONFIGURAÇÕES
-$access_token = 'SEU_ACCESS_TOKEN_AQUI'; // Substitua pelo seu token
+$access_token = 'APP_USR-419498276806507-022123-02e42585338d7e48c6b87c3dfe4b5965-728396417'; // Substitua pelo seu token
 
 // Receber dados
 $data = json_decode(file_get_contents('php://input'), true);
@@ -76,4 +76,5 @@ if ($httpCode == 201) {
         'error' => 'Erro ao gerar Pix: ' . $httpCode
     ]);
 }
+
 ?>
