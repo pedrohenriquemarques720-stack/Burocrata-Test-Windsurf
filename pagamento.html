@@ -99,12 +99,13 @@
             border-radius: 10px;
             margin: 20px 0;
             text-align: center;
-            display: <?php echo isset($_GET['confirmado']) ? 'block' : 'none'; ?>;
+            display: none;
         }
         .status.sucesso {
             background: rgba(39, 174, 96, 0.2);
             border: 1px solid #27AE60;
             color: #27AE60;
+            display: block;
         }
     </style>
 </head>
@@ -121,8 +122,28 @@
                 
                 if ($email) {
                     $db = new SQLite3('utilizadores_burocrata.db');
+                    
+                    // Buscar usuário pelo email
+                    $stmt = $db->prepare("SELECT id, burocreditos FROM utilizadores WHERE email = :email");
+                    $stmt->bindValue(':email', $email, SQLITE3_TEXT);
+                    $user = $stmt->execute()->fetchArray();
+                    
+                    if ($user) {
+                        // Definir créditos baseado no pacote
+                        if ($pacote == 'bronze') $creditos_pacote = 30;
+                        elseif ($pacote == 'prata') $creditos_pacote = 60;
+                        else $creditos_pacote = 999999; // PRO
+                        
+                        $novo_total = $user['burocreditos'] + $creditos_pacote;
+                        $db->exec("UPDATE utilizadores SET burocreditos = $novo_total WHERE id = {$user['id']}");
+                        
+                        echo '<div class="status sucesso">✅ Pagamento confirmado! Créditos adicionados.</div>';
+                    }
+                    $db->close();
+                }
+            }
             
-            // Dados da compra
+            // Pegar dados da URL
             $pacote = $_GET['pacote'] ?? 'bronze';
             $valor = $_GET['valor'] ?? '15';
             $creditos = $_GET['creditos'] ?? '30';
@@ -131,8 +152,8 @@
 
             <div class="dados-compra">
                 <p><strong>Pacote:</strong> <?php echo ucfirst($pacote); ?></p>
-                <p><strong>Valor:</strong> R$ <?php echo $valor; ?></p>
-                <p><strong>Créditos:</strong> <?php echo $creditos; ?></p>
+                <p><strong>Valor:</strong> R$ <?php echo htmlspecialchars($valor); ?></p>
+                <p><strong>Créditos:</strong> <?php echo htmlspecialchars($creditos); ?></p>
                 <p><strong>E-mail:</strong> <?php echo htmlspecialchars($email); ?></p>
             </div>
 
@@ -140,18 +161,25 @@
                 <h3 style="color: #F8D96D;">📱 PIX Copia e Cola</h3>
                 <p>Use o código abaixo para pagar:</p>
                 <div class="pix-codigo" id="pix-codigo">
-                    00020126360014br.gov.bcb.pix0114+5511999999999520400005303986540510.005802BR5913Burocrata6008Sao Paulo62070503***63041234
+                    <?php 
+                    // AQUI VOCÊ DEVE COLOCAR SEU CÓDIGO PIX REAL
+                    // Para gerar um PIX real, acesse sua conta Mercado Pago
+                    echo "00020126360014br.gov.bcb.pix0114+5511999999999520400005303986540510.005802BR5913Burocrata6008Sao Paulo62070503***63041234";
+                    ?>
                 </div>
                 <button class="btn-copiar" onclick="copiarPix()">📋 Copiar código PIX</button>
+                <p style="font-size: 0.8em; margin-top: 10px; color: #a0aec0;">
+                    ⚠️ Este é um código de exemplo. Substitua pelo seu PIX real.
+                </p>
             </div>
 
             <p style="text-align: center; margin: 20px 0; color: #a0aec0;">
+                Após pagar, clique no botão abaixo:
             </p>
 
             <a href="?confirmar=ok&pacote=<?php echo urlencode($pacote); ?>&email=<?php echo urlencode($email); ?>" class="btn-confirmar">
                 ✅ JÁ PAGUEI - LIBERAR CRÉDITOS
             </a>
-
             
             <a href="index.html" class="btn-voltar">
                 ← Voltar para Loja
@@ -171,6 +199,3 @@
     </script>
 </body>
 </html>
-
-
-
