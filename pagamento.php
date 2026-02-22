@@ -90,6 +90,12 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        .info-webhook {
+            font-size: 0.8em;
+            color: #a0aec0;
+            text-align: center;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -108,6 +114,10 @@
             session_start();
             $usuario_id = isset($_SESSION['usuario_id']) ? $_SESSION['usuario_id'] : 1;
             $usuario_nome = isset($_SESSION['usuario_nome']) ? $_SESSION['usuario_nome'] : 'Cliente';
+            
+            // Webhook configurado
+            $webhook_id = 'webh_dev_ahdHbQwGkz4qds2aphSsHWtH';
+            $webhook_url = 'https://burocratadebolso.com.br/webhook/abacate';
             ?>
 
             <div class="dados-compra">
@@ -129,6 +139,11 @@
             <p style="text-align: center; margin: 20px 0; color: #a0aec0;">
                 Você será redirecionado para o ambiente seguro do AbacatePay
             </p>
+            
+            <div class="info-webhook">
+                Webhook ID: <?php echo $webhook_id; ?><br>
+                URL: <?php echo $webhook_url; ?>
+            </div>
             
             <a href="index.html" class="btn-voltar">← Voltar para Loja</a>
         </div>
@@ -154,6 +169,8 @@
                 usuario_cpf: '' // Opcional
             };
             
+            console.log('📤 Enviando dados:', dados);
+            
             // Chamar API do backend
             fetch('http://localhost:5000/criar-pagamento', {
                 method: 'POST',
@@ -164,6 +181,7 @@
             })
             .then(response => response.json())
             .then(data => {
+                console.log('📥 Resposta:', data);
                 if (data.success && data.url_pagamento) {
                     // Redirecionar para o AbacatePay
                     window.location.href = data.url_pagamento;
@@ -174,8 +192,8 @@
                 }
             })
             .catch(error => {
-                console.error('Erro:', error);
-                alert('Erro de conexão com o servidor');
+                console.error('❌ Erro:', error);
+                alert('Erro de conexão com o servidor. Verifique se o backend está rodando.');
                 btn.style.display = 'block';
                 loading.style.display = 'none';
             });
