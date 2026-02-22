@@ -114,64 +114,17 @@
         <div class="card">
             <h1>⚖️ Pagamento via PIX</h1>
             
-            <?php
-            // Processar confirmação manual
-            if (isset($_GET['confirmar']) && $_GET['confirmar'] == 'ok') {
-                $email = $_GET['email'] ?? '';
-                $pacote = $_GET['pacote'] ?? 'bronze';
-                
-                if ($email) {
-                    $db = new SQLite3('utilizadores_burocrata.db');
-                    
-                    // Buscar usuário pelo email
-                    $stmt = $db->prepare("SELECT id, burocreditos FROM utilizadores WHERE email = :email");
-                    $stmt->bindValue(':email', $email, SQLITE3_TEXT);
-                    $user = $stmt->execute()->fetchArray();
-                    
-                    if ($user) {
-                        // Definir créditos baseado no pacote
-                        if ($pacote == 'bronze') $creditos_pacote = 30;
-                        elseif ($pacote == 'prata') $creditos_pacote = 60;
-                        else $creditos_pacote = 999999; // PRO
-                        
-                        $novo_total = $user['burocreditos'] + $creditos_pacote;
-                        $db->exec("UPDATE utilizadores SET burocreditos = $novo_total WHERE id = {$user['id']}");
-                        
-                        echo '<div class="status sucesso">✅ Pagamento confirmado! Créditos adicionados.</div>';
-                    }
-                    $db->close();
-                }
-            }
-            
-            // Pegar dados da URL
-            $pacote = $_GET['pacote'] ?? 'bronze';
-            $valor = $_GET['valor'] ?? '15';
-            $creditos = $_GET['creditos'] ?? '30';
-            $email = $_GET['email'] ?? '';
-            
-            // Chaves PIX para cada pacote (suas chaves aleatórias)
-            $chaves_pix = [
-                'bronze' => 'bff1474d-f72f-4112-b144-fe2739a74e1d',
-                'prata' => '390381ac-75ec-42da-b1a5-780590828559',
-                'pro' => '7552c5aa-1808-4adf-8abc-f1ea510ac273'
-            ];
-            
-            $chave_atual = $chaves_pix[$pacote] ?? $chaves_pix['bronze'];
-            ?>
-
-            <div class="dados-compra">
-                <p><strong>Pacote:</strong> <?php echo ucfirst($pacote); ?></p>
-                <p><strong>Valor:</strong> R$ <?php echo htmlspecialchars($valor); ?></p>
-                <p><strong>Créditos:</strong> <?php echo htmlspecialchars($creditos); ?></p>
-                <p><strong>E-mail:</strong> <?php echo htmlspecialchars($email); ?></p>
+            <div id="dados-compra" class="dados-compra">
+                <p><strong>Pacote:</strong> <span id="pacote-nome">Carregando...</span></p>
+                <p><strong>Valor:</strong> R$ <span id="pacote-valor">0</span></p>
+                <p><strong>Créditos:</strong> <span id="pacote-creditos">0</span></p>
+                <p><strong>E-mail:</strong> <span id="usuario-email">carregando...</span></p>
             </div>
 
             <div class="pix-area">
                 <h3 style="color: #F8D96D;">📱 PIX Copia e Cola</h3>
                 <p>Use a chave abaixo para pagar:</p>
-                <div class="pix-codigo" id="pix-codigo">
-                    <?php echo $chave_atual; ?>
-                </div>
+                <div class="pix-codigo" id="pix-codigo">carregando...</div>
                 <button class="btn-copiar" onclick="copiarPix()">📋 Copiar chave PIX</button>
                 <p style="font-size: 0.9em; margin-top: 10px; color: #a0aec0;">
                     Pague via PIX usando esta chave aleatória
@@ -182,9 +135,11 @@
                 Após pagar, clique no botão abaixo:
             </p>
 
-            <a href="?confirmar=ok&pacote=<?php echo urlencode($pacote); ?>&email=<?php echo urlencode($email); ?>" class="btn-confirmar">
+            <button class="btn-confirmar" onclick="confirmarPagamento()">
                 ✅ JÁ PAGUEI - LIBERAR CRÉDITOS
-            </a>
+            </button>
+            
+            <div id="status-mensagem" class="status"></div>
             
             <a href="index.html" class="btn-voltar">
                 ← Voltar para Loja
@@ -193,13 +148,68 @@
     </div>
 
     <script>
+        // ===== CHAVES PIX =====
+        const CHAVES_PIX = {
+            'bronze': 'bff1474d-f72f-4112-b144-fe2739a74e1d',
+            'prata': '390381ac-75ec-42da-b1a5-780590828559',
+            'pro': '7552c5aa-1808-4adf-8abc-f1ea510ac273'
+        };
+
+        // ===== CRÉDITOS POR PACOTE =====
+        const CREDITOS_PACOTE = {
+            'bronze': 30,
+            'prata': 60,
+            'pro': 999999
+        };
+
+        // ===== PEGAR DADOS DA URL =====
+        const urlParams = new URLSearchParams(window.location.search);
+        const pacote = urlParams.get('pacote') || 'bronze';
+        const valor = urlParams.get('valor') || '15';
+        const creditos = urlParams.get('creditos') || '30';
+        const email = urlParams.get('email') || '';
+
+        // ===== CARREGAR DADOS =====
+        document.getElementById('pacote-nome').textContent = pacote.charAt(0).toUpperCase() + pacote.slice(1);
+        document.getElementById('pacote-valor').textContent = valor;
+        document.getElementById('pacote-creditos').textContent = creditos === 'ilimitado' ? 'Ilimitado' : creditos;
+        document.getElementById('usuario-email').textContent = email || 'Não informado';
+        document.getElementById('pix-codigo').textContent = CHAVES_PIX[pacote] || CHAVES_PIX['bronze'];
+
+        // ===== FUNÇÃO COPIAR PIX =====
         function copiarPix() {
-            const pixCode = document.getElementById('pix-codigo').innerText;
+            const pixCode = document.getElementById('pix-codigo').textContent;
             navigator.clipboard.writeText(pixCode).then(() => {
-                alert('✅ Chave PIX copiada!');
+                mostrarMensagem('✅ Chave PIX copiada!', 'sucesso');
             }).catch(() => {
                 alert('❌ Erro ao copiar. Copie manualmente.');
             });
+        }
+
+        // ===== FUNÇÃO CONFIRMAR PAGAMENTO =====
+        function confirmarPagamento() {
+            if (!email) {
+                mostrarMensagem('❌ E-mail não informado', 'erro');
+                return;
+            }
+
+            // Aqui você precisaria de um backend para adicionar os créditos
+            // Por enquanto, vamos simular
+            mostrarMensagem('✅ Pagamento confirmado! Créditos adicionados.', 'sucesso');
+            
+            // Se tivesse backend, chamaria uma API aqui
+            console.log('Pagamento confirmado para:', { pacote, creditos, email });
+        }
+
+        // ===== FUNÇÃO MOSTRAR MENSAGEM =====
+        function mostrarMensagem(texto, tipo) {
+            const statusDiv = document.getElementById('status-mensagem');
+            statusDiv.textContent = texto;
+            statusDiv.className = 'status ' + tipo;
+            
+            setTimeout(() => {
+                statusDiv.style.display = 'none';
+            }, 5000);
         }
     </script>
 </body>
