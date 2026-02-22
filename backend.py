@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, send_file
 from flask_cors import CORS
 import sqlite3
 import os
@@ -98,6 +98,220 @@ def criar_pagamento():
         import traceback
         traceback.print_exc()
         return jsonify({"success": False, "error": str(e)}), 500
+
+# ===== ROTA PARA PÁGINA DE PAGAMENTO =====
+@app.route('/pagamento')
+def pagina_pagamento():
+    """Serve a página de pagamento"""
+    try:
+        # Pega parâmetros da URL
+        pacote = request.args.get('pacote', 'bronze')
+        valor = request.args.get('valor', '15')
+        creditos = request.args.get('creditos', '30')
+        email = request.args.get('email', '')
+        
+        # Caminho para o arquivo HTML
+        html_path = os.path.join(os.path.dirname(__file__), 'pagamento.html')
+        
+        # Se o arquivo não existir, cria um HTML básico
+        if not os.path.exists(html_path):
+            html_content = f"""<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Burocrata de Bolso - Pagamento</title>
+    <style>
+        * {{ margin: 0; padding: 0; box-sizing: border-box; }}
+        body {{
+            background: #10263D;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }}
+        .container {{ max-width: 500px; width: 90%; margin: 20px; }}
+        .card {{
+            background: #1a3658;
+            border-radius: 20px;
+            padding: 30px;
+            border: 3px solid #F8D96D;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }}
+        h1 {{
+            color: #F8D96D;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2em;
+        }}
+        .dados-compra {{
+            background: #0f2a40;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }}
+        .dados-compra p {{ margin: 10px 0; font-size: 1.1em; }}
+        .dados-compra strong {{ color: #F8D96D; }}
+        .btn-pagar {{
+            background: linear-gradient(135deg, #F8D96D, #d4b747);
+            color: #10263D;
+            border: none;
+            padding: 20px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 1.3em;
+            width: 100%;
+            cursor: pointer;
+            margin: 20px 0;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }}
+        .btn-pagar:hover {{
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(248, 217, 109, 0.4);
+        }}
+        .btn-voltar {{
+            background: transparent;
+            color: #F8D96D;
+            border: 2px solid #F8D96D;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: 600;
+            width: 100%;
+            cursor: pointer;
+            margin-top: 20px;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }}
+        .btn-voltar:hover {{ background: rgba(248, 217, 109, 0.1); }}
+        .loading {{
+            text-align: center;
+            padding: 20px;
+            display: none;
+        }}
+        .spinner {{
+            border: 4px solid rgba(248, 217, 109, 0.2);
+            border-top: 4px solid #F8D96D;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }}
+        @keyframes spin {{
+            0% {{ transform: rotate(0deg); }}
+            100% {{ transform: rotate(360deg); }}
+        }}
+        .info-webhook {{
+            font-size: 0.8em;
+            color: #a0aec0;
+            text-align: center;
+            margin-top: 10px;
+        }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>⚖️ Finalizar Compra</h1>
+            
+            <div class="dados-compra">
+                <p><strong>Pacote:</strong> <span id="pacote-nome">{pacote.capitalize()}</span></p>
+                <p><strong>Valor:</strong> R$ <span id="pacote-valor">{valor}</span></p>
+                <p><strong>Créditos:</strong> <span id="pacote-creditos">{creditos}</span></p>
+                <p><strong>E-mail:</strong> <span id="usuario-email">{email or 'Não informado'}</span></p>
+            </div>
+
+            <div id="loading" class="loading">
+                <div class="spinner"></div>
+                <p>🔍 Criando pagamento...</p>
+            </div>
+
+            <button id="btn-pagar" class="btn-pagar" onclick="criarPagamento()">
+                💳 Ir para o AbacatePay
+            </button>
+            
+            <div class="info-webhook">
+                Webhook ID: {os.getenv('ABACATE_WEBHOOK_ID', 'webh_dev_ahdHbQwGkz4qds2aphSsHWtH')}<br>
+                URL: {os.getenv('APP_URL', 'https://burocratadebolso.com.br')}/webhook/abacate
+            </div>
+            
+            <a href="/" class="btn-voltar">← Voltar para Loja</a>
+        </div>
+    </div>
+
+    <script>
+        function criarPagamento() {{
+            const btn = document.getElementById('btn-pagar');
+            const loading = document.getElementById('loading');
+            
+            btn.style.display = 'none';
+            loading.style.display = 'block';
+            
+            // Pegar usuário do sessionStorage (se existir)
+            let usuario_id = 1;
+            let usuario_nome = 'Cliente';
+            try {{
+                const usuarioLogado = sessionStorage.getItem('usuarioLogado');
+                if (usuarioLogado) {{
+                    const user = JSON.parse(usuarioLogado);
+                    usuario_id = user.id || 1;
+                    usuario_nome = user.nome || 'Cliente';
+                }}
+            }} catch(e) {{}}
+            
+            const dados = {{
+                pacote: '{pacote}',
+                valor: {valor},
+                creditos: '{creditos}',
+                usuario_id: usuario_id,
+                usuario_email: '{email}',
+                usuario_nome: usuario_nome,
+                usuario_cpf: ''
+            }};
+            
+            console.log('📤 Enviando dados:', dados);
+            
+            fetch('/criar-pagamento', {{
+                method: 'POST',
+                headers: {{ 'Content-Type': 'application/json' }},
+                body: JSON.stringify(dados)
+            }})
+            .then(response => response.json())
+            .then(data => {{
+                console.log('📥 Resposta:', data);
+                if (data.success && data.url_pagamento) {{
+                    window.location.href = data.url_pagamento;
+                }} else {{
+                    alert('Erro ao criar pagamento: ' + (data.error || 'Tente novamente'));
+                    btn.style.display = 'block';
+                    loading.style.display = 'none';
+                }}
+            }})
+            .catch(error => {{
+                console.error('❌ Erro:', error);
+                alert('Erro de conexão com o servidor. Verifique se o backend está rodando.');
+                btn.style.display = 'block';
+                loading.style.display = 'none';
+            }});
+        }}
+    </script>
+</body>
+</html>"""
+            
+            return html_content
+        
+        # Se o arquivo existe, serve ele
+        return send_file(html_path)
+        
+    except Exception as e:
+        print(f"❌ Erro ao servir página de pagamento: {e}")
+        return f"Erro: {e}", 500
 
 # ===== ROTA DE RETORNO (APÓS PAGAMENTO) =====
 @app.route('/retorno')
@@ -215,4 +429,4 @@ if __name__ == '__main__':
     print(f"🔗 Webhook configurado: {APP_URL}/webhook/abacate")
     print(f"🆔 Webhook ID: {ABACATE_WEBHOOK_ID}")
     print("📌 Lembre-se de rodar também: python webhook_abacate.py (porta 5001)")
-    app.run(debug=True, port=5000)
+    app.run(debug=True, host='0.0.0.0', port=5000)
