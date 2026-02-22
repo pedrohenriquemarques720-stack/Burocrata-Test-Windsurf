@@ -1,45 +1,47 @@
 <?php
-// salvar-compra.php com logs
+// salvar-compra.php
 header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type');
 
-// Ativar exibição de erros (temporário)
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
-
+// Configuração do banco
 $db_path = 'utilizadores_burocrata.db';
-
-// Log para debug
-file_put_contents('debug_log.txt', date('Y-m-d H:i:s') . " - POST recebido: " . file_get_contents('php://input') . PHP_EOL, FILE_APPEND);
 
 // Receber dados
 $input = file_get_contents('php://input');
 $data = json_decode($input, true);
 
+// Se não recebeu JSON, tenta POST normal
+if (!$data) {
+    $data = $_POST;
+}
+
+// Validar dados
 if (!$data || !isset($data['usuario_id']) || !isset($data['pacote'])) {
-    file_put_contents('debug_log.txt', date('Y-m-d H:i:s') . " - ERRO: Dados inválidos" . PHP_EOL, FILE_APPEND);
     echo json_encode(['success' => false, 'error' => 'Dados inválidos']);
     exit;
 }
 
 try {
-    // Verificar se o arquivo do banco existe
-    if (!file_exists($db_path)) {
-        file_put_contents('debug_log.txt', date('Y-m-d H:i:s') . " - ERRO: Banco não encontrado em $db_path" . PHP_EOL, FILE_APPEND);
-        echo json_encode(['success' => false, 'error' => 'Banco não encontrado']);
-        exit;
-    }
-    
+    // Conectar ao banco
     $db = new SQLite3($db_path);
     
-    // Verificar se a tabela pagamentos existe
-    $check = $db->query("SELECT name FROM sqlite_master WHERE type='table' AND name='pagamentos'");
-    if (!$check->fetchArray()) {
-        file_put_contents('debug_log.txt', date('Y-m-d H:i:s') . " - ERRO: Tabela pagamentos não existe" . PHP_EOL, FILE_APPEND);
-        echo json_encode(['success' => false, 'error' => 'Tabela pagamentos não existe. Execute criar-tabela-pagamentos.php']);
-        exit;
-    }
+    // Criar tabela se não existir (garantia)
+    $db->exec('
+        CREATE TABLE IF NOT EXISTS pagamentos (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            usuario_id INTEGER NOT NULL,
+            pacote TEXT NOT NULL,
+            creditos TEXT NOT NULL,
+            valor TEXT,
+            status TEXT DEFAULT "PENDENTE",
+            data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            data_pagamento TIMESTAMP
+        )
+    ');
     
-    // Inserir compra pendente
+    // Inserir compra
     $stmt = $db->prepare("
         INSERT INTO pagamentos (usuario_id, pacote, creditos, valor, status) 
         VALUES (:id, :pacote, :creditos, :valor, 'PENDENTE')
@@ -48,23 +50,18 @@ try {
     $stmt->bindValue(':id', $data['usuario_id'], SQLITE3_INTEGER);
     $stmt->bindValue(':pacote', $data['pacote'], SQLITE3_TEXT);
     $stmt->bindValue(':creditos', $data['creditos'], SQLITE3_TEXT);
-    $stmt->bindValue(':valor', $data['valor'], SQLITE3_TEXT);
+    $stmt->bindValue(':valor', $data['valor'] ?? '', SQLITE3_TEXT);
     
-    $result = $stmt->execute();
-    
-    if ($result) {
+    if ($stmt->execute()) {
         $last_id = $db->lastInsertRowID();
-        file_put_contents('debug_log.txt', date('Y-m-d H:i:s') . " - ✅ Compra salva com ID: $last_id" . PHP_EOL, FILE_APPEND);
         echo json_encode(['success' => true, 'compra_id' => $last_id]);
     } else {
-        file_put_contents('debug_log.txt', date('Y-m-d H:i:s') . " - ❌ Erro ao inserir: " . $db->lastErrorMsg() . PHP_EOL, FILE_APPEND);
-        echo json_encode(['success' => false, 'error' => $db->lastErrorMsg()]);
+        echo json_encode(['success' => false, 'error' => 'Erro ao inserir no banco']);
     }
     
     $db->close();
     
 } catch (Exception $e) {
-    file_put_contents('debug_log.txt', date('Y-m-d H:i:s') . " - ❌ Exceção: " . $e->getMessage() . PHP_EOL, FILE_APPEND);
     echo json_encode(['success' => false, 'error' => $e->getMessage()]);
 }
 ?>
