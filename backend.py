@@ -17,27 +17,32 @@ CORS(app)
 
 # Configurações
 ABACATE_API_KEY = os.getenv('ABACATE_API_KEY')
+ABACATE_WEBHOOK_ID = os.getenv('ABACATE_WEBHOOK_ID')
 DB_PATH = os.getenv('DATABASE_PATH', 'utilizadores_burocrata.db')
-APP_URL = os.getenv('APP_URL', 'http://localhost:5000')
+APP_URL = os.getenv('APP_URL', 'https://burocratadebolso.com.br')
 
 # Inicializar cliente AbacatePay
 abacate = get_abacate_client()
+
+print(f"🚀 Backend iniciado com webhook ID: {ABACATE_WEBHOOK_ID}")
 
 # ===== ROTA PRINCIPAL =====
 @app.route('/')
 def index():
     return jsonify({
         "status": "API Burocrata de Bolso funcionando!",
-        "payment": "AbacatePay integrado"
+        "payment": "AbacatePay integrado",
+        "webhook_id": ABACATE_WEBHOOK_ID,
+        "webhook_url": f"{APP_URL}/webhook/abacate"
     })
 
-# ===== ROTA PARA CRIAR PAGAMENTO (AGORA ABACATEPAY) =====
+# ===== ROTA PARA CRIAR PAGAMENTO (ABACATEPAY) =====
 @app.route('/criar-pagamento', methods=['POST'])
 def criar_pagamento():
     """Cria um pagamento no AbacatePay"""
     try:
         dados = request.json
-        print("📦 Dados recebidos:", dados)
+        print("📦 Dados recebidos:", json.dumps(dados, indent=2))
         
         # Dados do produto
         pacote = dados.get('pacote')
@@ -51,6 +56,8 @@ def criar_pagamento():
         # Validar dados
         if not all([pacote, valor, usuario_id, usuario_email]):
             return jsonify({"success": False, "error": "Dados incompletos"}), 400
+        
+        print(f"💳 Criando pagamento para {usuario_email} - Pacote: {pacote}")
         
         # Criar pagamento no AbacatePay
         sucesso, url_pagamento, dados_cobranca = abacate.criar_cobranca(
@@ -75,6 +82,7 @@ def criar_pagamento():
             )
             
             print(f"✅ Pagamento AbacatePay criado para usuário {usuario_id}")
+            print(f"🔗 URL: {url_pagamento}")
             
             return jsonify({
                 "success": True,
@@ -87,21 +95,9 @@ def criar_pagamento():
             
     except Exception as e:
         print("❌ Erro:", str(e))
+        import traceback
+        traceback.print_exc()
         return jsonify({"success": False, "error": str(e)}), 500
-
-# ===== WEBHOOK (AGORA REDIRECIONA PARA O SERVIDOR ABACATE) =====
-@app.route('/webhook', methods=['POST'])
-def webhook():
-    """Redireciona notificações para o servidor AbacatePay"""
-    # Essa rota agora apenas loga e redireciona
-    # O webhook real está no servidor webhook_abacate.py
-    print("🔔 Notificação recebida na porta 5000, redirecionando...")
-    
-    # Você pode encaminhar para o servidor webhook se estiver na mesma máquina
-    # import requests
-    # requests.post("http://localhost:5001/webhook/abacate", json=request.json)
-    
-    return jsonify({"status": "ok", "message": "Use o servidor webhook_abacate.py na porta 5001"}), 200
 
 # ===== ROTA DE RETORNO (APÓS PAGAMENTO) =====
 @app.route('/retorno')
@@ -110,6 +106,8 @@ def retorno_pagamento():
     # Pega parâmetros da URL
     bill_id = request.args.get('bill_id')
     status = request.args.get('status', 'pending')
+    
+    print(f"🔄 Retorno de pagamento: bill_id={bill_id}, status={status}")
     
     if status == 'PAID' or status == 'approved':
         return render_template('sucesso.html')
@@ -208,10 +206,13 @@ def teste_abacate():
     return jsonify({
         "status": "AbacatePay integrado",
         "api_key_configured": bool(ABACATE_API_KEY),
-        "webhook_url": f"{APP_URL}/webhook"
+        "webhook_id": ABACATE_WEBHOOK_ID,
+        "webhook_url": f"{APP_URL}/webhook/abacate"
     })
 
 if __name__ == '__main__':
     print("🚀 Servidor Burocrata rodando na porta 5000")
+    print(f"🔗 Webhook configurado: {APP_URL}/webhook/abacate")
+    print(f"🆔 Webhook ID: {ABACATE_WEBHOOK_ID}")
     print("📌 Lembre-se de rodar também: python webhook_abacate.py (porta 5001)")
     app.run(debug=True, port=5000)
