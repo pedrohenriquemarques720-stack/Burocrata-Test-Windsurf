@@ -49,6 +49,9 @@
             cursor: pointer;
             margin: 20px 0;
             transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
         }
         .btn-pagar:hover {
             transform: translateY(-3px);
@@ -64,8 +67,19 @@
             width: 100%;
             cursor: pointer;
             margin-top: 20px;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
         }
         .btn-voltar:hover { background: rgba(248, 217, 109, 0.1); }
+        .erro {
+            background: rgba(231, 76, 60, 0.2);
+            border: 1px solid #E74C3C;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            color: #E74C3C;
+        }
     </style>
 </head>
 <body>
@@ -74,31 +88,42 @@
             <h1>⚖️ Finalizar Compra</h1>
             
             <?php
-            // Pegar dados da URL
-            $pacote = $_GET['pacote'] ?? 'bronze';
-            $valor = $_GET['valor'] ?? '15';
-            $creditos = $_GET['creditos'] ?? '30';
-            $email = $_GET['email'] ?? '';
+            // PEGAR DADOS DA URL
+            $pacote = isset($_GET['pacote']) ? $_GET['pacote'] : 'bronze';
+            $valor = isset($_GET['valor']) ? $_GET['valor'] : '15';
+            $creditos = isset($_GET['creditos']) ? $_GET['creditos'] : '30';
+            $email = isset($_GET['email']) ? $_GET['email'] : '';
             
-            // Links do Mercado Pago
-            $links = [
+            // LINKS DO MERCADO PAGO
+            $links = array(
                 'bronze' => 'https://mpago.la/2ss4rSt',
                 'prata' => 'https://mpago.la/1UFjmFD',
                 'pro' => 'https://mpago.la/32FZG95'
-            ];
+            );
             
-            $link_atual = $links[$pacote] ?? $links['bronze'];
+            // PEGAR LINK CORRETO
+            if (isset($links[$pacote])) {
+                $link_atual = $links[$pacote];
+            } else {
+                $link_atual = $links['bronze'];
+            }
             ?>
 
             <div class="dados-compra">
                 <p><strong>Pacote:</strong> <?php echo ucfirst($pacote); ?></p>
-                <p><strong>Valor:</strong> R$ <?php echo htmlspecialchars($valor); ?></p>
-                <p><strong>Créditos:</strong> <?php echo htmlspecialchars($creditos); ?></p>
-                <p><strong>E-mail:</strong> <?php echo htmlspecialchars($email); ?></p>
+                <p><strong>Valor:</strong> R$ <?php echo $valor; ?></p>
+                <p><strong>Créditos:</strong> <?php echo $creditos; ?></p>
+                <p><strong>E-mail:</strong> <?php echo $email ? $email : 'Não informado'; ?></p>
             </div>
 
-            <a href="<?php echo $link_atual; ?>" target="_blank" style="text-decoration: none;">
-                <button class="btn-pagar">💳 Ir para o Mercado Pago</button>
+            <?php if (!$email): ?>
+                <div class="erro">
+                    ⚠️ Você precisa estar logado para comprar. <a href="index.html" style="color:#F8D96D;">Fazer login</a>
+                </div>
+            <?php endif; ?>
+
+            <a href="<?php echo $link_atual; ?>" target="_blank" class="btn-pagar">
+                💳 Ir para o Mercado Pago
             </a>
             
             <p style="text-align: center; margin: 20px 0; color: #a0aec0;">
