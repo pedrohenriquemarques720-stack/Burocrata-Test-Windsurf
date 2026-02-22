@@ -15,16 +15,27 @@ from abacatepay import get_abacate_client
 app = Flask(__name__)
 CORS(app)
 
-# Configurações
-ABACATE_API_KEY = os.getenv('ABACATE_API_KEY')
-ABACATE_WEBHOOK_ID = os.getenv('ABACATE_WEBHOOK_ID')
+# Configurações - usando variáveis de ambiente
+ABACATE_API_KEY = os.getenv('ABACATE_API_KEY', 'abc_dev_apB2fqGwQFb0bPsUBGmAuHeC')
+ABACATE_WEBHOOK_ID = os.getenv('ABACATE_WEBHOOK_ID', 'webh_dev_ahdHbQwGKz4qds2aphSsHWtH')
 DB_PATH = os.getenv('DATABASE_PATH', 'utilizadores_burocrata.db')
 APP_URL = os.getenv('APP_URL', 'https://burocratadebolso.com.br')
 
+# Verificar se a chave da API está configurada
+if not ABACATE_API_KEY:
+    print("⚠️  AVISO: ABACATE_API_KEY não configurada. Usando valor padrão de teste.")
+    print("⚠️  Para produção, configure a chave no arquivo .env")
+
 # Inicializar cliente AbacatePay
-abacate = get_abacate_client()
+try:
+    abacate = get_abacate_client()
+    print("✅ Cliente AbacatePay inicializado com sucesso!")
+except Exception as e:
+    print(f"❌ Erro ao inicializar cliente AbacatePay: {e}")
+    abacate = None
 
 print(f"🚀 Backend iniciado com webhook ID: {ABACATE_WEBHOOK_ID}")
+print(f"🔑 API Key configurada: {'Sim' if ABACATE_API_KEY else 'Não'}")
 
 # ===== ROTA PRINCIPAL =====
 @app.route('/')
@@ -33,7 +44,8 @@ def index():
         "status": "API Burocrata de Bolso funcionando!",
         "payment": "AbacatePay integrado",
         "webhook_id": ABACATE_WEBHOOK_ID,
-        "webhook_url": f"{APP_URL}/webhook/abacate"
+        "webhook_url": f"{APP_URL}/webhook/abacate",
+        "api_key_configured": bool(ABACATE_API_KEY)
     })
 
 # ===== ROTA PARA CRIAR PAGAMENTO (ABACATEPAY) =====
@@ -41,6 +53,13 @@ def index():
 def criar_pagamento():
     """Cria um pagamento no AbacatePay"""
     try:
+        # Verificar se o cliente AbacatePay está inicializado
+        if not abacate:
+            return jsonify({
+                "success": False, 
+                "error": "Cliente AbacatePay não inicializado. Verifique a chave da API."
+            }), 500
+
         dados = request.json
         print("📦 Dados recebidos:", json.dumps(dados, indent=2))
         
@@ -237,8 +256,8 @@ def pagina_pagamento():
             </button>
             
             <div class="info-webhook">
-                Webhook ID: {os.getenv('ABACATE_WEBHOOK_ID', 'webh_dev_ahdHbQwGkz4qds2aphSsHWtH')}<br>
-                URL: {os.getenv('APP_URL', 'https://burocratadebolso.com.br')}/webhook/abacate
+                Webhook ID: {ABACATE_WEBHOOK_ID}<br>
+                URL: {APP_URL}/webhook/abacate
             </div>
             
             <a href="/" class="btn-voltar">← Voltar para Loja</a>
@@ -428,5 +447,6 @@ if __name__ == '__main__':
     print("🚀 Servidor Burocrata rodando na porta 5000")
     print(f"🔗 Webhook configurado: {APP_URL}/webhook/abacate")
     print(f"🆔 Webhook ID: {ABACATE_WEBHOOK_ID}")
+    print(f"🔑 API Key: {'Configurada' if ABACATE_API_KEY else 'NÃO CONFIGURADA'}")
     print("📌 Lembre-se de rodar também: python webhook_abacate.py (porta 5001)")
     app.run(debug=True, host='0.0.0.0', port=5000)
