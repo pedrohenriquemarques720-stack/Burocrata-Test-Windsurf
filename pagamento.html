@@ -139,24 +139,65 @@
                 <p>Processando...</p>
             </div>
             
-            <button class="btn-pagar" id="btn-pagar" onclick="redirecionarPagamento()">
-                💳 Ir para o Mercado Pago
-            </button>
+            async function redirecionarPagamento() {
+    if (!usuarioAtual) {
+        alert('❌ Faça login primeiro');
+        return;
+    }
+    
+    // Mostrar loading
+    document.getElementById('loading').style.display = 'block';
+    document.getElementById('btn-pagar').style.display = 'none';
+    mostrarMensagem('Salvando compra...', 'info');
+    
+    try {
+        // Salvar compra no servidor
+        const response = await fetch('salvar-compra.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                usuario_id: usuarioAtual.id,
+                pacote: pacote,
+                creditos: creditos,
+                valor: valor
+            })
+        });
+        
+        const data = await response.json();
+        console.log('Resposta do servidor:', data);
+        
+        if (data.success) {
+            // Salvar também no localStorage como backup
+            const compraInfo = {
+                compra_id: data.compra_id,
+                pacote: pacote,
+                creditos: creditos,
+                usuarioId: usuarioAtual.id,
+                usuarioEmail: usuarioAtual.email,
+                data: new Date().toISOString()
+            };
+            localStorage.setItem('compraPendente', JSON.stringify(compraInfo));
             
-            <div id="status-mensagem" class="status"></div>
+            mostrarMensagem('Compra salva! Redirecionando...', 'info');
             
-            <div id="progresso-container" style="display: none;">
-                <div class="progresso">
-                    <div class="progresso-bar" id="progresso-bar"></div>
-                </div>
-                <div class="timer" id="timer">Aguardando confirmação...</div>
-            </div>
-            
-            <button class="btn-voltar" onclick="window.location.href='index.html'">
-                ← Voltar para Loja
-            </button>
-        </div>
-    </div>
+            // Redirecionar para o Mercado Pago
+            setTimeout(() => {
+                window.location.href = LINKS_MP[pacote];
+            }, 1000);
+        } else {
+            mostrarMensagem('❌ Erro ao salvar compra: ' + (data.error || 'Erro desconhecido'), 'erro');
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('btn-pagar').style.display = 'block';
+        }
+    } catch (error) {
+        console.error('Erro:', error);
+        mostrarMensagem('❌ Erro de conexão: ' + error.message, 'erro');
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('btn-pagar').style.display = 'block';
+    }
+}
 
     <script>
         // ===== CONFIGURAÇÃO =====
@@ -378,3 +419,4 @@
     </script>
 </body>
 </html>
+
