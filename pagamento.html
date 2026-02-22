@@ -121,26 +121,6 @@
                 
                 if ($email) {
                     $db = new SQLite3('utilizadores_burocrata.db');
-                    
-                    // Buscar usuário pelo email
-                    $stmt = $db->prepare("SELECT id, burocreditos FROM utilizadores WHERE email = :email");
-                    $stmt->bindValue(':email', $email, SQLITE3_TEXT);
-                    $user = $stmt->execute()->fetchArray();
-                    
-                    if ($user) {
-                        // Definir créditos baseado no pacote
-                        if ($pacote == 'bronze') $creditos = 30;
-                        elseif ($pacote == 'prata') $creditos = 60;
-                        else $creditos = 999999; // PRO
-                        
-                        $novo_total = $user['burocreditos'] + $creditos;
-                        $db->exec("UPDATE utilizadores SET burocreditos = $novo_total WHERE id = {$user['id']}");
-                        
-                        echo '<div class="status sucesso">✅ Pagamento confirmado! Créditos adicionados.</div>';
-                    }
-                    $db->close();
-                }
-            }
             
             // Dados da compra
             $pacote = $_GET['pacote'] ?? 'bronze';
@@ -191,3 +171,4 @@
     </script>
 </body>
 </html>
+
