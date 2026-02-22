@@ -25,4 +25,19 @@ python webhook_abacate.py
 python backend.py
 
 # 5. Acessar o site
+
 # Abra index.html no navegador
+
+# Burocrata de Bolso - Sistema de Pagamentos com AbacatePay
+
+## 📋 Configuração do Webhook
+
+**Webhook ID:** `webh_dev_ahdHbQwGkz4qds2aphSsHWtH`  
+**Webhook URL:** `https://burocratadebolso.com.br/webhook/abacate`  
+**Secret:** `burocrata_webhook_secret_2026`
+
+## 🚀 Como Executar
+
+### 1. Instalar dependências
+```bash
+pip install -r requirements.txt
