@@ -443,10 +443,19 @@ def teste_abacate():
         "webhook_url": f"{APP_URL}/webhook/abacate"
     })
 
+# ===== NO FINAL DO ARQUIVO =====
 if __name__ == '__main__':
-    print("🚀 Servidor Burocrata rodando na porta 5000")
+    # Render define a porta automaticamente na variável PORT
+    port = int(os.environ.get('PORT', 5000))
+    
+    # Em produção, debug=False é importante
+    debug_mode = os.environ.get('ENV') != 'production'
+    
+    print("🚀 Servidor Burocrata iniciando...")
     print(f"🔗 Webhook configurado: {APP_URL}/webhook/abacate")
     print(f"🆔 Webhook ID: {ABACATE_WEBHOOK_ID}")
     print(f"🔑 API Key: {'Configurada' if ABACATE_API_KEY else 'NÃO CONFIGURADA'}")
-    print("📌 Lembre-se de rodar também: python webhook_abacate.py (porta 5001)")
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    print(f"🌐 Modo: {'Produção' if not debug_mode else 'Desenvolvimento'}")
+    print(f"📡 Porta: {port}")
+    
+    app.run(host='0.0.0.0', port=port, debug=debug_mode)
