@@ -6,20 +6,106 @@
     <title>Burocrata de Bolso - Pagamento</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: #10263D; font-family: Arial, sans-serif; color: white; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+        body {
+            background: #10263D;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
         .container { max-width: 500px; width: 90%; margin: 20px; }
-        .card { background: #1a3658; border-radius: 20px; padding: 30px; border: 3px solid #F8D96D; }
-        h1 { color: #F8D96D; text-align: center; margin-bottom: 30px; }
-        .dados-compra { background: #0f2a40; border-radius: 15px; padding: 20px; margin-bottom: 30px; }
-        .dados-compra p { margin: 10px 0; }
+        .card {
+            background: #1a3658;
+            border-radius: 20px;
+            padding: 30px;
+            border: 3px solid #F8D96D;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+        h1 {
+            color: #F8D96D;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2em;
+        }
+        .dados-compra {
+            background: #0f2a40;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        .dados-compra p { margin: 10px 0; font-size: 1.1em; }
         .dados-compra strong { color: #F8D96D; }
-        .pix-area { background: #2a4a75; border-radius: 15px; padding: 20px; margin: 20px 0; text-align: center; }
-        .pix-codigo { background: #10263D; padding: 15px; border-radius: 10px; font-family: monospace; word-break: break-all; margin: 15px 0; color: #F8D96D; }
-        .btn-copiar { background: #F8D96D; color: #10263D; border: none; padding: 15px 30px; border-radius: 10px; font-weight: bold; cursor: pointer; width: 100%; font-size: 1.1em; }
+        .pix-area {
+            background: #2a4a75;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .pix-codigo {
+            background: #10263D;
+            padding: 15px;
+            border-radius: 10px;
+            font-family: monospace;
+            word-break: break-all;
+            margin: 15px 0;
+            color: #F8D96D;
+            font-size: 0.8em;
+        }
+        .btn-copiar {
+            background: #F8D96D;
+            color: #10263D;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1.1em;
+        }
         .btn-copiar:hover { transform: scale(1.02); }
-        .btn-voltar { background: transparent; color: #F8D96D; border: 2px solid #F8D96D; padding: 12px; border-radius: 10px; font-weight: 600; width: 100%; cursor: pointer; margin-top: 20px; }
-        .status { padding: 15px; border-radius: 10px; margin: 20px 0; display: none; }
-        .status.sucesso { background: rgba(39, 174, 96, 0.2); border: 1px solid #27AE60; display: block; }
+        .btn-confirmar {
+            background: #27AE60;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1.1em;
+            margin: 10px 0;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+        .btn-confirmar:hover { background: #2ecc71; }
+        .btn-voltar {
+            background: transparent;
+            color: #F8D96D;
+            border: 2px solid #F8D96D;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: 600;
+            width: 100%;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        .btn-voltar:hover { background: rgba(248, 217, 109, 0.1); }
+        .status {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+            display: <?php echo isset($_GET['confirmado']) ? 'block' : 'none'; ?>;
+        }
+        .status.sucesso {
+            background: rgba(39, 174, 96, 0.2);
+            border: 1px solid #27AE60;
+            color: #27AE60;
+        }
     </style>
 </head>
 <body>
@@ -28,21 +114,28 @@
             <h1>⚖️ Pagamento via PIX</h1>
             
             <?php
-            // Processar confirmação manual (só você acessa)
+            // Processar confirmação manual
             if (isset($_GET['confirmar']) && $_GET['confirmar'] == 'ok') {
                 $email = $_GET['email'] ?? '';
                 $pacote = $_GET['pacote'] ?? 'bronze';
                 
                 if ($email) {
                     $db = new SQLite3('utilizadores_burocrata.db');
+                    
+                    // Buscar usuário pelo email
                     $stmt = $db->prepare("SELECT id, burocreditos FROM utilizadores WHERE email = :email");
                     $stmt->bindValue(':email', $email, SQLITE3_TEXT);
                     $user = $stmt->execute()->fetchArray();
                     
                     if ($user) {
-                        $creditos = $pacote == 'bronze' ? 30 : ($pacote == 'prata' ? 60 : 999999);
+                        // Definir créditos baseado no pacote
+                        if ($pacote == 'bronze') $creditos = 30;
+                        elseif ($pacote == 'prata') $creditos = 60;
+                        else $creditos = 999999; // PRO
+                        
                         $novo_total = $user['burocreditos'] + $creditos;
                         $db->exec("UPDATE utilizadores SET burocreditos = $novo_total WHERE id = {$user['id']}");
+                        
                         echo '<div class="status sucesso">✅ Pagamento confirmado! Créditos adicionados.</div>';
                     }
                     $db->close();
@@ -57,37 +150,43 @@
             ?>
 
             <div class="dados-compra">
-                <p><strong>Pacote:</strong> <?= $pacote ?></p>
-                <p><strong>Valor:</strong> R$ <?= $valor ?></p>
-                <p><strong>Créditos:</strong> <?= $creditos ?></p>
-                <p><strong>E-mail:</strong> <?= $email ?></p>
+                <p><strong>Pacote:</strong> <?php echo ucfirst($pacote); ?></p>
+                <p><strong>Valor:</strong> R$ <?php echo $valor; ?></p>
+                <p><strong>Créditos:</strong> <?php echo $creditos; ?></p>
+                <p><strong>E-mail:</strong> <?php echo htmlspecialchars($email); ?></p>
             </div>
 
             <div class="pix-area">
                 <h3 style="color: #F8D96D;">📱 PIX Copia e Cola</h3>
                 <p>Use o código abaixo para pagar:</p>
                 <div class="pix-codigo" id="pix-codigo">
-                    00020126580014br.gov.bcb.pix0136burocrata@mercadopago.com.br5204000053039865802BR5925Burocrata de Bolso6009Sao Paulo62070503***6304E2D1
+                    00020126360014br.gov.bcb.pix0114+5511999999999520400005303986540510.005802BR5913Burocrata6008Sao Paulo62070503***63041234
                 </div>
                 <button class="btn-copiar" onclick="copiarPix()">📋 Copiar código PIX</button>
             </div>
 
             <p style="text-align: center; margin: 20px 0; color: #a0aec0;">
-                Após pagar, clique no link abaixo para liberar os créditos:
+                Após pagar, clique no botão abaixo para liberar os créditos:
             </p>
 
-            <a href="?confirmar=ok&pacote=<?= $pacote ?>&email=<?= urlencode($email) ?>" style="text-decoration: none;">
-                <button class="btn-copiar" style="background: #27AE60;">✅ JÁ PAGUEI - LIBERAR CRÉDITOS</button>
+            <a href="?confirmar=ok&pacote=<?php echo urlencode($pacote); ?>&email=<?php echo urlencode($email); ?>" class="btn-confirmar">
+                ✅ JÁ PAGUEI - LIBERAR CRÉDITOS
             </a>
             
-            <button class="btn-voltar" onclick="window.location.href='index.html'">← Voltar para Loja</button>
+            <a href="index.html" class="btn-voltar">
+                ← Voltar para Loja
+            </a>
         </div>
     </div>
 
     <script>
         function copiarPix() {
-            navigator.clipboard.writeText(document.getElementById('pix-codigo').innerText);
-            alert('✅ Código PIX copiado!');
+            const pixCode = document.getElementById('pix-codigo').innerText;
+            navigator.clipboard.writeText(pixCode).then(() => {
+                alert('✅ Código PIX copiado!');
+            }).catch(() => {
+                alert('❌ Erro ao copiar. Copie manualmente.');
+            });
         }
     </script>
 </body>
