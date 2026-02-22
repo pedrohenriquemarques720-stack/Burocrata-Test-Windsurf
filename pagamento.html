@@ -90,12 +90,6 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        .info-webhook {
-            font-size: 0.8em;
-            color: #a0aec0;
-            text-align: center;
-            margin-top: 10px;
-        }
     </style>
 </head>
 <body>
@@ -119,9 +113,7 @@
                 💳 Ir para o AbacatePay
             </button>
             
-            <div class="info-webhook" id="webhook-info"></div>
-            
-            <a href="/" class="btn-voltar">← Voltar para Loja</a>
+            <a href="javascript:history.back()" class="btn-voltar">← Voltar para Loja</a>
         </div>
     </div>
 
@@ -133,22 +125,16 @@
         const creditos = urlParams.get('creditos') || '30';
         const email = urlParams.get('email') || '';
         
-        // Webhook configurado
-        const webhookId = 'webh_dev_ahdHbQwGkz4qds2aphSsHWtH';
-        const webhookUrl = 'https://burocratadebolso.com.br/webhook/abacate';
-        
         // Preencher dados na página
         document.getElementById('pacote-nome').textContent = pacote.charAt(0).toUpperCase() + pacote.slice(1);
         document.getElementById('pacote-valor').textContent = valor;
         document.getElementById('pacote-creditos').textContent = creditos;
         document.getElementById('usuario-email').textContent = email || 'Não informado';
-        document.getElementById('webhook-info').innerHTML = `Webhook ID: ${webhookId}<br>URL: ${webhookUrl}`;
 
         function criarPagamento() {
             const btn = document.getElementById('btn-pagar');
             const loading = document.getElementById('loading');
             
-            // Mostrar loading
             btn.style.display = 'none';
             loading.style.display = 'block';
             
@@ -166,7 +152,6 @@
                 console.warn('Erro ao ler sessionStorage:', e);
             }
             
-            // Dados para enviar ao backend
             const dados = {
                 pacote: pacote,
                 valor: parseFloat(valor),
@@ -174,13 +159,12 @@
                 usuario_id: usuario_id,
                 usuario_email: email,
                 usuario_nome: usuario_nome,
-                usuario_cpf: '' // Opcional
+                usuario_cpf: ''
             };
             
             console.log('📤 Enviando dados:', dados);
             
-            // Chamar API do backend (usando caminho relativo)
-            fetch('/criar-pagamento', {
+            fetch('http://localhost:5000/criar-pagamento', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -196,7 +180,6 @@
             .then(data => {
                 console.log('📥 Resposta:', data);
                 if (data.success && data.url_pagamento) {
-                    // Redirecionar para o AbacatePay
                     window.location.href = data.url_pagamento;
                 } else {
                     alert('Erro ao criar pagamento: ' + (data.error || 'Tente novamente'));
