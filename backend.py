@@ -1,6 +1,5 @@
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
-import mercadopago
 import sqlite3
 import os
 import json
@@ -10,26 +9,32 @@ from dotenv import load_dotenv
 # Carregar variáveis de ambiente
 load_dotenv()
 
+# Importar cliente AbacatePay
+from abacatepay import get_abacate_client
+
 app = Flask(__name__)
-CORS(app)  # Permite requisições do seu frontend
+CORS(app)
 
 # Configurações
-ACCESS_TOKEN = os.getenv('MERCADO_PAGO_ACCESS_TOKEN')
+ABACATE_API_KEY = os.getenv('ABACATE_API_KEY')
 DB_PATH = os.getenv('DATABASE_PATH', 'utilizadores_burocrata.db')
 APP_URL = os.getenv('APP_URL', 'http://localhost:5000')
 
-# Inicializar SDK do Mercado Pago
-sdk = mercadopago.SDK(ACCESS_TOKEN)
+# Inicializar cliente AbacatePay
+abacate = get_abacate_client()
 
 # ===== ROTA PRINCIPAL =====
 @app.route('/')
 def index():
-    return jsonify({"status": "API do Mercado Pago funcionando!"})
+    return jsonify({
+        "status": "API Burocrata de Bolso funcionando!",
+        "payment": "AbacatePay integrado"
+    })
 
-# ===== ROTA PARA CRIAR PREFERÊNCIA DE PAGAMENTO =====
-@app.route('/criar-preferencia', methods=['POST'])
-def criar_preferencia():
-    """Cria uma preferência de pagamento no Mercado Pago"""
+# ===== ROTA PARA CRIAR PAGAMENTO (AGORA ABACATEPAY) =====
+@app.route('/criar-pagamento', methods=['POST'])
+def criar_pagamento():
+    """Cria um pagamento no AbacatePay"""
     try:
         dados = request.json
         print("📦 Dados recebidos:", dados)
@@ -41,223 +46,79 @@ def criar_preferencia():
         usuario_id = dados.get('usuario_id')
         usuario_email = dados.get('usuario_email')
         usuario_nome = dados.get('usuario_nome', 'Cliente')
+        usuario_cpf = dados.get('usuario_cpf', '')  # CPF opcional
         
-        # Nome do pacote
-        nomes_pacote = {
-            'bronze': 'Pacote Bronze',
-            'prata': 'Pacote Prata',
-            'pro': 'Plano PRO'
-        }
+        # Validar dados
+        if not all([pacote, valor, usuario_id, usuario_email]):
+            return jsonify({"success": False, "error": "Dados incompletos"}), 400
         
-        # Descrição do produto
-        if pacote == 'pro':
-            titulo = 'Plano PRO Burocrata'
-            descricao = 'Acesso ilimitado a análises de documentos'
-        else:
-            titulo = f'Pacote {nomes_pacote[pacote]}'
-            descricao = f'{creditos} BuroCréditos para análises'
+        # Criar pagamento no AbacatePay
+        sucesso, url_pagamento, dados_cobranca = abacate.criar_cobranca(
+            email=usuario_email,
+            nome=usuario_nome,
+            cpf=usuario_cpf,
+            pacote=pacote,
+            valor=valor,
+            creditos=creditos,
+            usuario_id=usuario_id
+        )
         
-        # Criar preferência
-        preference_data = {
-            "items": [
-                {
-                    "title": titulo,
-                    "description": descricao,
-                    "quantity": 1,
-                    "currency_id": "BRL",
-                    "unit_price": valor
-                }
-            ],
-            "payer": {
-                "name": usuario_nome.split()[0] if usuario_nome else "Cliente",
-                "email": usuario_email
-            },
-            "back_urls": {
-                "success": f"{APP_URL}/sucesso",
-                "failure": f"{APP_URL}/falha",
-                "pending": f"{APP_URL}/pendente"
-            },
-            "auto_return": "approved",
-            "external_reference": str(usuario_id),
-            "notification_url": f"{APP_URL}/webhook",  # Webhook para notificações
-            "statement_descriptor": "BUROCRATA DE BOLSO"
-        }
-        
-        # Enviar para o Mercado Pago
-        preference_response = sdk.preference().create(preference_data)
-        
-        if preference_response["status"] == 201:
-            preference = preference_response["response"]
-            
-            # Salvar preferência no banco
-            salvar_preferencia(
+        if sucesso and url_pagamento:
+            # Salvar no banco
+            salvar_cobranca(
                 usuario_id=usuario_id,
-                preference_id=preference["id"],
+                bill_id=dados_cobranca.get('id', f"temp_{pacote}"),
                 pacote=pacote,
                 valor=valor,
-                creditos=creditos
+                creditos=creditos,
+                url=url_pagamento
             )
             
-            print("✅ Preferência criada:", preference["id"])
+            print(f"✅ Pagamento AbacatePay criado para usuário {usuario_id}")
             
             return jsonify({
                 "success": True,
-                "preference_id": preference["id"],
-                "init_point": preference["init_point"],
-                "sandbox_init_point": preference.get("sandbox_init_point")
+                "url_pagamento": url_pagamento,
+                "bill_id": dados_cobranca.get('id')
             })
         else:
-            print("❌ Erro ao criar preferência:", preference_response)
-            return jsonify({"success": False, "error": "Erro ao criar preferência"}), 400
+            print("❌ Erro ao criar pagamento AbacatePay")
+            return jsonify({"success": False, "error": "Erro ao criar pagamento"}), 400
             
     except Exception as e:
         print("❌ Erro:", str(e))
         return jsonify({"success": False, "error": str(e)}), 500
 
-# ===== WEBHOOK PARA NOTIFICAÇÕES DE PAGAMENTO =====
+# ===== WEBHOOK (AGORA REDIRECIONA PARA O SERVIDOR ABACATE) =====
 @app.route('/webhook', methods=['POST'])
 def webhook():
-    """Recebe notificações de pagamento do Mercado Pago"""
-    try:
-        data = request.json
-        print("🔔 Webhook recebido:", data)
-        
-        # Verificar tipo de notificação
-        if data.get("type") == "payment":
-            payment_id = data.get("data", {}).get("id")
-            
-            if payment_id:
-                # Buscar detalhes do pagamento
-                payment_info = sdk.payment().get(payment_id)
-                
-                if payment_info["status"] == 200:
-                    payment = payment_info["response"]
-                    
-                    # Processar pagamento aprovado
-                    if payment["status"] == "approved":
-                        processar_pagamento_aprovado(payment)
-        
-        return jsonify({"status": "ok"}), 200
-        
-    except Exception as e:
-        print("❌ Erro no webhook:", str(e))
-        return jsonify({"error": str(e)}), 500
-
-# ===== ROTAS DE RETORNO (após pagamento) =====
-@app.route('/sucesso')
-def pagamento_sucesso():
-    """Página de sucesso após pagamento"""
-    payment_id = request.args.get('payment_id')
-    status = request.args.get('status')
-    external_ref = request.args.get('external_reference')
+    """Redireciona notificações para o servidor AbacatePay"""
+    # Essa rota agora apenas loga e redireciona
+    # O webhook real está no servidor webhook_abacate.py
+    print("🔔 Notificação recebida na porta 5000, redirecionando...")
     
-    # Buscar informações do pagamento
-    if payment_id:
-        payment_info = sdk.payment().get(payment_id)
-        if payment_info["status"] == 200:
-            payment = payment_info["response"]
-            processar_pagamento_aprovado(payment)
+    # Você pode encaminhar para o servidor webhook se estiver na mesma máquina
+    # import requests
+    # requests.post("http://localhost:5001/webhook/abacate", json=request.json)
     
-    return render_template('sucesso.html')  # Opcional
+    return jsonify({"status": "ok", "message": "Use o servidor webhook_abacate.py na porta 5001"}), 200
 
-@app.route('/falha')
-def pagamento_falha():
-    return render_template('falha.html')
+# ===== ROTA DE RETORNO (APÓS PAGAMENTO) =====
+@app.route('/retorno')
+def retorno_pagamento():
+    """Página para onde o usuário volta após o pagamento"""
+    # Pega parâmetros da URL
+    bill_id = request.args.get('bill_id')
+    status = request.args.get('status', 'pending')
+    
+    if status == 'PAID' or status == 'approved':
+        return render_template('sucesso.html')
+    elif status == 'failed':
+        return render_template('falha.html')
+    else:
+        return render_template('pendente.html')
 
-@app.route('/pendente')
-def pagamento_pendente():
-    return render_template('pendente.html')
-
-# ===== FUNÇÕES AUXILIARES =====
-def salvar_preferencia(usuario_id, preference_id, pacote, valor, creditos):
-    """Salva a preferência de pagamento no banco"""
-    try:
-        conn = sqlite3.connect(DB_PATH)
-        c = conn.cursor()
-        
-        # Criar tabela se não existir
-        c.execute('''
-            CREATE TABLE IF NOT EXISTS pagamentos (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                usuario_id INTEGER,
-                preference_id TEXT UNIQUE,
-                pacote TEXT,
-                valor REAL,
-                creditos TEXT,
-                status TEXT DEFAULT 'PENDENTE',
-                data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                data_pagamento TIMESTAMP,
-                FOREIGN KEY (usuario_id) REFERENCES utilizadores (id)
-            )
-        ''')
-        
-        c.execute('''
-            INSERT INTO pagamentos (usuario_id, preference_id, pacote, valor, creditos)
-            VALUES (?, ?, ?, ?, ?)
-        ''', (usuario_id, preference_id, pacote, valor, creditos))
-        
-        conn.commit()
-        conn.close()
-        print(f"💾 Preferência salva: {preference_id}")
-        
-    except Exception as e:
-        print("❌ Erro ao salvar preferência:", e)
-
-def processar_pagamento_aprovado(payment):
-    """Processa um pagamento aprovado"""
-    try:
-        # Pegar ID do usuário do external_reference
-        usuario_id = payment.get("external_reference")
-        if not usuario_id:
-            return
-        
-        # Buscar preferência original
-        conn = sqlite3.connect(DB_PATH)
-        c = conn.cursor()
-        
-        c.execute('''
-            SELECT pacote, creditos FROM pagamentos 
-            WHERE usuario_id = ? AND status = 'PENDENTE'
-            ORDER BY data_criacao DESC LIMIT 1
-        ''', (usuario_id,))
-        
-        pagamento = c.fetchone()
-        
-        if pagamento:
-            pacote, creditos = pagamento
-            
-            # Atualizar status do pagamento
-            c.execute('''
-                UPDATE pagamentos 
-                SET status = 'APROVADO', data_pagamento = CURRENT_TIMESTAMP
-                WHERE usuario_id = ? AND status = 'PENDENTE'
-            ''', (usuario_id,))
-            
-            # Adicionar créditos ao usuário
-            if pacote == 'pro':
-                c.execute('''
-                    UPDATE utilizadores 
-                    SET plano = 'PRO', burocreditos = 999999 
-                    WHERE id = ?
-                ''', (usuario_id,))
-                print(f"🎉 Usuário {usuario_id} atualizado para PRO")
-            else:
-                c.execute('''
-                    UPDATE utilizadores 
-                    SET burocreditos = burocreditos + ? 
-                    WHERE id = ?
-                ''', (creditos, usuario_id))
-                print(f"💰 {creditos} créditos adicionados ao usuário {usuario_id}")
-            
-            conn.commit()
-            print(f"✅ Pagamento processado para usuário {usuario_id}")
-        
-        conn.close()
-        
-    except Exception as e:
-        print("❌ Erro ao processar pagamento:", e)
-
-# ===== ROTA PARA VERIFICAR STATUS (usada pelo frontend) =====
+# ===== ROTA PARA VERIFICAR STATUS (POLLING) =====
 @app.route('/status-pagamento/<int:usuario_id>')
 def status_pagamento(usuario_id):
     """Verifica se o usuário tem créditos atualizados"""
@@ -265,6 +126,24 @@ def status_pagamento(usuario_id):
         conn = sqlite3.connect(DB_PATH)
         c = conn.cursor()
         
+        # Criar tabela de cobranças se não existir
+        c.execute('''
+            CREATE TABLE IF NOT EXISTS cobrancas_abacate (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                bill_id TEXT UNIQUE,
+                usuario_id INTEGER,
+                pacote TEXT,
+                valor REAL,
+                creditos TEXT,
+                url_pagamento TEXT,
+                status TEXT DEFAULT 'PENDENTE',
+                data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                data_pagamento TIMESTAMP,
+                FOREIGN KEY (usuario_id) REFERENCES utilizadores (id)
+            )
+        ''')
+        
+        # Buscar créditos do usuário
         c.execute('''
             SELECT burocreditos, plano FROM utilizadores WHERE id = ?
         ''', (usuario_id,))
@@ -276,7 +155,8 @@ def status_pagamento(usuario_id):
             return jsonify({
                 "success": True,
                 "burocreditos": resultado[0],
-                "plano": resultado[1]
+                "plano": resultado[1],
+                "provider": "abacatepay"
             })
         else:
             return jsonify({"success": False}), 404
@@ -284,6 +164,54 @@ def status_pagamento(usuario_id):
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
 
+# ===== FUNÇÕES AUXILIARES =====
+def salvar_cobranca(usuario_id, bill_id, pacote, valor, creditos, url):
+    """Salva cobrança no banco de dados"""
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+        
+        # Criar tabela se não existir
+        c.execute('''
+            CREATE TABLE IF NOT EXISTS cobrancas_abacate (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                bill_id TEXT UNIQUE,
+                usuario_id INTEGER,
+                pacote TEXT,
+                valor REAL,
+                creditos TEXT,
+                url_pagamento TEXT,
+                status TEXT DEFAULT 'PENDENTE',
+                data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                data_pagamento TIMESTAMP,
+                FOREIGN KEY (usuario_id) REFERENCES utilizadores (id)
+            )
+        ''')
+        
+        c.execute('''
+            INSERT OR IGNORE INTO cobrancas_abacate 
+            (bill_id, usuario_id, pacote, valor, creditos, url_pagamento)
+            VALUES (?, ?, ?, ?, ?, ?)
+        ''', (bill_id, usuario_id, pacote, valor, str(creditos), url))
+        
+        conn.commit()
+        conn.close()
+        print(f"💾 Cobrança salva: {bill_id}")
+        
+    except Exception as e:
+        print("❌ Erro ao salvar cobrança:", e)
+
+# ===== ROTA DE TESTE =====
+@app.route('/teste-abacate')
+def teste_abacate():
+    """Rota para testar a integração"""
+    return jsonify({
+        "status": "AbacatePay integrado",
+        "api_key_configured": bool(ABACATE_API_KEY),
+        "webhook_url": f"{APP_URL}/webhook"
+    })
+
 if __name__ == '__main__':
-    print("🚀 Servidor iniciado em http://localhost:5000")
+    print("🚀 Servidor Burocrata rodando na porta 5000")
+    print("📌 Lembre-se de rodar também: python webhook_abacate.py (porta 5001)")
     app.run(debug=True, port=5000)
