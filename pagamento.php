@@ -72,14 +72,6 @@
             text-align: center;
         }
         .btn-voltar:hover { background: rgba(248, 217, 109, 0.1); }
-        .erro {
-            background: rgba(231, 76, 60, 0.2);
-            border: 1px solid #E74C3C;
-            padding: 15px;
-            border-radius: 10px;
-            margin: 20px 0;
-            color: #E74C3C;
-        }
     </style>
 </head>
 <body>
@@ -95,32 +87,22 @@
             $email = isset($_GET['email']) ? $_GET['email'] : '';
             
             // LINKS DO MERCADO PAGO
-            $links = array(
+            $links = [
                 'bronze' => 'https://mpago.la/2ss4rSt',
                 'prata' => 'https://mpago.la/1UFjmFD',
                 'pro' => 'https://mpago.la/32FZG95'
-            );
+            ];
             
             // PEGAR LINK CORRETO
-            if (isset($links[$pacote])) {
-                $link_atual = $links[$pacote];
-            } else {
-                $link_atual = $links['bronze'];
-            }
+            $link_atual = isset($links[$pacote]) ? $links[$pacote] : $links['bronze'];
             ?>
 
             <div class="dados-compra">
                 <p><strong>Pacote:</strong> <?php echo ucfirst($pacote); ?></p>
-                <p><strong>Valor:</strong> R$ <?php echo $valor; ?></p>
-                <p><strong>Créditos:</strong> <?php echo $creditos; ?></p>
-                <p><strong>E-mail:</strong> <?php echo $email ? $email : 'Não informado'; ?></p>
+                <p><strong>Valor:</strong> R$ <?php echo htmlspecialchars($valor); ?></p>
+                <p><strong>Créditos:</strong> <?php echo htmlspecialchars($creditos); ?></p>
+                <p><strong>E-mail:</strong> <?php echo htmlspecialchars($email) ?: 'Não informado'; ?></p>
             </div>
-
-            <?php if (!$email): ?>
-                <div class="erro">
-                    ⚠️ Você precisa estar logado para comprar. <a href="index.html" style="color:#F8D96D;">Fazer login</a>
-                </div>
-            <?php endif; ?>
 
             <a href="<?php echo $link_atual; ?>" target="_blank" class="btn-pagar">
                 💳 Ir para o Mercado Pago
