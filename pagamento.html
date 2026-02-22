@@ -1,78 +1,25 @@
-<!DOCTYPE html>
-<html lang="pt-PT">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Burocrata de Bolso - Pagamento</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: #10263D; font-family: Arial, sans-serif; color: white; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
-        .container { max-width: 500px; width: 90%; margin: 20px; }
-        .card { background: #1a3658; border-radius: 20px; padding: 30px; border: 3px solid #F8D96D; }
-        h1 { color: #F8D96D; text-align: center; margin-bottom: 30px; }
-        .dados-compra { background: #0f2a40; border-radius: 15px; padding: 20px; margin-bottom: 30px; }
-        .dados-compra p { margin: 10px 0; }
-        .dados-compra strong { color: #F8D96D; }
-        .btn-pagar { background: linear-gradient(135deg, #F8D96D, #d4b747); color: #10263D; border: none; padding: 20px; border-radius: 10px; font-weight: 700; font-size: 1.3em; width: 100%; cursor: pointer; margin: 20px 0; }
-        .btn-voltar { background: transparent; color: #F8D96D; border: 2px solid #F8D96D; padding: 12px; border-radius: 10px; font-weight: 600; width: 100%; cursor: pointer; margin-top: 20px; }
-        .loading { display: none; text-align: center; padding: 30px; }
-        .loading-spinner { border: 4px solid rgba(248, 217, 109, 0.2); border-top-color: #F8D96D; width: 50px; height: 50px; border-radius: 50%; animation: spin 1s linear infinite; margin: 20px auto; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .status { padding: 15px; border-radius: 10px; margin: 20px 0; display: none; }
-        .status.sucesso { background: rgba(39, 174, 96, 0.2); border: 1px solid #27AE60; display: block; }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="card">
-            <h1>⚖️ Finalizar Compra</h1>
-            <div class="dados-compra" id="dados-compra"></div>
-            <div class="loading" id="loading"><div class="loading-spinner"></div><p>Processando...</p></div>
-            <button class="btn-pagar" id="btn-pagar" onclick="redirecionarPagamento()">💳 Ir para o Mercado Pago</button>
-            <div id="status-mensagem" class="status"></div>
-            <button class="btn-voltar" onclick="window.location.href='index.html'">← Voltar para Loja</button>
-        </div>
-    </div>
+<script>
+const LINKS_MP = {
+    'bronze': 'https://www.mercadopago.com.br/pay/SEU_LINK?external_reference=',
+    'prata': 'https://www.mercadopago.com.br/pay/SEU_LINK?external_reference=',
+    'pro': 'https://www.mercadopago.com.br/pay/SEU_LINK?external_reference='
+};
 
-    <script>
-        const LINKS_MP = {
-            'bronze': 'https://mpago.la/2ss4rSt',
-            'prata': 'https://mpago.la/1UFjmFD',
-            'pro': 'https://mpago.la/32FZG95'
-        };
-        
-        const urlParams = new URLSearchParams(window.location.search);
-        const pacote = urlParams.get('pacote') || 'bronze';
-        const valor = urlParams.get('valor') || '15';
-        const creditos = urlParams.get('creditos') || '30';
-        const usuarioAtual = JSON.parse(sessionStorage.getItem('usuarioLogado') || 'null');
-        
-        document.getElementById('dados-compra').innerHTML = `
-            <p><strong>Pacote:</strong> ${pacote}</p>
-            <p><strong>Valor:</strong> R$ ${valor}</p>
-            <p><strong>Créditos:</strong> ${creditos}</p>
-            <p><strong>E-mail:</strong> ${usuarioAtual ? usuarioAtual.email : 'Não logado'}</p>
-        `;
-        
-        if (!usuarioAtual) document.getElementById('btn-pagar').style.display = 'none';
-        
-        async function redirecionarPagamento() {
-            document.getElementById('loading').style.display = 'block';
-            document.getElementById('btn-pagar').style.display = 'none';
-            
-            await fetch('salvar-compra.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ usuario_id: usuarioAtual.id, pacote, creditos, valor })
-            });
-            
-            window.location.href = LINKS_MP[pacote];
-        }
-        
-        if (window.location.search.includes('status=approved')) {
-            document.getElementById('status-mensagem').innerHTML = '✅ Pagamento confirmado! Créditos adicionados.';
-            document.getElementById('status-mensagem').className = 'status sucesso';
-        }
-    </script>
-</body>
-</html>
+async function redirecionarPagamento() {
+    const usuario = JSON.parse(sessionStorage.getItem('usuarioLogado'));
+    
+    // Salvar compra
+    await fetch('salvar-compra.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            usuario_id: usuario.id,
+            pacote: pacote,
+            creditos: creditos
+        })
+    });
+    
+    // Redirecionar com email na URL
+    window.location.href = LINKS_MP[pacote] + encodeURIComponent(usuario.email);
+}
+</script>
