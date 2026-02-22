@@ -1,8 +1,8 @@
 <script>
 const LINKS_MP = {
-    'bronze': 'https://www.mercadopago.com.br/pay/SEU_LINK?external_reference=',
-    'prata': 'https://www.mercadopago.com.br/pay/SEU_LINK?external_reference=',
-    'pro': 'https://www.mercadopago.com.br/pay/SEU_LINK?external_reference='
+    'bronze': 'https://www.mercadopago.com.br/pay/https://mpago.la/2ss4rSt',
+    'prata': 'https://www.mercadopago.com.br/pay/https://mpago.la/1UFjmFD',
+    'pro': 'https://www.mercadopago.com.br/pay/https://mpago.la/32FZG95'
 };
 
 async function redirecionarPagamento() {
@@ -23,3 +23,4 @@ async function redirecionarPagamento() {
     window.location.href = LINKS_MP[pacote] + encodeURIComponent(usuario.email);
 }
 </script>
+
