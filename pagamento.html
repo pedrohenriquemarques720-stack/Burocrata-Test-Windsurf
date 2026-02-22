@@ -148,6 +148,15 @@
             $valor = $_GET['valor'] ?? '15';
             $creditos = $_GET['creditos'] ?? '30';
             $email = $_GET['email'] ?? '';
+            
+            // Chaves PIX para cada pacote (suas chaves aleatórias)
+            $chaves_pix = [
+                'bronze' => 'bff1474d-f72f-4112-b144-fe2739a74e1d',
+                'prata' => '390381ac-75ec-42da-b1a5-780590828559',
+                'pro' => '7552c5aa-1808-4adf-8abc-f1ea510ac273'
+            ];
+            
+            $chave_atual = $chaves_pix[$pacote] ?? $chaves_pix['bronze'];
             ?>
 
             <div class="dados-compra">
@@ -159,17 +168,13 @@
 
             <div class="pix-area">
                 <h3 style="color: #F8D96D;">📱 PIX Copia e Cola</h3>
-                <p>Use o código abaixo para pagar:</p>
+                <p>Use a chave abaixo para pagar:</p>
                 <div class="pix-codigo" id="pix-codigo">
-                    <?php 
-                    // AQUI VOCÊ DEVE COLOCAR SEU CÓDIGO PIX REAL
-                    // Para gerar um PIX real, acesse sua conta Mercado Pago
-                    echo "00020126360014br.gov.bcb.pix0114+5511999999999520400005303986540510.005802BR5913Burocrata6008Sao Paulo62070503***63041234";
-                    ?>
+                    <?php echo $chave_atual; ?>
                 </div>
-                <button class="btn-copiar" onclick="copiarPix()">📋 Copiar código PIX</button>
-                <p style="font-size: 0.8em; margin-top: 10px; color: #a0aec0;">
-                    ⚠️ Este é um código de exemplo. Substitua pelo seu PIX real.
+                <button class="btn-copiar" onclick="copiarPix()">📋 Copiar chave PIX</button>
+                <p style="font-size: 0.9em; margin-top: 10px; color: #a0aec0;">
+                    Pague via PIX usando esta chave aleatória
                 </p>
             </div>
 
@@ -191,7 +196,7 @@
         function copiarPix() {
             const pixCode = document.getElementById('pix-codigo').innerText;
             navigator.clipboard.writeText(pixCode).then(() => {
-                alert('✅ Código PIX copiado!');
+                alert('✅ Chave PIX copiada!');
             }).catch(() => {
                 alert('❌ Erro ao copiar. Copie manualmente.');
             });
