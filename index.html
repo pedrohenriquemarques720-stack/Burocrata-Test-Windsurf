@@ -1652,7 +1652,7 @@
                             <li>Suporte por e-mail</li>
                             <li>Válido por 1 ano</li>
                         </ul>
-                        <button class="btn" onclick="window.location.href='pagamento.html?pacote=bronze&valor=15&creditos=30'">🛒 Comprar</button>
+                        <button class="btn" onclick="window.location.href='pagamento.html?pacote=bronze&valor=15&creditos=30&email=' + encodeURIComponent(usuarioAtual ? usuarioAtual.email : '')">🛒 Comprar</button>
                     </div>
                 </div>
 
@@ -1672,7 +1672,7 @@
                             <li>Válido por 1 ano</li>
                             <li>Relatórios detalhados</li>
                         </ul>
-                        <button class="btn" onclick="window.location.href='pagamento.html?pacote=prata&valor=30&creditos=60'">🛒 Comprar</button>
+                        <button class="btn" onclick="window.location.href='pagamento.html?pacote=prata&valor=30&creditos=60&email=' + encodeURIComponent(usuarioAtual ? usuarioAtual.email : '')">🛒 Comprar</button>
                     </div>
                 </div>
 
@@ -1694,7 +1694,7 @@
                             <li>Consultoria jurídica</li>
                             <li>Sem limite de créditos</li>
                         </ul>
-                        <button class="btn" onclick="window.location.href='pagamento.html?pacote=pro&valor=80&creditos=ilimitado'">⭐ Assinar PRO</button>
+                        <button class="btn" onclick="window.location.href='pagamento.html?pacote=pro&valor=80&creditos=ilimitado&email=' + encodeURIComponent(usuarioAtual ? usuarioAtual.email : '')">⭐ Assinar PRO</button>
                     </div>
                 </div>
             </div>
