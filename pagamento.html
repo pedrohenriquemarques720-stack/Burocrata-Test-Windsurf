@@ -147,19 +147,12 @@
         </div>
     </div>
 
-    <script>
+        <script>
         // ===== CHAVES PIX =====
         const CHAVES_PIX = {
             'bronze': 'bff1474d-f72f-4112-b144-fe2739a74e1d',
             'prata': '390381ac-75ec-42da-b1a5-780590828559',
             'pro': '7552c5aa-1808-4adf-8abc-f1ea510ac273'
-        };
-
-        // ===== CRÉDITOS POR PACOTE =====
-        const CREDITOS_PACOTE = {
-            'bronze': 30,
-            'prata': 60,
-            'pro': 999999
         };
 
         // ===== PEGAR DADOS DA URL =====
@@ -187,18 +180,45 @@
         }
 
         // ===== FUNÇÃO CONFIRMAR PAGAMENTO =====
-        function confirmarPagamento() {
+        async function confirmarPagamento() {
             if (!email) {
                 mostrarMensagem('❌ E-mail não informado', 'erro');
                 return;
             }
 
-            // Aqui você precisaria de um backend para adicionar os créditos
-            // Por enquanto, vamos simular
-            mostrarMensagem('✅ Pagamento confirmado! Créditos adicionados.', 'sucesso');
-            
-            // Se tivesse backend, chamaria uma API aqui
-            console.log('Pagamento confirmado para:', { pacote, creditos, email });
+            mostrarMensagem('⏳ Processando pagamento...', 'info');
+
+            try {
+                const response = await fetch('confirmar-pagamento.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        pacote: pacote
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    mostrarMensagem(`✅ Pagamento confirmado! ${data.creditos_adicionados} créditos adicionados.`, 'sucesso');
+                    
+                    // Atualizar créditos na sessionStorage se possível
+                    const usuarioSalvo = sessionStorage.getItem('usuarioLogado');
+                    if (usuarioSalvo) {
+                        const usuario = JSON.parse(usuarioSalvo);
+                        usuario.burocreditos = data.novo_total;
+                        sessionStorage.setItem('usuarioLogado', JSON.stringify(usuario));
+                    }
+                } else {
+                    mostrarMensagem('❌ Erro: ' + (data.error || 'Erro desconhecido'), 'erro');
+                }
+            } catch (error) {
+                mostrarMensagem('❌ Erro ao conectar com o servidor', 'erro');
+                console.error(error);
+            }
         }
 
         // ===== FUNÇÃO MOSTRAR MENSAGEM =====
@@ -212,5 +232,3 @@
             }, 5000);
         }
     </script>
-</body>
-</html>
