@@ -8,6 +8,11 @@ from datetime import datetime
 from dotenv import load_dotenv
 import hashlib
 import uuid
+import io
+import pdfplumber
+
+# IMPORTAR o Core Engine Jurídico do arquivo burocrata.py
+from burocrata import CoreEngineJuridico
 
 # Carregar variáveis de ambiente
 load_dotenv()
@@ -428,7 +433,104 @@ def obter_historico_utilizador(utilizador_id, limite=5):
         print(f"❌ Erro ao obter histórico: {e}")
         return []
 
-# ===== ROTAS DA API =====
+# ===== FUNÇÕES AUXILIARES PARA ANÁLISE DE DOCUMENTOS =====
+
+def extrair_texto_pdf_bytes(bytes_pdf):
+    """Extrai texto de bytes de PDF"""
+    try:
+        with pdfplumber.open(io.BytesIO(bytes_pdf)) as pdf:
+            texto = ""
+            for pagina in pdf.pages:
+                texto_pagina = pagina.extract_text()
+                if texto_pagina:
+                    texto += texto_pagina + "\n"
+            return texto if texto.strip() else None
+    except Exception as e:
+        print(f"❌ Erro ao extrair PDF: {e}")
+        return None
+
+def registrar_auditoria(usuario_id, evento, dados):
+    """Registra ação no log de auditoria"""
+    try:
+        conn = get_db_connection()
+        if not conn:
+            return
+        
+        cur = conn.cursor()
+        cur.execute("""
+            INSERT INTO audit_logs (user_id, event_type, event_action, new_data)
+            VALUES (%s, %s, %s, %s)
+        """, (usuario_id, evento, 'document_analysis', json.dumps(dados)))
+        
+        conn.commit()
+        cur.close()
+        conn.close()
+    except Exception as e:
+        print(f"❌ Erro ao registrar auditoria: {e}")
+
+# ===== ROTA PARA ANÁLISE JURÍDICA DE DOCUMENTOS =====
+@app.route('/analisar-documento', methods=['POST'])
+def analisar_documento():
+    """Recebe um PDF e retorna análise jurídica completa"""
+    try:
+        if 'file' not in request.files:
+            return jsonify({"success": False, "error": "Nenhum arquivo enviado"}), 400
+        
+        file = request.files['file']
+        usuario_id = request.form.get('usuario_id')
+        
+        if file.filename == '':
+            return jsonify({"success": False, "error": "Nome de arquivo vazio"}), 400
+        
+        if not file.filename.lower().endswith('.pdf'):
+            return jsonify({"success": False, "error": "Formato não suportado. Envie PDF."}), 400
+        
+        # Extrair texto do PDF
+        texto = extrair_texto_pdf_bytes(file.read())
+        
+        if not texto:
+            return jsonify({"success": False, "error": "Não foi possível extrair texto do PDF"}), 400
+        
+        # Inicializar detector jurídico (importado do burocrata.py)
+        detector = CoreEngineJuridico()
+        
+        # Analisar documento
+        resultado = detector.analisar_documento_completo(texto)
+        
+        # Registrar análise no banco
+        if usuario_id:
+            registar_analise(
+                usuario_id, 
+                file.filename, 
+                resultado['tipo_documento'],
+                resultado['metricas']['total'],
+                resultado['metricas']['pontuacao']
+            )
+        
+        # Registrar no audit_logs
+        registrar_auditoria(
+            usuario_id=usuario_id,
+            evento='document_analysis',
+            dados={
+                'filename': file.filename,
+                'tipo': resultado['tipo_documento'],
+                'violacoes': resultado['metricas']['total'],
+                'exposicao': resultado['exposicao_risco']
+            }
+        )
+        
+        return jsonify({
+            "success": True,
+            "resultado": resultado
+        })
+        
+    except Exception as e:
+        print(f"❌ Erro na análise: {e}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({"success": False, "error": str(e)}), 500
+
+# ===== ROTAS DA API (já existentes) =====
 
 @app.route('/')
 def index():
