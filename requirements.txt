@@ -1,3 +1,4 @@
+--python-version 3.11.9
 flask==3.0.0
 flask-cors==4.0.0
 python-dotenv==1.0.0
@@ -5,4 +6,3 @@ pdfplumber==0.10.3
 gunicorn==21.2.0
 psycopg2-binary==2.9.9
 requests==2.31.0
-# Importante: Remova qualquer restrição de versão do Python
