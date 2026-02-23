@@ -1,10 +1,9 @@
 import re
 import unicodedata
 from typing import Dict, List, Tuple, Any
-import json
 
 # --------------------------------------------------
-# CORE ENGINE JURÍDICO - SEM DEPENDÊNCIAS DO STREAMLIT
+# CORE ENGINE JURÍDICO - VERSÃO CORRIGIDA
 # --------------------------------------------------
 
 class CoreEngineJuridico:
@@ -18,10 +17,12 @@ class CoreEngineJuridico:
     """
     
     def __init__(self):
+        print("⚖️ Inicializando CoreEngineJuridico...")
         self.base_legal = self._carregar_base_legal_completa()
-        self.violacoes = self._carregar_violacoes_especialista()
         self.palavras_ambiguas = self._carregar_termos_ambiguos()
         self.omissoes_criticas = self._carregar_omissoes()
+        self.violacoes = self._carregar_violacoes_especialista()
+        print(f"✅ CoreEngineJuridico inicializado com {len(self.violacoes)} padrões de violação")
         
     def _carregar_base_legal_completa(self) -> Dict:
         """Base de dados jurídica completa para cross-reference"""
@@ -148,8 +149,9 @@ class CoreEngineJuridico:
         }
     
     def _carregar_termos_ambiguos(self) -> Dict[str, List[str]]:
-        """Termos que geram ambiguidade jurídica (VERSÃO EXPANDIDA)"""
-        return {
+        """Termos que geram ambiguidade jurídica"""
+        print("📚 Carregando termos ambíguos...")
+        termos = {
             'prazo_razoavel': [
                 r'prazo\s*razoável',
                 r'tempo\s*razoável',
@@ -204,10 +206,13 @@ class CoreEngineJuridico:
                 r'na\s*forma\s*da\s*lei'
             ]
         }
+        print(f"✅ {len(termos)} categorias de termos ambíguos carregadas")
+        return termos
     
-    def _carregar_omissoes(self) -> Dict[str, List[str]]:
-        """Detecta omissões críticas no contrato (VERSÃO EXPANDIDA)"""
-        return {
+    def _carregar_omissoes(self) -> Dict[str, Dict[str, List[str]]]:
+        """Detecta omissões críticas no contrato"""
+        print("📋 Carregando padrões de omissão...")
+        omissoes = {
             'TRABALHISTA': {
                 'multa_rescisoria': [
                     r'multa.*?rescisória',
@@ -302,9 +307,14 @@ class CoreEngineJuridico:
                 ]
             }
         }
+        print(f"✅ {len(omissoes)} categorias de omissão carregadas")
+        return omissoes
     
     def _carregar_violacoes_especialista(self) -> Dict:
         """Base expandida com todas as violações e referências legais"""
+        print("🚨 Carregando violações...")
+        
+        # Criar uma cópia para não modificar o original durante iteração
         violacoes_base = {
             # ===== VIOLAÇÕES TRABALHISTAS =====
             'jornada_excessiva': {
@@ -790,6 +800,7 @@ class CoreEngineJuridico:
                 'padroes': padroes
             }
         
+        print(f"✅ {len(violacoes_base)} padrões de violação carregados")
         return violacoes_base
     
     def _normalizar_texto(self, texto: str) -> str:
@@ -917,6 +928,8 @@ class CoreEngineJuridico:
     
     def analisar_documento_completo(self, texto_original: str) -> Dict[str, Any]:
         """Análise completa com todos os módulos do especialista"""
+        print(f"🔬 Iniciando análise de documento com {len(texto_original)} caracteres")
+        
         resultado = {
             'violacoes': [],
             'tipo_documento': 'INDEFINIDO',
@@ -927,6 +940,7 @@ class CoreEngineJuridico:
         }
         
         if not texto_original or len(texto_original) < 50:
+            print("⚠️ Documento muito curto ou vazio")
             resultado['metricas'] = {
                 'total': 0,
                 'criticas': 0,
@@ -944,48 +958,62 @@ class CoreEngineJuridico:
         # Detectar tipo de documento
         tipo_doc = self._detectar_tipo_por_palavras_chave(texto_normalizado)
         resultado['tipo_documento'] = tipo_doc
+        print(f"📋 Tipo de documento detectado: {tipo_doc}")
         
         # Módulo 1: Detecção de violações conhecidas
+        print("🔍 Buscando violações conhecidas...")
         ids_encontrados = set()
         for vid, config in self.violacoes.items():
             for padrao in config.get('padroes', []):
-                if re.search(padrao, texto_normalizado, re.IGNORECASE):
-                    if vid not in ids_encontrados:
-                        ids_encontrados.add(vid)
-                        
-                        # Extrair contexto
-                        pos = texto_normalizado.find(padrao[:20].upper())
-                        contexto = texto_original[max(0, pos-100):min(len(texto_original), pos+200)] if pos > 0 else texto_original[:300]
-                        
-                        violacao = {
-                            'id': vid,
-                            'nome': config['nome'],
-                            'tipo': config['tipo'],
-                            'gravidade': config['gravidade'],
-                            'descricao': config['descricao'],
-                            'lei': config['lei'],
-                            'solucao': config['solucao'],
-                            'cor': config['cor'],
-                            'contexto': contexto[:200] + '...' if len(contexto) > 200 else contexto
-                        }
-                        
-                        # Adicionar campos extras se existirem
-                        if 'penalidade' in config:
-                            violacao['penalidade'] = config['penalidade']
-                        if 'jurisprudencia' in config:
-                            violacao['jurisprudencia'] = config['jurisprudencia']
-                        
-                        resultado['violacoes'].append(violacao)
-                        break
+                try:
+                    if re.search(padrao, texto_normalizado, re.IGNORECASE):
+                        if vid not in ids_encontrados:
+                            ids_encontrados.add(vid)
+                            
+                            # Extrair contexto
+                            pos = texto_normalizado.find(padrao[:20].upper())
+                            contexto = texto_original[max(0, pos-100):min(len(texto_original), pos+200)] if pos > 0 else texto_original[:300]
+                            
+                            violacao = {
+                                'id': vid,
+                                'nome': config['nome'],
+                                'tipo': config['tipo'],
+                                'gravidade': config['gravidade'],
+                                'descricao': config['descricao'],
+                                'lei': config['lei'],
+                                'solucao': config['solucao'],
+                                'cor': config['cor'],
+                                'contexto': contexto[:200] + '...' if len(contexto) > 200 else contexto
+                            }
+                            
+                            # Adicionar campos extras se existirem
+                            if 'penalidade' in config:
+                                violacao['penalidade'] = config['penalidade']
+                            if 'jurisprudencia' in config:
+                                violacao['jurisprudencia'] = config['jurisprudencia']
+                            
+                            resultado['violacoes'].append(violacao)
+                            break
+                except Exception as e:
+                    print(f"⚠️ Erro ao processar padrão {vid}: {e}")
+                    continue
+        
+        print(f"✅ {len(ids_encontrados)} violações conhecidas encontradas")
         
         # Módulo 2: Análise de ambiguidade
-        resultado['violacoes'].extend(self._analisar_ambiguidade(texto_normalizado))
+        ambiguidades = self._analisar_ambiguidade(texto_normalizado)
+        resultado['violacoes'].extend(ambiguidades)
+        print(f"🔍 {len(ambiguidades)} termos ambíguos encontrados")
         
         # Módulo 3: Análise de omissões
-        resultado['violacoes'].extend(self._analisar_omissoes(texto_normalizado, tipo_doc))
+        omissoes = self._analisar_omissoes(texto_normalizado, tipo_doc)
+        resultado['violacoes'].extend(omissoes)
+        print(f"📋 {len(omissoes)} omissões críticas encontradas")
         
         # Módulo 4: Detecção de cláusulas leoninas
-        resultado['violacoes'].extend(self._detectar_clausulas_leoninas(texto_normalizado))
+        leoninas = self._detectar_clausulas_leoninas(texto_normalizado)
+        resultado['violacoes'].extend(leoninas)
+        print(f"🦁 {len(leoninas)} cláusulas leoninas encontradas")
         
         # Calcular métricas
         total = len(resultado['violacoes'])
@@ -1040,6 +1068,7 @@ class CoreEngineJuridico:
         if medias > 0:
             resultado['recomendacoes'].append('📋 Pontos de atenção identificados. Recomenda-se negociação das cláusulas.')
         
+        print(f"✅ Análise concluída! {total} violações totais. Veredito: {veredito}")
         return resultado
     
     def _detectar_tipo_por_palavras_chave(self, texto: str) -> str:
@@ -1071,6 +1100,4 @@ class CoreEngineJuridico:
         max_score = max(scores.values())
         if max_score >= 3:
             return max(scores, key=scores.get)
-        elif max_score >= 1:
-            return 'INDEFINIDO'
         return 'INDEFINIDO'
