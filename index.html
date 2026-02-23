@@ -1426,16 +1426,16 @@
             <div id="form-login">
                 <div class="form-group">
                     <label>E-mail</label>
-                    <input type="email" id="login-email" class="form-control" placeholder="seu@email.com" value="pedrohenriquemarques720@gmail.com">
+                    <input type="email" id="login-email" class="form-control" placeholder="seu@email.com" value="">
                 </div>
 
                 <div class="form-group">
                     <label>Palavra-passe</label>
-                    <input type="password" id="login-password" class="form-control" placeholder="Digite a sua palavra-passe" value="Liz1808#">
+                    <input type="password" id="login-password" class="form-control" placeholder="Digite a sua palavra-passe" value="">
                 </div>
 
                 <div class="alert alert-info">
-                    🔑 <strong>Conta Especial:</strong> pedrohenriquemarques720@gmail.com
+                    🔑 <strong></strong>
                 </div>
 
                 <div class="btn-group">
@@ -1498,10 +1498,10 @@
             <div class="nav-logo">⚖️ BdB</div>
             <div class="nav-links">
                 <a onclick="mostrarSecao('inicio')">Início</a>
-                <a onclick="mostrarSecao('loja')">🛒 Loja</a>
+                <a onclick="mostrarSecao('loja')">Loja</a>
                 <a onclick="mostrarSecao('analises')">Análises</a>
                 <a onclick="mostrarSecao('faq')">FAQ</a>
-                <a onclick="mostrarSecao('privacidade')">📜 Privacidade</a>
+                <a onclick="mostrarSecao('privacidade')">Privacidade</a>
                 <a onclick="mostrarSecao('contato')">Contato</a>
             </div>
             <button class="nav-button" onclick="fazerLogout()">Sair</button>
@@ -1598,12 +1598,12 @@
                     </div>
                 </div>
 
-                <!-- Faturas -->
+                <!-- Notas Fiscais -->
                 <div class="col-4">
                     <div class="analise-card" onclick="toggleCard(this)">
                         <span class="expand-card-icon">▼</span>
                         <div class="analise-icon">🧾</div>
-                        <div class="analise-title">Faturas</div>
+                        <div class="analise-title">Notas Fiscais</div>
                         
                         <div class="card-items">
                             <div class="analise-item">
@@ -1839,7 +1839,7 @@
         <!-- Seção Privacidade -->
         <div id="secao-privacidade" style="display: none;">
             <div class="privacidade-container">
-                <h2>📜 POLÍTICA DE PRIVACIDADE</h2>
+                <h2>POLÍTICA DE PRIVACIDADE</h2>
                 <p><strong>Burocrata de Bolso</strong> - Versão 1.0 (Fevereiro/2026)</p>
 
                 <h3>1. Quem somos</h3>
@@ -2217,7 +2217,7 @@
             const isEspecial = usuarioAtual.email === 'pedrohenriquemarques720@gmail.com';
             
             if (isEspecial) {
-                mensagemDiv.innerHTML = '<div class="alert alert-info">🎮 Modo Programador: Você já tem créditos ilimitados!</div>';
+                mensagemDiv.innerHTML = '<div class="alert alert-info"></div>';
                 return;
             }
             
@@ -2561,3 +2561,4 @@
     </script>
 </body>
 </html>
+
