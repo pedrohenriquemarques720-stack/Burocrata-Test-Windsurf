@@ -1,7 +1,8 @@
 from flask import Flask, request, jsonify, render_template, send_file
 from flask_cors import CORS
-import psycopg2
-import psycopg2.extras
+import pg8000
+import pg8000.dbapi
+import pg8000.native
 import os
 import json
 from datetime import datetime
@@ -33,12 +34,37 @@ print("="*50)
 print("🚀 SERVIDOR BUROCRATA INICIANDO")
 print("="*50)
 
-# ===== FUNÇÕES DE CONEXÃO COM O BANCO =====
+# ===== FUNÇÕES DE CONEXÃO COM O BANCO (AGORA USANDO pg8000) =====
 def get_db_connection():
-    """Retorna uma conexão com o banco PostgreSQL"""
+    """Retorna uma conexão com o banco PostgreSQL usando pg8000"""
     try:
-        conn = psycopg2.connect(DATABASE_URL)
-        return conn
+        # Extrair dados da DATABASE_URL
+        # Formato: postgres://usuario:senha@host:porta/banco
+        if DATABASE_URL and DATABASE_URL.startswith('postgres://'):
+            # Parse da URL
+            partes = DATABASE_URL.replace('postgres://', '').split('@')
+            usuario_senha = partes[0].split(':')
+            host_porta_banco = partes[1].split('/')
+            host_porta = host_porta_banco[0].split(':')
+            
+            usuario = usuario_senha[0]
+            senha = usuario_senha[1]
+            host = host_porta[0]
+            porta = int(host_porta[1]) if len(host_porta) > 1 else 5432
+            banco = host_porta_banco[1]
+            
+            conn = pg8000.native.Connection(
+                user=usuario,
+                password=senha,
+                host=host,
+                port=porta,
+                database=banco
+            )
+            print("✅ Conexão com banco de dados estabelecida")
+            return conn
+        else:
+            print("⚠️ DATABASE_URL não configurada corretamente")
+            return None
     except Exception as e:
         print(f"❌ Erro ao conectar ao banco: {e}")
         return None
@@ -55,12 +81,9 @@ def criar_usuario(nome, email, senha):
         if not conn:
             return False, "Erro de conexão com o banco de dados"
         
-        cur = conn.cursor()
-        
         # Verificar se email já existe
-        cur.execute("SELECT user_id FROM users WHERE email = %s", (email,))
-        if cur.fetchone():
-            cur.close()
+        result = conn.run("SELECT user_id FROM users WHERE email = :email", email=email)
+        if result and len(result) > 0:
             conn.close()
             return False, "E-mail já registrado"
         
@@ -69,23 +92,26 @@ def criar_usuario(nome, email, senha):
         senha_hash = hash_senha(senha)
         
         # Inserir usuário
-        cur.execute("""
+        conn.run("""
             INSERT INTO users (user_id, email, full_name, password_hash, account_status)
-            VALUES (%s, %s, %s, %s, %s)
-            RETURNING user_id
-        """, (user_id, email, nome, senha_hash, 'active'))
+            VALUES (:user_id, :email, :full_name, :password_hash, :account_status)
+        """, 
+            user_id=user_id, 
+            email=email, 
+            full_name=nome, 
+            password_hash=senha_hash, 
+            account_status='active'
+        )
         
         # Atribuir papel de usuário comum (free_user)
-        cur.execute("SELECT role_id FROM roles WHERE role_name = 'free_user'")
-        role_result = cur.fetchone()
-        if role_result:
-            cur.execute("""
+        role_result = conn.run("SELECT role_id FROM roles WHERE role_name = :role_name", role_name='free_user')
+        if role_result and len(role_result) > 0:
+            role_id = role_result[0][0]
+            conn.run("""
                 INSERT INTO user_roles (user_id, role_id)
-                VALUES (%s, %s)
-            """, (user_id, role_result[0]))
+                VALUES (:user_id, :role_id)
+            """, user_id=user_id, role_id=role_id)
         
-        conn.commit()
-        cur.close()
         conn.close()
         
         return True, {
@@ -107,48 +133,44 @@ def autenticar_usuario(email, senha):
         if not conn:
             return False, "Erro de conexão com o banco de dados"
         
-        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-        
         senha_hash = hash_senha(senha)
         
         # Buscar usuário
-        cur.execute("""
+        result = conn.run("""
             SELECT u.user_id, u.email, u.full_name, u.account_status,
                    array_agg(r.role_name) as roles
             FROM users u
             LEFT JOIN user_roles ur ON u.user_id = ur.user_id
             LEFT JOIN roles r ON ur.role_id = r.role_id
-            WHERE u.email = %s AND u.password_hash = %s AND u.account_status = 'active'
+            WHERE u.email = :email AND u.password_hash = :password_hash AND u.account_status = 'active'
             GROUP BY u.user_id
-        """, (email, senha_hash))
+        """, email=email, password_hash=senha_hash)
         
-        user = cur.fetchone()
-        
-        if user:
+        if result and len(result) > 0:
+            user_data = result[0]
+            user_id = user_data[0]
+            
             # Buscar créditos
-            cur.execute("""
+            creditos_result = conn.run("""
                 SELECT COALESCE(s.burocreditos, 0) as burocreditos
                 FROM users u
                 LEFT JOIN subscriptions s ON u.user_id = s.user_id AND s.status = 'active'
-                WHERE u.user_id = %s
-            """, (user['user_id'],))
+                WHERE u.user_id = :user_id
+            """, user_id=user_id)
             
-            creditos_result = cur.fetchone()
-            burocreditos = creditos_result['burocreditos'] if creditos_result else 0
+            burocreditos = creditos_result[0][0] if creditos_result and len(creditos_result) > 0 else 0
             
-            cur.close()
             conn.close()
             
             return True, {
-                'id': user['user_id'],
-                'nome': user['full_name'],
-                'email': user['email'],
-                'plano': user['roles'][0] if user['roles'] else 'free_user',
+                'id': user_id,
+                'nome': user_data[2],
+                'email': user_data[1],
+                'plano': user_data[4][0] if user_data[4] else 'free_user',
                 'burocreditos': burocreditos,
-                'estado': user['account_status']
+                'estado': user_data[3]
             }
         else:
-            cur.close()
             conn.close()
             return False, "E-mail ou senha incorretos"
             
@@ -163,10 +185,8 @@ def salvar_cobranca(usuario_id, bill_id, pacote, valor, creditos, url):
         if not conn:
             return False
         
-        cur = conn.cursor()
-        
         # Criar tabela de cobranças se não existir
-        cur.execute("""
+        conn.run("""
             CREATE TABLE IF NOT EXISTS cobrancas_abacate (
                 id SERIAL PRIMARY KEY,
                 bill_id TEXT UNIQUE,
@@ -181,14 +201,19 @@ def salvar_cobranca(usuario_id, bill_id, pacote, valor, creditos, url):
             )
         """)
         
-        cur.execute("""
+        conn.run("""
             INSERT INTO cobrancas_abacate (bill_id, usuario_id, pacote, valor, creditos, url_pagamento)
-            VALUES (%s, %s, %s, %s, %s, %s)
+            VALUES (:bill_id, :usuario_id, :pacote, :valor, :creditos, :url_pagamento)
             ON CONFLICT (bill_id) DO NOTHING
-        """, (bill_id, usuario_id, pacote, valor, str(creditos), url))
+        """, 
+            bill_id=bill_id, 
+            usuario_id=usuario_id, 
+            pacote=pacote, 
+            valor=valor, 
+            creditos=str(creditos), 
+            url_pagamento=url
+        )
         
-        conn.commit()
-        cur.close()
         conn.close()
         print(f"💾 Cobrança salva: {bill_id}")
         return True
@@ -221,6 +246,7 @@ def index():
         "webhook_id": ABACATE_WEBHOOK_ID,
         "webhook_url": f"{APP_URL}/webhook/abacate",
         "api_key_configured": bool(ABACATE_API_KEY),
+        "database_driver": "pg8000 (100% Python)",
         "rotas_disponiveis": [
             "/", 
             "/ping", 
@@ -304,7 +330,7 @@ def criar_pagamento():
         if not all([pacote, usuario_id, usuario_email]):
             return jsonify({"success": False, "error": "Dados incompletos"}), 400
         
-        # Mapear pacotes para links fixos (caso não queira criar dinamicamente)
+        # Mapear pacotes para links fixos
         links_fixos = {
             "bronze": "https://app.abacatepay.com/pay/bill_B1tw5bwKTqXKnUs3jafruP5j",
             "prata": "https://app.abacatepay.com/pay/bill_Stt2u0c3uEkaXsbdPGf6Ks0B",
@@ -421,6 +447,10 @@ def pagina_pagamento():
             width: 100%;
             font-size: 1.2em;
         }}
+        .btn:hover {{
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(248, 217, 109, 0.4);
+        }}
     </style>
 </head>
 <body>
@@ -451,17 +481,102 @@ def retorno_pagamento():
     status = request.args.get('status', 'pending')
     
     if status == 'PAID' or status == 'approved':
-        return "<h1>✅ Pagamento Confirmado!</h1><p>Seus créditos foram adicionados.</p><a href='/'>Voltar</a>"
+        return """
+        <html>
+        <head><title>Pagamento Confirmado</title>
+        <style>
+            body { background: #10263D; color: white; font-family: Arial; display: flex; justify-content: center; align-items: center; height: 100vh; }
+            .card { background: #1a3658; padding: 40px; border-radius: 20px; border: 3px solid #F8D96D; text-align: center; }
+            h1 { color: #27AE60; }
+            a { color: #F8D96D; text-decoration: none; }
+        </style>
+        </head>
+        <body>
+            <div class="card">
+                <h1>✅ Pagamento Confirmado!</h1>
+                <p>Seus créditos foram adicionados à sua conta.</p>
+                <p><a href="/">Voltar para o Burocrata de Bolso</a></p>
+            </div>
+        </body>
+        </html>
+        """
     elif status == 'failed':
-        return "<h1>❌ Pagamento Falhou</h1><p>Tente novamente.</p><a href='/'>Voltar</a>"
+        return """
+        <html>
+        <head><title>Pagamento Falhou</title>
+        <style>
+            body { background: #10263D; color: white; font-family: Arial; display: flex; justify-content: center; align-items: center; height: 100vh; }
+            .card { background: #1a3658; padding: 40px; border-radius: 20px; border: 3px solid #F8D96D; text-align: center; }
+            h1 { color: #E74C3C; }
+            a { color: #F8D96D; text-decoration: none; }
+        </style>
+        </head>
+        <body>
+            <div class="card">
+                <h1>❌ Pagamento Falhou</h1>
+                <p>Tente novamente ou escolha outra forma de pagamento.</p>
+                <p><a href="/">Voltar para Loja</a></p>
+            </div>
+        </body>
+        </html>
+        """
     else:
-        return "<h1>⏳ Pagamento Pendente</h1><p>Aguardando confirmação.</p><a href='/'>Voltar</a>"
+        return """
+        <html>
+        <head><title>Pagamento Pendente</title>
+        <style>
+            body { background: #10263D; color: white; font-family: Arial; display: flex; justify-content: center; align-items: center; height: 100vh; }
+            .card { background: #1a3658; padding: 40px; border-radius: 20px; border: 3px solid #F8D96D; text-align: center; }
+            h1 { color: #F39C12; }
+            a { color: #F8D96D; text-decoration: none; }
+        </style>
+        </head>
+        <body>
+            <div class="card">
+                <h1>⏳ Pagamento Pendente</h1>
+                <p>Aguardando confirmação do pagamento.</p>
+                <p><a href="/">Voltar para o Burocrata de Bolso</a></p>
+            </div>
+        </body>
+        </html>
+        """
 
 # ===== ROTA DE STATUS DO PAGAMENTO =====
 @app.route('/status-pagamento/<string:usuario_id>')
 def status_pagamento(usuario_id):
     """Verifica status do usuário"""
-    return jsonify({"success": True, "burocreditos": 30, "plano": "free_user"})
+    try:
+        conn = get_db_connection()
+        if not conn:
+            return jsonify({"success": True, "burocreditos": 30, "plano": "free_user"})
+        
+        # Buscar créditos do usuário
+        result = conn.run("""
+            SELECT COALESCE(s.burocreditos, 0) as burocreditos,
+                   array_agg(r.role_name) as plano
+            FROM users u
+            LEFT JOIN subscriptions s ON u.user_id = s.user_id AND s.status = 'active'
+            LEFT JOIN user_roles ur ON u.user_id = ur.user_id
+            LEFT JOIN roles r ON ur.role_id = r.role_id
+            WHERE u.user_id = :user_id
+            GROUP BY s.burocreditos
+        """, user_id=usuario_id)
+        
+        conn.close()
+        
+        if result and len(result) > 0:
+            return jsonify({
+                "success": True,
+                "burocreditos": result[0][0],
+                "plano": result[0][1][0] if result[0][1] else 'free_user',
+                "provider": "abacatepay"
+            })
+        else:
+            return jsonify({"success": True, "burocreditos": 30, "plano": "free_user"})
+            
+    except Exception as e:
+        print(f"❌ Erro ao verificar status: {e}")
+        return jsonify({"success": True, "burocreditos": 30, "plano": "free_user"})
 
 # ===== ROTA DE CRIAÇÃO DE CONTA =====
 @app.route('/criar-conta', methods=['POST'])
@@ -475,6 +590,9 @@ def criar_conta():
         
         if not all([nome, email, senha]):
             return jsonify({"success": False, "error": "Dados incompletos"}), 400
+        
+        if len(senha) < 6:
+            return jsonify({"success": False, "error": "Senha deve ter no mínimo 6 caracteres"}), 400
         
         sucesso, resultado = criar_usuario(nome, email, senha)
         
@@ -520,6 +638,7 @@ if __name__ == '__main__':
     
     print(f"\n🚀 Servidor iniciando na porta {port}")
     print(f"🌐 URL base: {APP_URL}")
+    print(f"🐘 Driver de banco: pg8000 (compatível com Python 3.14+)")
     print("✅ Pronto para receber requisições!\n")
     
     app.run(host='0.0.0.0', port=port, debug=debug_mode)
