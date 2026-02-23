@@ -11,8 +11,8 @@ import uuid
 import io
 import pdfplumber
 
-# IMPORTAR o Core Engine Jurídico do arquivo burocrata.py
-from burocrata import CoreEngineJuridico
+# IMPORTAR o Core Engine Jurídico do arquivo core_juridico.py
+from core_juridico import CoreEngineJuridico
 
 # Carregar variáveis de ambiente
 load_dotenv()
@@ -491,7 +491,7 @@ def analisar_documento():
         if not texto:
             return jsonify({"success": False, "error": "Não foi possível extrair texto do PDF"}), 400
         
-        # Inicializar detector jurídico (importado do burocrata.py)
+        # Inicializar detector jurídico (importado do core_juridico.py)
         detector = CoreEngineJuridico()
         
         # Analisar documento
