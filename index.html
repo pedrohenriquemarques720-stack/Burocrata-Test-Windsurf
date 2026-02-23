@@ -52,6 +52,11 @@
             display: none;
         }
 
+        /* ===== TELA DE PRIVACIDADE ===== */
+        #tela-privacidade {
+            display: none;
+        }
+
         /* Cabeçalho principal */
         .header-main {
             text-align: center;
@@ -903,6 +908,23 @@
             margin: 5px 0;
         }
 
+        .footer-links {
+            margin: 15px 0;
+        }
+
+        .footer-links a {
+            color: var(--color-gold);
+            text-decoration: none;
+            margin: 0 10px;
+            font-size: 0.95em;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--color-gold-light);
+            text-decoration: underline;
+        }
+
         .footer .copyright {
             color: var(--color-gold);
             font-size: 0.8em;
@@ -1317,6 +1339,77 @@
             border: 3px solid var(--color-gold);
             text-align: center;
         }
+
+        /* ===== ESTILOS DA PÁGINA DE PRIVACIDADE ===== */
+        .privacidade-container {
+            background: var(--color-blue-medium);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 30px 0;
+            border: 2px solid var(--color-gold);
+        }
+
+        .privacidade-container h2 {
+            color: var(--color-gold);
+            font-size: 2em;
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--color-gold);
+            padding-bottom: 15px;
+        }
+
+        .privacidade-container h3 {
+            color: var(--color-gold-light);
+            font-size: 1.5em;
+            margin: 25px 0 15px 0;
+        }
+
+        .privacidade-container p, .privacidade-container li {
+            color: #e0e0e0;
+            line-height: 1.6;
+            margin-bottom: 10px;
+            text-align: justify;
+        }
+
+        .privacidade-container ul, .privacidade-container ol {
+            margin-left: 25px;
+            margin-bottom: 20px;
+        }
+
+        .privacidade-container table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: #0f2a40;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .privacidade-container th {
+            background: var(--color-gold);
+            color: var(--color-blue-dark);
+            padding: 12px;
+            text-align: left;
+        }
+
+        .privacidade-container td {
+            padding: 10px;
+            border-bottom: 1px solid var(--color-blue-light);
+        }
+
+        .privacidade-container strong {
+            color: var(--color-gold);
+        }
+
+        .privacidade-container a {
+            color: var(--color-gold);
+        }
+
+        .privacidade-container .atualizacao {
+            text-align: right;
+            font-style: italic;
+            color: #a0aec0;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
@@ -1383,13 +1476,18 @@
             </div>
         </div>
 
+        <!-- Footer da Tela de Login -->
         <div class="footer">
             <p><strong>⚖️ Burocrata de Bolso</strong> • v2.0</p>
+            <div class="footer-links">
+                <a href="#" onclick="mostrarPrivacidadeLogin(); return false;">📜 Política de Privacidade</a>
+                <a href="#" onclick="mostrarContatoLogin(); return false;">📧 Contato</a>
+            </div>
             <p class="copyright">© 2026 Burocrata de Bolso. Todos os direitos reservados.</p>
         </div>
     </div>
 
-    <!-- TELA PRINCIPAL -->
+    <!-- TELA PRINCIPAL (APÓS LOGIN) -->
     <div id="tela-principal" class="main-container">
         <div class="header-main">
             <h1>⚖️ BUROCRATA DE BOLSO</h1>
@@ -1403,6 +1501,7 @@
                 <a onclick="mostrarSecao('loja')">🛒 Loja</a>
                 <a onclick="mostrarSecao('analises')">Análises</a>
                 <a onclick="mostrarSecao('faq')">FAQ</a>
+                <a onclick="mostrarSecao('privacidade')">📜 Privacidade</a>
                 <a onclick="mostrarSecao('contato')">Contato</a>
             </div>
             <button class="nav-button" onclick="fazerLogout()">Sair</button>
@@ -1429,11 +1528,9 @@
                 </div>
             </div>
 
-            <!-- CARDS O QUE ANALISAMOS - AGORA EM 3 COLUNAS -->
+            <!-- CARDS O QUE ANALISAMOS -->
             <div style="text-align: center; margin: 40px 0 30px 0;">
                 <h2 style="color: var(--color-gold); font-size: 2.2em; margin-bottom: 10px;">📋 O QUE ANALISAMOS</h2>
-                <p style="color: #FFFFFF; font-size: 1.1em; max-width: 800px; margin: 0 auto;">
-                </p>
             </div>
 
             <div class="row">
@@ -1609,21 +1706,15 @@
         <div id="secao-loja" style="display: none;">
             <div style="text-align: center; margin: 30px 0;">
                 <h1 style="color: var(--color-gold); font-size: 2.5em;">🛒 Loja Burocrata</h1>
-                <p style="color: #FFFFFF; font-size: 1.2em;">
-                </p>
             </div>
 
             <!-- Seção AdSense -->
             <div class="adsense-card">
                 <h2 style="color: var(--color-gold); margin-bottom: 20px;">📺 Ganhe BuroCréditos Assistindo</h2>
-                <p style="color: #FFFFFF; font-size: 1.1em;">
-                    <strong style="color: var(--color-gold); font-size: 1.3em;"></strong>
-                </p>
                 
                 <div class="video-placeholder" onclick="assistirVideo()">
                     <div style="font-size: 4em; color: var(--color-gold);">▶️</div>
                     <h3 style="color: var(--color-gold);">Assistir Vídeo</h3>
-                    <p style="color: #FFFFFF;"></p>
                     <span class="ganho-tag">+5 BuroCréditos</span>
                 </div>
 
@@ -1633,7 +1724,6 @@
             <!-- Pacotes -->
             <div style="text-align: center; margin: 40px 0;">
                 <h2 style="color: var(--color-gold); font-size: 2em;">💳 Pacotes de BuroCréditos</h2>
-                <p style="color: #FFFFFF;">Escolha o pacote que melhor atende suas necessidades</p>
             </div>
 
             <div class="row">
@@ -1643,16 +1733,13 @@
                         <div class="preco-tag">MAIS VENDIDO</div>
                         <div style="font-size: 3em; color: #CD7F32; margin-bottom: 15px;">🥉</div>
                         <h2 style="color: var(--color-gold);">Pacote Bronze</h2>
-                        <div class="preco-principal">
-                            R$ 15 <small>único</small>
-                        </div>
+                        <div class="preco-principal">R$ 15 <small>único</small></div>
                         <ul class="beneficios-lista">
                             <li>30 BuroCréditos</li>
                             <li>3 análises completas</li>
                             <li>Suporte por e-mail</li>
                             <li>Válido por 1 ano</li>
                         </ul>
-                        <!-- Pacote Bronze - CORRIGIDO -->
                         <button class="btn" onclick="window.location.href='https://burocrata-backend.onrender.com/pagamento?pacote=bronze&valor=15&creditos=30&email=' + encodeURIComponent(usuarioAtual ? usuarioAtual.email : '')">
                             🛒 Comprar
                         </button>
@@ -1665,9 +1752,7 @@
                         <div class="preco-tag">POPULAR</div>
                         <div style="font-size: 3em; color: #C0C0C0; margin-bottom: 15px;">🥈</div>
                         <h2 style="color: var(--color-gold);">Pacote Prata</h2>
-                        <div class="preco-principal">
-                            R$ 30 <small>único</small>
-                        </div>
+                        <div class="preco-principal">R$ 30 <small>único</small></div>
                         <ul class="beneficios-lista">
                             <li>60 BuroCréditos</li>
                             <li>6 análises completas</li>
@@ -1675,7 +1760,6 @@
                             <li>Válido por 1 ano</li>
                             <li>Relatórios detalhados</li>
                         </ul>
-                        <!-- Pacote Prata - CORRIGIDO -->
                         <button class="btn" onclick="window.location.href='https://burocrata-backend.onrender.com/pagamento?pacote=prata&valor=30&creditos=60&email=' + encodeURIComponent(usuarioAtual ? usuarioAtual.email : '')">
                             🛒 Comprar
                         </button>
@@ -1688,9 +1772,7 @@
                         <div class="preco-tag pro">⭐ RECOMENDADO</div>
                         <div style="font-size: 3em; color: #FFD700; margin-bottom: 15px;">🥇</div>
                         <h2 style="color: #FFD700;">Pacote PRO</h2>
-                        <div class="preco-principal">
-                            R$ 80 <small>/mês</small>
-                        </div>
+                        <div class="preco-principal">R$ 80 <small>/mês</small></div>
                         <ul class="beneficios-lista pro">
                             <li>Análises ILIMITADAS</li>
                             <li>Interface exclusiva PRO</li>
@@ -1700,7 +1782,6 @@
                             <li>Consultoria jurídica</li>
                             <li>Sem limite de créditos</li>
                         </ul>
-                        <!-- Pacote PRO - CORRIGIDO -->
                         <button class="btn" onclick="window.location.href='https://burocrata-backend.onrender.com/pagamento?pacote=pro&valor=80&creditos=ilimitado&email=' + encodeURIComponent(usuarioAtual ? usuarioAtual.email : '')">
                             ⭐ Assinar PRO
                         </button>
@@ -1755,6 +1836,86 @@
             </div>
         </div>
 
+        <!-- Seção Privacidade -->
+        <div id="secao-privacidade" style="display: none;">
+            <div class="privacidade-container">
+                <h2>📜 POLÍTICA DE PRIVACIDADE</h2>
+                <p><strong>Burocrata de Bolso</strong> - Versão 1.0 (Fevereiro/2026)</p>
+
+                <h3>1. Quem somos</h3>
+                <p>O Burocrata de Bolso é uma plataforma de análise documental que utiliza inteligência artificial para identificar violações e cláusulas abusivas em contratos. Nosso compromisso é com a transparência e a proteção dos seus dados.</p>
+                <p><strong>Contato:</strong> contatoburocrat@outlook.com</p>
+
+                <h3>2. Dados que coletamos</h3>
+                <p>Coletamos as seguintes informações:</p>
+                <ul>
+                    <li><strong>Dados de cadastro:</strong> nome, e-mail, CPF (quando informado), data de criação da conta.</li>
+                    <li><strong>Dados de uso:</strong> histórico de análises, tipo de documentos enviados, preferências de uso.</li>
+                    <li><strong>Dados de pagamento:</strong> processados exclusivamente pelo AbacatePay. Não armazenamos dados de cartão de crédito.</li>
+                    <li><strong>Cookies e tecnologia similar:</strong> para melhorar a experiência do usuário e estatísticas de uso.</li>
+                </ul>
+
+                <h3>3. Como usamos seus dados</h3>
+                <p>Utilizamos seus dados para:</p>
+                <ul>
+                    <li>✅ Criar e gerenciar sua conta no Burocrata de Bolso</li>
+                    <li>✅ Processar suas análises de documentos</li>
+                    <li>✅ Gerenciar seus BuroCréditos e histórico de compras</li>
+                    <li>✅ Melhorar nossos algoritmos de detecção</li>
+                    <li>✅ Enviar comunicações sobre novidades e atualizações (com seu consentimento)</li>
+                    <li>✅ Cumprir obrigações legais e regulatórias</li>
+                </ul>
+
+                <h3>4. Compartilhamento de dados</h3>
+                <p>Seus dados <strong>não são vendidos</strong> para terceiros. Compartilhamos apenas quando necessário:</p>
+                <ul>
+                    <li><strong>AbacatePay:</strong> para processar pagamentos (nome, e-mail, CPF).</li>
+                    <li><strong>Autoridades judiciais:</strong> quando exigido por lei.</li>
+                    <li><strong>Prestadores de serviços:</strong> como hospedagem (Render.com), apenas para operação do sistema.</li>
+                </ul>
+
+                <h3>5. Seus direitos</h3>
+                <p>Você tem direito a:</p>
+                <ul>
+                    <li>✅ Acessar todos os dados que temos sobre você</li>
+                    <li>✅ Corrigir dados incompletos ou incorretos</li>
+                    <li>✅ Solicitar a exclusão da sua conta e dados (respeitando prazos legais de retenção)</li>
+                    <li>✅ Revogar consentimentos dados anteriormente</li>
+                </ul>
+                <p>Para exercer seus direitos, envie um e-mail para <strong>contatoburocrat@outlook.com</strong>.</p>
+
+                <h3>6. Armazenamento e segurança</h3>
+                <p>Seus dados são armazenados em servidores seguros (Render.com) com criptografia e acesso restrito. Medidas de segurança incluem:</p>
+                <ul>
+                    <li>🔒 Comunicação criptografada (HTTPS)</li>
+                    <li>🔒 Senhas com hash (SHA-256)</li>
+                    <li>🔒 Acesso restrito a administradores</li>
+                    <li>🔒 Backups regulares</li>
+                </ul>
+
+                <h3>7. Retenção de dados</h3>
+                <p>Mantemos seus dados enquanto sua conta estiver ativa. Após exclusão da conta, dados podem ser retidos por até 5 anos para cumprimento de obrigações fiscais e legais.</p>
+
+                <h3>8. Uso de cookies</h3>
+                <p>Utilizamos cookies para:</p>
+                <ul>
+                    <li>🍪 Manter você logado</li>
+                    <li>🍪 Analisar estatísticas de uso</li>
+                    <li>🍪 Melhorar a experiência do usuário</li>
+                </ul>
+                <p>Você pode desabilitar cookies nas configurações do seu navegador, mas algumas funcionalidades podem ser afetadas.</p>
+
+                <h3>9. Alterações nesta política</h3>
+                <p>Podemos atualizar esta política periodicamente. Notificaremos sobre mudanças significativas por e-mail ou em nosso site.</p>
+
+                <h3>10. Encarregado de dados (DPO)</h3>
+                <p><strong>E-mail:</strong> contatoburocrat@outlook.com<br>
+                <strong>Prazo de resposta:</strong> até 7 dias úteis</p>
+
+                <p class="atualizacao">Última atualização: 23 de fevereiro de 2026</p>
+            </div>
+        </div>
+
         <!-- Seção Contato -->
         <div id="secao-contato" style="display: none;">
             <div style="background: var(--color-blue-medium); border-radius: 15px; padding: 40px; border: 2px solid var(--color-gold); margin: 30px 0; text-align: center;">
@@ -1770,9 +1931,13 @@
             </div>
         </div>
 
-        <!-- Footer -->
+        <!-- Footer da Tela Principal -->
         <div class="footer">
             <p><strong>⚖️ Burocrata de Bolso</strong> • IA de Análise Documental • v3.0</p>
+            <div class="footer-links">
+                <a href="#" onclick="mostrarSecao('privacidade'); return false;">📜 Política de Privacidade</a>
+                <a href="#" onclick="mostrarSecao('contato'); return false;">📧 Contato</a>
+            </div>
             <p class="copyright">© 2026 Burocrata de Bolso. Todos os direitos reservados.</p>
             <p class="copyright">Criado por Pedro Graciano</p>
         </div>
@@ -2029,7 +2194,9 @@
             const saudacaoMsg = document.getElementById('saudacao-mensagem');
                        
             if (isEspecial) {
-                saudacaoMsg.innerHTML = '<strong></strong><strong></strong>';
+                saudacaoMsg.innerHTML = '<strong>🎮 Modo Programador Ativo</strong><br>Você tem créditos ilimitados para testes!';
+            } else {
+                saudacaoMsg.innerHTML = 'Selecione um documento PDF para começar a análise.';
             }
         }
 
@@ -2038,6 +2205,7 @@
             document.getElementById('secao-loja').style.display = 'none';
             document.getElementById('secao-analises').style.display = 'none';
             document.getElementById('secao-faq').style.display = 'none';
+            document.getElementById('secao-privacidade').style.display = 'none';
             document.getElementById('secao-contato').style.display = 'none';
             document.getElementById(`secao-${secao}`).style.display = 'block';
             
@@ -2046,11 +2214,20 @@
             }
         }
 
+        function mostrarPrivacidadeLogin() {
+            alert('🔒 Faça login para acessar a Política de Privacidade completa.\n\nUse a conta especial para teste:\nEmail: pedrohenriquemarques720@gmail.com\nSenha: Liz1808#');
+        }
+
+        function mostrarContatoLogin() {
+            alert('📧 Entre em contato:\n\nEmail: contatoburocrat@outlook.com\nInstagram: @burocratadebolso\n\nTempo de resposta: até 24h');
+        }
+
         // ===== FUNÇÕES DA LOJA =====
         function assistirVideo() {
             if (!usuarioAtual) return;
             
             const mensagemDiv = document.getElementById('video-mensagem');
+            const isEspecial = usuarioAtual.email === 'pedrohenriquemarques720@gmail.com';
             
             if (isEspecial) {
                 mensagemDiv.innerHTML = '<div class="alert alert-info">🎮 Modo Programador: Você já tem créditos ilimitados!</div>';
@@ -2107,7 +2284,7 @@
                 usuarioAtual.burocreditos = 999999;
                 alert('🎉 Parabéns! Você agora é assinante PRO!');
             } else {
-                usuarioAtual.burocreditos += compraAtual.creditos;
+                usuarioAtual.burocreditos += parseInt(compraAtual.creditos);
                 alert(`✅ Compra realizada! ${compraAtual.creditos} BuroCréditos adicionados à sua conta.`);
             }
             
