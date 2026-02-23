@@ -3,39 +3,48 @@ from flask_cors import CORS
 import os
 import io
 import pdfplumber
+import traceback
+import sys
 from datetime import datetime
 from dotenv import load_dotenv
 
 # Importar o Core Engine Jurídico
-from core_juridico import CoreEngineJuridico
+try:
+    from core_juridico import CoreEngineJuridico
+    print("✅ CoreEngineJuridico importado com sucesso!")
+except Exception as e:
+    print(f"❌ ERRO AO IMPORTAR CoreEngineJuridico: {e}")
+    traceback.print_exc()
+    CoreEngineJuridico = None
 
 # Carregar variáveis de ambiente
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app, origins="*")  # Permite requisições de qualquer origem
+CORS(app, origins="*")
 
-# Configurações
-ABACATE_API_KEY = os.getenv('ABACATE_API_KEY', '')
-ABACATE_WEBHOOK_ID = os.getenv('ABACATE_WEBHOOK_ID', '')
-APP_URL = os.getenv('APP_URL', 'https://burocrata-backend.onrender.com')
+print("="*50)
+print("🚀 SERVIDOR INICIANDO - MODO DEBUG")
+print("="*50)
 
-print("🚀 Servidor Burocrata iniciando...")
-print(f"📡 Servidor rodando em: {APP_URL}")
-
-# ===== FUNÇÃO AUXILIAR PARA EXTRAIR TEXTO DO PDF =====
+# ===== FUNÇÃO AUXILIAR =====
 def extrair_texto_pdf_bytes(bytes_pdf):
     """Extrai texto de bytes de PDF"""
     try:
+        print("📄 Tentando extrair texto do PDF...")
         with pdfplumber.open(io.BytesIO(bytes_pdf)) as pdf:
             texto = ""
-            for pagina in pdf.pages:
+            for i, pagina in enumerate(pdf.pages):
                 texto_pagina = pagina.extract_text()
                 if texto_pagina:
                     texto += texto_pagina + "\n"
+                    print(f"   Página {i+1}: {len(texto_pagina)} caracteres")
+                else:
+                    print(f"   ⚠️ Página {i+1}: sem texto extraível")
             return texto if texto.strip() else None
     except Exception as e:
         print(f"❌ Erro ao extrair PDF: {e}")
+        traceback.print_exc()
         return None
 
 # ===== ROTA PRINCIPAL =====
@@ -43,26 +52,23 @@ def extrair_texto_pdf_bytes(bytes_pdf):
 def index():
     return jsonify({
         "status": "API Burocrata de Bolso funcionando!",
-        "payment": "AbacatePay integrado",
-        "webhook_id": ABACATE_WEBHOOK_ID,
-        "webhook_url": f"{APP_URL}/webhook/abacate",
-        "api_key_configured": bool(ABACATE_API_KEY),
-        "rotas_disponiveis": ["/", "/ping", "/analisar-documento"]
+        "core_juridico_carregado": CoreEngineJuridico is not None,
+        "timestamp": datetime.now().isoformat()
     })
 
-# ===== ROTA DE TESTE (PING) =====
+# ===== ROTA DE TESTE =====
 @app.route('/ping')
 def ping():
-    return jsonify({
-        "pong": True,
-        "timestamp": datetime.now().isoformat(),
-        "status": "online"
-    })
+    return jsonify({"pong": True, "status": "online"})
 
 # ===== ROTA PARA ANÁLISE JURÍDICA =====
 @app.route('/analisar-documento', methods=['POST', 'OPTIONS'])
 def analisar_documento():
     """Recebe um PDF e retorna análise jurídica completa"""
+    
+    print("\n" + "="*50)
+    print("📥 NOVA REQUISIÇÃO RECEBIDA EM /analisar-documento")
+    print("="*50)
     
     # Responder a requisições OPTIONS (preflight CORS)
     if request.method == 'OPTIONS':
@@ -72,20 +78,27 @@ def analisar_documento():
         response.headers.add('Access-Control-Allow-Methods', 'POST')
         return response, 200
     
-    print("📥 Requisição recebida em /analisar-documento")
-    print(f"📌 Método: {request.method}")
-    
     try:
+        # Verificar se CoreEngineJuridico foi carregado
+        if CoreEngineJuridico is None:
+            print("❌ CoreEngineJuridico não foi carregado!")
+            return jsonify({
+                "success": False, 
+                "error": "Erro interno: motor jurídico não carregado. Verifique logs."
+            }), 500
+        
         # Verificar se arquivo foi enviado
         if 'file' not in request.files:
-            print("❌ Erro: Nenhum arquivo enviado")
+            print("❌ Nenhum arquivo enviado")
             return jsonify({"success": False, "error": "Nenhum arquivo enviado"}), 400
         
         file = request.files['file']
         usuario_id = request.form.get('usuario_id', 'anonimo')
         
-        print(f"📄 Arquivo recebido: {file.filename}")
-        print(f"👤 Usuário ID: {usuario_id}")
+        print(f"📄 Arquivo: {file.filename}")
+        print(f"👤 Usuário: {usuario_id}")
+        print(f"📦 Tamanho: {len(file.read())} bytes")
+        file.seek(0)  # Voltar ao início do arquivo
         
         # Validar arquivo
         if file.filename == '':
@@ -95,23 +108,26 @@ def analisar_documento():
             return jsonify({"success": False, "error": "Formato não suportado. Envie PDF."}), 400
         
         # Extrair texto do PDF
-        print("🔍 Extraindo texto do PDF...")
+        print("🔍 Extraindo texto...")
         texto = extrair_texto_pdf_bytes(file.read())
         
         if not texto:
             return jsonify({"success": False, "error": "Não foi possível extrair texto do PDF"}), 400
         
         print(f"📝 Texto extraído: {len(texto)} caracteres")
+        print(f"📝 Primeiros 200 caracteres: {texto[:200]}")
         
         # Inicializar detector jurídico
         print("⚖️ Inicializando CoreEngineJuridico...")
         detector = CoreEngineJuridico()
+        print("✅ Detector inicializado")
         
         # Analisar documento
         print("🔬 Analisando documento...")
         resultado = detector.analisar_documento_completo(texto)
         
-        print(f"✅ Análise concluída! {resultado['metricas']['total']} violações encontradas")
+        print(f"✅ Análise concluída!")
+        print(f"📊 Total de violações: {resultado['metricas']['total']}")
         print(f"🎯 Veredito: {resultado['veredito']}")
         
         return jsonify({
@@ -120,26 +136,22 @@ def analisar_documento():
         })
         
     except Exception as e:
-        print(f"❌ Erro na análise: {str(e)}")
-        import traceback
+        print(f"❌ ERRO NA ANÁLISE: {type(e).__name__}: {e}")
+        print("📋 Traceback completo:")
         traceback.print_exc()
         return jsonify({
             "success": False, 
-            "error": str(e)
+            "error": f"Erro interno: {type(e).__name__} - {str(e)}"
         }), 500
 
-# ===== LISTAR TODAS AS ROTAS DISPONÍVEIS =====
+# ===== LISTAR ROTAS =====
 print("\n📋 Rotas disponíveis:")
 for rule in app.url_map.iter_rules():
     print(f"   {rule}")
 
-# ===== INICIALIZAR SERVIDOR =====
+# ===== INICIALIZAR =====
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
-    debug_mode = os.environ.get('ENV') != 'production'
-    
     print(f"\n🚀 Servidor iniciando na porta {port}")
-    print(f"🌐 Modo: {'Produção' if not debug_mode else 'Desenvolvimento'}")
     print("✅ Pronto para receber requisições!\n")
-    
-    app.run(host='0.0.0.0', port=port, debug=debug_mode)
+    app.run(host='0.0.0.0', port=port, debug=True)
