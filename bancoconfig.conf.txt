@@ -1,0 +1,19 @@
+# postgresql.conf (produção)
+ssl = on
+ssl_cert_file = 'server.crt'
+ssl_key_file = 'server.key'
+
+# Limitar conexões
+max_connections = 100
+superuser_reserved_connections = 3
+
+# Log de todas as operações DDL
+log_statement = 'ddl'
+log_min_duration_statement = 1000  # ms
+
+# Criptografia em repouso (TDE)
+# Usar LUKS/dm-crypt ou EBS encryption
+
+# pg_hba.conf (autenticação)
+hostssl all all 0.0.0.0/0 md5
+hostnossl all all 0.0.0.0/0 reject
