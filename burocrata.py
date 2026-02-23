@@ -165,49 +165,65 @@ class CoreEngineJuridico:
         }
     
     def _carregar_termos_ambiguos(self) -> Dict[str, List[str]]:
-        """Termos que geram ambiguidade jurídica"""
+        """Termos que geram ambiguidade jurídica (VERSÃO EXPANDIDA)"""
         return {
             'prazo_razoavel': [
                 r'prazo\s*razoável',
                 r'tempo\s*razoável',
                 r'período\s*razoável',
                 r'quando\s*possível',
-                r'assim\s*que\s*possível'
+                r'assim\s*que\s*possível',
+                r'em\s*tempo\s*hábil',
+                r'oportunamente',
+                r'tão\s*logo\s*quanto\s*possível'
             ],
             'custos_adicionais': [
                 r'custos?\s*adicionais?',
                 r'despesas?\s*extras?',
                 r'encargos?\s*eventuais?',
                 r'custos?\s*necessários?',
-                r'despesas?\s*imprevistas?'
+                r'despesas?\s*imprevistas?',
+                r'custos?\s*operacionais?',
+                r'taxas?\s*administrativas?'
             ],
             'eventuais_necessidades': [
                 r'eventuais?\s*necessidades?',
                 r'quando\s*necessário',
                 r'caso\s*necessário',
                 r'se\s*necessário',
-                r'conforme\s*necessidade'
+                r'conforme\s*necessidade',
+                r'se\s*for\s*o\s*caso',
+                r'quando\s*se\s*fizer\s*necessário'
             ],
             'multa_geral': [
                 r'multa\s*contratual',
                 r'penalidade\s*contratual',
-                r'indenização\s*por\s*descumprimento'
+                r'indenização\s*por\s*descumprimento',
+                r'cláusula\s*penal'
             ],
             'juros_mora': [
                 r'juros?\s*de\s*mora',
                 r'juros?\s*moratórios?',
                 r'juros?\s*legais?',
-                r'juros?\s*contratuais?'
+                r'juros?\s*contratuais?',
+                r'atualização\s*monetária'
             ],
             'foro': [
                 r'foro\s*de\s*eleição',
                 r'foro\s*competente',
-                r'foro\s*da\s*comarca'
+                r'foro\s*da\s*comarca',
+                r'juízo\s*competente'
+            ],
+            'condicoes_gerais': [
+                r'nos\s*termos\s*da\s*lei',
+                r'conforme\s*legislação\s*aplicável',
+                r'de\s*acordo\s*com\s*a\s*lei',
+                r'na\s*forma\s*da\s*lei'
             ]
         }
     
     def _carregar_omissoes(self) -> Dict[str, List[str]]:
-        """Detecta omissões críticas no contrato"""
+        """Detecta omissões críticas no contrato (VERSÃO EXPANDIDA)"""
         return {
             'TRABALHISTA': {
                 'multa_rescisoria': [
@@ -222,7 +238,8 @@ class CoreEngineJuridico:
                 ],
                 'ferias': [
                     r'férias',
-                    r'descanso.*?anual'
+                    r'descanso.*?anual',
+                    r'período.*?aquisitivo'
                 ],
                 '13_salario': [
                     r'13º',
@@ -237,6 +254,15 @@ class CoreEngineJuridico:
                     r'horas.*?extras',
                     r'hora.*?extra',
                     r'sobrejornada'
+                ],
+                'intervalo_intrajornada': [
+                    r'intervalo.*?intrajornada',
+                    r'descanso.*?para.*?refeição',
+                    r'pausa.*?para.*?alimentação'
+                ],
+                'equiparacao_salarial': [
+                    r'equiparação.*?salarial',
+                    r'isonomia.*?salarial'
                 ]
             },
             'LOCACAO': {
@@ -248,7 +274,8 @@ class CoreEngineJuridico:
                 'reajuste_indice': [
                     r'reajuste.*?índice',
                     r'correção.*?IGP[ -]?M',
-                    r'atualização.*?IPCA'
+                    r'atualização.*?IPCA',
+                    r'índice.*?oficial'
                 ],
                 'vistoria_conjunta': [
                     r'vistoria.*?conjunta',
@@ -259,6 +286,36 @@ class CoreEngineJuridico:
                     r'prazo.*?desocupação',
                     r'tempo.*?para.*?sair',
                     r'dias.*?para.*?desocupar'
+                ],
+                'direito_preferencia': [
+                    r'direito.*?preferência',
+                    r'preferência.*?compra'
+                ],
+                'reparos_emergenciais': [
+                    r'reparos.*?emergenciais',
+                    r'obras.*?urgentes'
+                ]
+            },
+            'CONTRATUAL': {
+                'clausula_penal': [
+                    r'cláusula.*?penal',
+                    r'multa.*?contratual'
+                ],
+                'juros_moratorios': [
+                    r'juros.*?moratórios',
+                    r'juros.*?mora'
+                ],
+                'correcao_monetaria': [
+                    r'correção.*?monetária',
+                    r'atualização.*?financeira'
+                ],
+                'foro_eleicao': [
+                    r'foro.*?eleição',
+                    r'foro.*?competente'
+                ],
+                'rescisao_antecipada': [
+                    r'rescisão.*?antecipada',
+                    r'distrato'
                 ]
             }
         }
@@ -282,7 +339,10 @@ class CoreEngineJuridico:
                     r'jornada.*?(?:12|doze).*?horas',
                     r'(?:08|8)[:h]\s*(?:a|à)s\s*(?:20|20:00)',
                     r'72.*?horas.*?semanais',
-                    r'jornada.*?(?:10|dez).*?horas'
+                    r'jornada.*?(?:10|dez).*?horas',
+                    r'expediente.*?das.*?08.*?às.*?20',
+                    r'trabalhará.*?de.*?segunda.*?a.*?sábado',
+                    r'jornada.*?semanal.*?superior.*?44'
                 ]
             },
             
@@ -300,7 +360,9 @@ class CoreEngineJuridico:
                     r'não.*?haverá.*?pagamento.*?horas.*?extras',
                     r'horas.*?extras.*?incluídas.*?salário',
                     r'compensação.*?horas.*?extras.*?sem.*?acordo',
-                    r'horas.*?extras.*?não.*?remuneradas'
+                    r'horas.*?extras.*?não.*?remuneradas',
+                    r'salário.*?fixo.*?suficiente.*?jornada.*?extraordinária',
+                    r'renuncia.*?horas.*?extras'
                 ]
             },
             
@@ -317,7 +379,8 @@ class CoreEngineJuridico:
                 'padroes': [
                     r'R\$\s*(?:900|1000|1100|1200)[,\\.]?\d*',
                     r'salário.*?(?:900|1000|1100|1200)',
-                    r'remuneração.*?(?:900|1000|1100|1200)'
+                    r'remuneração.*?(?:900|1000|1100|1200)',
+                    r'abaixo.*?mínimo.*?legal'
                 ]
             },
             
@@ -336,7 +399,8 @@ class CoreEngineJuridico:
                     r'sem.*?direito.*?fgts',
                     r'fgts.*?substituído',
                     r'não.*?haverá.*?fgts',
-                    r'vale.*?cultura.*?fgts'
+                    r'vale.*?cultura.*?fgts',
+                    r'em.*?substituição.*?ao.*?fgts'
                 ]
             },
             
@@ -353,7 +417,8 @@ class CoreEngineJuridico:
                 'padroes': [
                     r'experiência.*?(?:6|seis).*?meses',
                     r'180.*?dias.*?experiência',
-                    r'prorrogação.*?experiência.*?(?:90|noventa).*?dias'
+                    r'prorrogação.*?experiência.*?(?:90|noventa).*?dias',
+                    r'período.*?de.*?experiência.*?superior.*?90.*?dias'
                 ]
             },
             
@@ -370,7 +435,8 @@ class CoreEngineJuridico:
                 'padroes': [
                     r'(?:23|23:00).*?(?:06|06:00)',
                     r'intervalo.*?7.*?horas',
-                    r'retorno.*?(?:6|6h|06).*?após.*?(?:23|23h)'
+                    r'retorno.*?(?:6|6h|06).*?após.*?(?:23|23h)',
+                    r'descanso.*?entre.*?jornadas.*?inferior'
                 ]
             },
             
@@ -387,7 +453,8 @@ class CoreEngineJuridico:
                 'padroes': [
                     r'sem.*?acréscimo.*?1/3',
                     r'férias.*?sem.*?terço',
-                    r'não.*?haverá.*?1/3'
+                    r'não.*?haverá.*?1/3',
+                    r'férias.*?sem.*?adicional'
                 ]
             },
             
@@ -404,7 +471,8 @@ class CoreEngineJuridico:
                 'padroes': [
                     r'multa.*?(?:3|três).*?salários.*?demissão',
                     r'pedido.*?demissão.*?pagará.*?multa',
-                    r'indenização.*?por.*?demissão'
+                    r'indenização.*?por.*?demissão',
+                    r'penalidade.*?por.*?pedido.*?de.*?demissão'
                 ]
             },
             
@@ -421,7 +489,8 @@ class CoreEngineJuridico:
                 'padroes': [
                     r'(?:22|22h|22:00).*?(?:05|5|05:00).*?não.*?noturno',
                     r'sem.*?adicional.*?noturno',
-                    r'não.*?considerado.*?noturno'
+                    r'não.*?considerado.*?noturno',
+                    r'trabalho.*?noturno.*?sem.*?adicional'
                 ]
             },
             
@@ -438,7 +507,8 @@ class CoreEngineJuridico:
                 'padroes': [
                     r'desconto.*?integral.*?vale.*?transporte',
                     r'vale.*?transporte.*?custo.*?integral',
-                    r'descontado.*?independentemente.*?gasto'
+                    r'descontado.*?independentemente.*?gasto',
+                    r'vale.*?transporte.*?desconto.*?superior.*?6%'
                 ]
             },
             
@@ -455,7 +525,9 @@ class CoreEngineJuridico:
                 'padroes': [
                     r'quaisquer.*?outras.*?funções',
                     r'exercer.*?atividades.*?determinadas',
-                    r'sem.*?acréscimo.*?salarial'
+                    r'sem.*?acréscimo.*?salarial',
+                    r'outras.*?funções.*?que.*?o.*?empregador.*?julgar.*?necessárias',
+                    r'plurissubordinação'
                 ]
             },
             
@@ -472,7 +544,9 @@ class CoreEngineJuridico:
                 'padroes': [
                     r'renuncia.*?estabilidade',
                     r'sem.*?direito.*?estabilidade',
-                    r'estabilidade.*?acidentária.*?não'
+                    r'estabilidade.*?acidentária.*?não',
+                    r'estabilidade.*?gestante.*?renúncia',
+                    r'estabilidade.*?cipeiro.*?renúncia'
                 ]
             },
             
@@ -490,7 +564,8 @@ class CoreEngineJuridico:
                     r'sem.*?vínculo.*?empregatício',
                     r'trabalho.*?autônomo',
                     r'prestação.*?serviços.*?sem.*?vínculo',
-                    r'pessoa.*?jurídica.*?prestação'
+                    r'pessoa.*?jurídica.*?prestação',
+                    r'não.*?caracterizado.*?vínculo'
                 ]
             },
             
@@ -509,7 +584,8 @@ class CoreEngineJuridico:
                     r'reajuste.*?livre',
                     r'critério.*?locador',
                     r'independente.*?índice',
-                    r'sem.*?vinculação.*?índice'
+                    r'sem.*?vinculação.*?índice',
+                    r'reajuste.*?arbitrário'
                 ]
             },
             
@@ -527,7 +603,8 @@ class CoreEngineJuridico:
                     r'fiador.*?e.*?caução',
                     r'fiador.*?e.*?seguro',
                     r'caução.*?e.*?seguro',
-                    r'múltiplas.*?garantias'
+                    r'múltiplas.*?garantias',
+                    r'garantia.*?cumulativa'
                 ]
             },
             
@@ -544,7 +621,8 @@ class CoreEngineJuridico:
                 'padroes': [
                     r'renuncia.*?benfeitoria',
                     r'sem.*?direito.*?indenização.*?benfeitoria',
-                    r'benfeitoria.*?integra.*?imóvel.*?sem.*?ônus'
+                    r'benfeitoria.*?integra.*?imóvel.*?sem.*?ônus',
+                    r'renúncia.*?a.*?qualquer.*?direito.*?de.*?retenção.*?ou.*?indenização'
                 ]
             },
             
@@ -561,7 +639,8 @@ class CoreEngineJuridico:
                 'padroes': [
                     r'(?:15|30|45).*?dias.*?desocupar',
                     r'prazo.*?desocupação.*?(?:15|30|45)',
-                    r'desocupação.*?imediata'
+                    r'desocupação.*?imediata',
+                    r'15.*?dias.*?após.*?notificação'
                 ]
             },
             
@@ -578,7 +657,8 @@ class CoreEngineJuridico:
                 'padroes': [
                     r'vistoria.*?exclusivamente.*?locador',
                     r'orçamento.*?vinculante',
-                    r'débito.*?automático.*?reparos'
+                    r'débito.*?automático.*?reparos',
+                    r'sem.*?necessidade.*?de.*?contraprovas'
                 ]
             },
             
@@ -613,7 +693,8 @@ class CoreEngineJuridico:
                 'padroes': [
                     r'visitar.*?qualquer.*?momento',
                     r'sem.*?aviso.*?prévio',
-                    r'acesso.*?irrestrito'
+                    r'acesso.*?irrestrito',
+                    r'visitas.*?a.*?qualquer.*?hora'
                 ]
             },
             
@@ -630,7 +711,8 @@ class CoreEngineJuridico:
                 'padroes': [
                     r'seguro.*?favor.*?locador',
                     r'contratar.*?seguro.*?todos.*?riscos',
-                    r'seguro.*?obrigatório.*?beneficiário.*?locador'
+                    r'seguro.*?obrigatório.*?beneficiário.*?locador',
+                    r'seguro.*?em.*?benefício.*?do.*?locador'
                 ]
             },
             
@@ -648,7 +730,8 @@ class CoreEngineJuridico:
                     r'proibidos.*?animais',
                     r'vedados.*?animais',
                     r'não.*?permitidos.*?animais',
-                    r'proibido.*?pet'
+                    r'proibido.*?pet',
+                    r'animais.*?inclusive.*?peixes'
                 ]
             },
             
@@ -666,7 +749,8 @@ class CoreEngineJuridico:
                 'padroes': [
                     r'juros.*?(?:5|10|15|20)%',
                     r'juros.*?superior.*?1%.*?mês',
-                    r'taxa.*?juros.*?acima.*?mercado'
+                    r'taxa.*?juros.*?acima.*?mercado',
+                    r'juros.*?acima.*?legal'
                 ]
             },
             
@@ -683,7 +767,9 @@ class CoreEngineJuridico:
                 'padroes': [
                     r'única.*?responsabilidade',
                     r'apenas.*?uma.*?parte.*?obrigada',
-                    r'todos.*?ônus.*?para'
+                    r'todos.*?ônus.*?para',
+                    r'todos.*?direitos.*?para',
+                    r'vantagem.*?exclusiva'
                 ]
             },
             
@@ -700,7 +786,8 @@ class CoreEngineJuridico:
                 'padroes': [
                     r'foro.*?eleição.*?distante',
                     r'elegem.*?foro.*?diverso',
-                    r'comarca.*?diversa.*?domicílio'
+                    r'comarca.*?diversa.*?domicílio',
+                    r'foro.*?diferente.*?do.*?domicílio'
                 ]
             }
         }
@@ -753,7 +840,8 @@ class CoreEngineJuridico:
                         'gravidade': 'MÉDIA',
                         'cor': '#ffaa44',
                         'contexto': match.group(),
-                        'lei': 'Art. 112 CC - Interpretação dos negócios jurídicos'
+                        'lei': 'Art. 112 CC - Interpretação dos negócios jurídicos',
+                        'solucao': 'Defina objetivamente prazos, valores e condições.'
                     })
         
         return violacoes
@@ -809,7 +897,9 @@ class CoreEngineJuridico:
             (r'todos.*?ônus.*?para', 'Concentração de ônus'),
             (r'todos.*?direitos.*?para', 'Concentração de direitos'),
             (r'não.*?cabe.*?contestação', 'Vedação de contestação'),
-            (r'renuncia.*?antecipada', 'Renúncia antecipada de direitos')
+            (r'renuncia.*?antecipada', 'Renúncia antecipada de direitos'),
+            (r'sem.*?direito.*?de.*?arrependimento', 'Vedação de arrependimento'),
+            (r'sem.*?possibilidade.*?de.*?revisão', 'Vedação de revisão')
         ]
         
         for padrao, descricao in padroes_leoninos:
@@ -991,11 +1081,17 @@ class CoreEngineJuridico:
         palavras_chave = {
             'TRABALHISTA': [
                 'empregado', 'empregador', 'salário', 'jornada', 'clt',
-                'fgts', 'inss', 'férias', '13º', 'aviso prévio', 'rescisão'
+                'fgts', 'inss', 'férias', '13º', 'aviso prévio', 'rescisão',
+                'horas extras', 'adicional noturno', 'intervalo', 'carteira'
             ],
             'LOCAÇÃO': [
                 'locador', 'locatário', 'aluguel', 'imóvel', 'fiador',
-                'caução', 'inquilino', 'proprietário', 'benfeitoria'
+                'caução', 'inquilino', 'proprietário', 'benfeitoria',
+                'vistoria', 'desocupação', 'reajuste'
+            ],
+            'CONTRATUAL': [
+                'cláusula', 'contrato', 'partes', 'obrigações', 'multa',
+                'juros', 'prazo', 'vigência', 'rescisão', 'indenização'
             ]
         }
         
@@ -1007,8 +1103,10 @@ class CoreEngineJuridico:
                     scores[tipo] += 1
         
         max_score = max(scores.values())
-        if max_score >= 2:
+        if max_score >= 3:
             return max(scores, key=scores.get)
+        elif max_score >= 1:
+            return 'INDEFINIDO'
         return 'INDEFINIDO'
 
 
