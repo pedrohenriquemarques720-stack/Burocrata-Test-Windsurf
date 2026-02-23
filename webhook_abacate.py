@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
-import sqlite3
+import pg8000
+import pg8000.native
 import os
 import json
 import hmac
@@ -13,9 +14,182 @@ load_dotenv()
 app = Flask(__name__)
 
 # Configurações
-DB_PATH = os.getenv('DATABASE_PATH', 'utilizadores_burocrata.db')
+DATABASE_URL = os.getenv('DATABASE_URL')
 WEBHOOK_SECRET = os.getenv('ABACATE_WEBHOOK_SECRET', 'burocrata_webhook_secret_2026')
 WEBHOOK_ID = os.getenv('ABACATE_WEBHOOK_ID', 'webh_dev_ahdHbQwGkz4qds2aphSsHWtH')
+
+print("="*50)
+print("🚀 WEBHOOK ABACATEPAY INICIANDO")
+print("="*50)
+print(f"🔗 Webhook ID: {WEBHOOK_ID}")
+print(f"📡 Modo: {'Produção' if DATABASE_URL else 'Teste (sem banco)'}")
+
+# ===== FUNÇÃO DE CONEXÃO COM O BANCO (mesma do backend) =====
+def get_db_connection():
+    """Retorna uma conexão com o banco PostgreSQL usando pg8000"""
+    if not DATABASE_URL:
+        print("⚠️ DATABASE_URL não configurada - webhook em modo simulação")
+        return None
+    
+    try:
+        # Parse da DATABASE_URL
+        # Formato: postgres://usuario:senha@host:porta/banco
+        if DATABASE_URL.startswith('postgres://'):
+            partes = DATABASE_URL.replace('postgres://', '').split('@')
+            usuario_senha = partes[0].split(':')
+            host_porta_banco = partes[1].split('/')
+            host_porta = host_porta_banco[0].split(':')
+            
+            usuario = usuario_senha[0]
+            senha = usuario_senha[1]
+            host = host_porta[0]
+            porta = int(host_porta[1]) if len(host_porta) > 1 else 5432
+            banco = host_porta_banco[1]
+            
+            conn = pg8000.native.Connection(
+                user=usuario,
+                password=senha,
+                host=host,
+                port=porta,
+                database=banco
+            )
+            print("✅ Conexão com banco de dados estabelecida")
+            return conn
+        else:
+            print("❌ Formato de DATABASE_URL inválido")
+            return None
+    except Exception as e:
+        print(f"❌ Erro ao conectar ao banco: {e}")
+        return None
+
+# ===== FUNÇÃO PARA ATUALIZAR CRÉDITOS DO USUÁRIO =====
+def atualizar_creditos_usuario(usuario_id, pacote, creditos):
+    """Atualiza os créditos do usuário no banco PostgreSQL"""
+    try:
+        conn = get_db_connection()
+        if not conn:
+            print("⚠️ Sem conexão com banco - simulando atualização")
+            return True
+        
+        # Verificar se é a conta especial
+        result = conn.run("SELECT email FROM users WHERE user_id = :user_id", user_id=usuario_id)
+        if result and len(result) > 0:
+            email = result[0][0]
+            if email == "pedrohenriquemarques720@gmail.com":
+                print("👑 Conta especial detectada - pulando atualização")
+                conn.close()
+                return True
+        
+        if pacote == 'pro':
+            # Atualizar para plano PRO
+            conn.run("""
+                UPDATE users 
+                SET plano = 'PRO' 
+                WHERE user_id = :user_id
+            """, user_id=usuario_id)
+            
+            # Atualizar ou criar subscription com créditos ilimitados
+            conn.run("""
+                INSERT INTO subscriptions (user_id, plan_id, burocreditos, status)
+                VALUES (
+                    :user_id, 
+                    (SELECT plan_id FROM plans WHERE plan_code = 'pro'), 
+                    999999, 
+                    'active'
+                )
+                ON CONFLICT (user_id) 
+                DO UPDATE SET 
+                    burocreditos = 999999,
+                    plan_id = (SELECT plan_id FROM plans WHERE plan_code = 'pro'),
+                    status = 'active'
+            """, user_id=usuario_id)
+            
+            print(f"🎉 Usuário {usuario_id} atualizado para PRO")
+        else:
+            # Converter créditos para inteiro
+            creditos_int = int(creditos) if creditos != 'ilimitado' else 30
+            
+            # Atualizar ou criar subscription com créditos adicionais
+            conn.run("""
+                INSERT INTO subscriptions (user_id, plan_id, burocreditos, status)
+                VALUES (
+                    :user_id, 
+                    (SELECT plan_id FROM plans WHERE plan_code = 'free'), 
+                    :creditos, 
+                    'active'
+                )
+                ON CONFLICT (user_id) 
+                DO UPDATE SET 
+                    burocreditos = subscriptions.burocreditos + :creditos,
+                    status = 'active'
+            """, user_id=usuario_id, creditos=creditos_int)
+            
+            print(f"💰 {creditos_int} créditos adicionados ao usuário {usuario_id}")
+        
+        # Registrar no log de auditoria
+        conn.run("""
+            INSERT INTO audit_logs (user_id, event_type, event_action, resource_type, new_data)
+            VALUES (
+                :user_id, 
+                'credits_added', 
+                'webhook', 
+                'subscription',
+                :new_data
+            )
+        """, 
+            user_id=usuario_id,
+            new_data=json.dumps({
+                'pacote': pacote,
+                'creditos': creditos,
+                'data': datetime.now().isoformat()
+            })
+        )
+        
+        conn.close()
+        return True
+        
+    except Exception as e:
+        print(f"❌ Erro ao atualizar créditos: {e}")
+        return False
+
+# ===== FUNÇÃO PARA REGISTRAR PAGAMENTO =====
+def registrar_pagamento(bill_id, usuario_id, pacote, creditos, status='PAID'):
+    """Registra o pagamento na tabela de cobranças"""
+    try:
+        conn = get_db_connection()
+        if not conn:
+            return False
+        
+        # Criar tabela se não existir (já deve existir, mas garantimos)
+        conn.run("""
+            CREATE TABLE IF NOT EXISTS cobrancas_abacate (
+                id SERIAL PRIMARY KEY,
+                bill_id TEXT UNIQUE,
+                usuario_id UUID,
+                pacote TEXT,
+                valor REAL,
+                creditos TEXT,
+                url_pagamento TEXT,
+                status TEXT DEFAULT 'PENDENTE',
+                data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                data_pagamento TIMESTAMP
+            )
+        """)
+        
+        # Atualizar status da cobrança
+        conn.run("""
+            UPDATE cobrancas_abacate 
+            SET status = :status, data_pagamento = CURRENT_TIMESTAMP
+            WHERE bill_id = :bill_id
+        """, status=status, bill_id=bill_id)
+        
+        conn.close()
+        print(f"✅ Pagamento registrado: {bill_id}")
+        return True
+        
+    except Exception as e:
+        print(f"❌ Erro ao registrar pagamento: {e}")
+        return False
 
 def validar_assinatura(payload, signature, secret):
     """Valida a assinatura do webhook"""
@@ -46,8 +220,10 @@ def webhook_abacate():
         
         # Recebe o payload
         payload = request.json
-        print("📩 Webhook AbacatePay recebido:", json.dumps(payload, indent=2))
-        print(f"🔍 Webhook ID: {WEBHOOK_ID}")
+        print("\n" + "="*50)
+        print("📩 WEBHOOK RECEBIDO")
+        print("="*50)
+        print(json.dumps(payload, indent=2))
         
         # O AbacatePay envia os dados dentro de 'data'
         data = payload.get('data', {})
@@ -56,7 +232,7 @@ def webhook_abacate():
         
         # Processa apenas pagamentos confirmados
         if status == 'PAID' or event == 'billing.paid':
-            print("💰 Pagamento confirmado recebido!")
+            print("\n💰 PAGAMENTO CONFIRMADO!")
             
             # Pega informações do cliente
             customer = data.get('customer', {})
@@ -68,7 +244,7 @@ def webhook_abacate():
             pacote = metadata.get('pacote', 'bronze')
             creditos = metadata.get('creditos', '30')
             
-            # Também pode vir do ID da cobrança (se não tiver metadata)
+            # Também pode vir do ID da cobrança
             bill_id = data.get('id')
             
             print(f"📧 Email: {email}")
@@ -95,74 +271,44 @@ def webhook_abacate():
                 creditos = creditos_por_pacote.get(pacote, 30)
                 print(f"📦 Pacote mapeado por bill_id: {pacote} com {creditos} créditos")
             
-            # Se temos email, podemos buscar usuário no banco
+            # Se temos email ou usuario_id, processa no banco
             if email or usuario_id:
-                conn = sqlite3.connect(DB_PATH)
-                c = conn.cursor()
-                
-                # Criar tabela de pagamentos se não existir
-                c.execute('''
-                    CREATE TABLE IF NOT EXISTS pagamentos_abacate (
-                        id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        bill_id TEXT UNIQUE,
-                        usuario_id INTEGER,
-                        pacote TEXT,
-                        creditos TEXT,
-                        valor REAL,
-                        status TEXT,
-                        data_pagamento TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                    )
-                ''')
-                
-                # Se não temos usuario_id, busca pelo email
-                if not usuario_id and email:
-                    c.execute("SELECT id FROM utilizadores WHERE email = ?", (email,))
-                    result = c.fetchone()
-                    if result:
-                        usuario_id = result[0]
-                        print(f"👤 Usuário encontrado por email: ID {usuario_id}")
-                
-                if usuario_id:
-                    # Registrar pagamento
-                    c.execute('''
-                        INSERT OR IGNORE INTO pagamentos_abacate 
-                        (bill_id, usuario_id, pacote, creditos, status)
-                        VALUES (?, ?, ?, ?, ?)
-                    ''', (bill_id, usuario_id, pacote, str(creditos), 'PAID'))
+                conn = get_db_connection()
+                if conn:
+                    # Se não temos usuario_id, busca pelo email
+                    if not usuario_id and email:
+                        result = conn.run("SELECT user_id FROM users WHERE email = :email", email=email)
+                        if result and len(result) > 0:
+                            usuario_id = result[0][0]
+                            print(f"👤 Usuário encontrado por email: {usuario_id}")
                     
-                    # Atualizar créditos do usuário
-                    if pacote == 'pro':
-                        c.execute('''
-                            UPDATE utilizadores 
-                            SET plano = 'PRO', burocreditos = 999999 
-                            WHERE id = ?
-                        ''', (usuario_id,))
-                        print(f"🎉 Usuário {usuario_id} atualizado para PRO via AbacatePay")
+                    if usuario_id:
+                        # Registrar pagamento
+                        registrar_pagamento(bill_id, usuario_id, pacote, creditos)
+                        
+                        # Atualizar créditos
+                        atualizar_creditos_usuario(usuario_id, pacote, creditos)
+                        
+                        conn.close()
                     else:
-                        # Converte creditos para inteiro
-                        creditos_int = int(creditos) if creditos != 'ilimitado' else 30
-                        c.execute('''
-                            UPDATE utilizadores 
-                            SET burocreditos = burocreditos + ? 
-                            WHERE id = ?
-                        ''', (creditos_int, usuario_id))
-                        print(f"💰 {creditos_int} créditos adicionados ao usuário {usuario_id}")
-                    
-                    conn.commit()
-                    print(f"✅ Pagamento AbacatePay processado: {bill_id}")
+                        print(f"⚠️ Usuário não encontrado para email: {email}")
+                        if conn:
+                            conn.close()
                 else:
-                    print(f"⚠️ Usuário não encontrado para email: {email}")
-                
-                conn.close()
+                    # Modo simulação
+                    print(f"\n🔧 MODO SIMULAÇÃO - Pagamento processado:")
+                    print(f"   Usuário: {usuario_id or email}")
+                    print(f"   Pacote: {pacote}")
+                    print(f"   Créditos: {creditos}")
             
             return jsonify({"status": "success"}), 200
         
         # Outros eventos (disputed, withdraw.done, withdraw.failed)
-        print(f"ℹ️ Evento ignorado: {event} / Status: {status}")
+        print(f"\nℹ️ Evento ignorado: {event} / Status: {status}")
         return jsonify({"status": "ignored"}), 200
         
     except Exception as e:
-        print(f"❌ Erro no webhook AbacatePay: {str(e)}")
+        print(f"\n❌ Erro no webhook AbacatePay: {str(e)}")
         import traceback
         traceback.print_exc()
         return jsonify({"error": str(e)}), 500
@@ -173,6 +319,7 @@ def health():
         "status": "ok", 
         "service": "AbacatePay Webhook",
         "webhook_id": WEBHOOK_ID,
+        "database_connected": bool(DATABASE_URL),
         "url": "https://burocratadebolso.com.br/webhook/abacate"
     }), 200
 
@@ -181,14 +328,38 @@ def test_webhook():
     """Rota para testar o webhook manualmente"""
     try:
         payload = request.json
-        print("🧪 Teste manual:", json.dumps(payload, indent=2))
+        print("\n🧪 TESTE MANUAL:")
+        print(json.dumps(payload, indent=2))
+        
+        # Simular processamento
+        data = payload.get('data', {})
+        status = data.get('status')
+        
+        if status == 'PAID':
+            print("💰 Simulando processamento de pagamento...")
+            
+            metadata = data.get('metadata', {})
+            usuario_id = metadata.get('usuario_id', 'teste-123')
+            pacote = metadata.get('pacote', 'bronze')
+            creditos = metadata.get('creditos', '30')
+            
+            print(f"   Usuário: {usuario_id}")
+            print(f"   Pacote: {pacote}")
+            print(f"   Créditos: {creditos}")
+            print("✅ Processamento simulado com sucesso!")
+        
         return jsonify({"status": "test_ok", "received": payload}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
     port = int(os.getenv('WEBHOOK_PORT', 5001))
-    print(f"🚀 Webhook AbacatePay rodando na porta {port}")
+    print(f"\n🚀 Webhook AbacatePay rodando na porta {port}")
     print(f"🔗 URL: https://burocratadebolso.com.br/webhook/abacate")
     print(f"🆔 ID: {WEBHOOK_ID}")
+    print("\n📋 Rotas disponíveis:")
+    print("   /webhook/abacate - POST (receber notificações)")
+    print("   /webhook/health - GET (health check)")
+    print("   /webhook/test - POST (teste manual)")
+    print("\n✅ Pronto para receber notificações!\n")
     app.run(host='0.0.0.0', port=port, debug=True)
