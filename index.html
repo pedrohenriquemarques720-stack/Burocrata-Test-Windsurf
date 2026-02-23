@@ -1944,122 +1944,77 @@
     </div>
 
     <script>
-        // ===== SISTEMA DE DETECÇÃO =====
-        class SistemaDeteccao {
+        // ===== SISTEMA DE DETECÇÃO ESPECIALISTA (INTEGRADO COM BACKEND) =====
+        class SistemaDeteccaoEspecialista {
             constructor() {
-                this.padroes = {
-                    'CONTRATO_LOCACAO': {
-                        'nome': 'Contrato de Arrendamento',
-                        'padroes': [
-                            'reajuste.*livre',
-                            'multa.*acima.*3.*meses',
-                            'caução.*superior.*3.*meses',
-                            'juros.*acima.*1%.*mês'
-                        ],
-                        'gravidade': 'ALTA'
-                    },
-                    'CONTRATO_TRABALHO': {
-                        'nome': 'Contrato de Trabalho',
-                        'padroes': [
-                            'salário.*abaixo.*mínimo',
-                            'jornada.*excessiva',
-                            'horas.*extra.*não.*remuneradas',
-                            'férias.*inferior.*30.*dias'
-                        ],
-                        'gravidade': 'CRÍTICA'
-                    },
-                    'CONTRATO_SERVICOS': {
-                        'nome': 'Contrato de Serviços',
-                        'padroes': [
-                            'cláusula.*abusiva',
-                            'multa.*excessiva',
-                            'rescisão.*unilateral',
-                            'responsabilidade.*ilimitada'
-                        ],
-                        'gravidade': 'MÉDIA'
-                    },
-                    'CONTRATO_COMPRA_VENDA': {
-                        'nome': 'Contrato de Compra e Venda',
-                        'padroes': [
-                            'garantia.*inferior.*90.*dias',
-                            'prazo.*entrega.*indeterminado',
-                            'juros.*moratórios.*abusivos'
-                        ],
-                        'gravidade': 'MÉDIA'
-                    }
-                };
+                this.API_URL = 'https://burocrata-backend.onrender.com'; // URL do seu backend
             }
 
-            analisarDocumento(texto) {
-                if (!texto || texto.length < 50) {
-                    return { problemas: [], tipo: 'DESCONHECIDO', metricas: this._calcularMetricas([]) };
-                }
+            async analisarDocumento(file, usuarioId) {
+                return new Promise(async (resolve, reject) => {
+                    try {
+                        const formData = new FormData();
+                        formData.append('file', file);
+                        formData.append('usuario_id', usuarioId);
 
-                const textoLimpo = texto.toLowerCase();
-                const problemas = [];
-                let tipoDoc = 'DESCONHECIDO';
+                        const response = await fetch(`${this.API_URL}/analisar-documento`, {
+                            method: 'POST',
+                            body: formData
+                        });
 
-                for (let [docId, config] of Object.entries(this.padroes)) {
-                    for (let padrao of config.padroes) {
-                        const regex = new RegExp(padrao, 'i');
-                        if (regex.test(textoLimpo)) {
-                            tipoDoc = docId;
-                            break;
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
                         }
-                    }
-                }
 
-                for (let [docId, config] of Object.entries(this.padroes)) {
-                    for (let padrao of config.padroes) {
-                        const regex = new RegExp(padrao, 'gi');
-                        let match;
-                        while ((match = regex.exec(textoLimpo)) !== null) {
-                            problemas.push({
-                                tipo: config.nome,
-                                descricao: `Padrão suspeito detetado: '${match[0].substring(0, 80)}...'`,
-                                gravidade: config.gravidade,
-                                posicao: match.index
-                            });
+                        const data = await response.json();
+                        
+                        if (data.success) {
+                            // Converter formato do backend para o formato esperado pelo frontend
+                            const resultado = this._converterFormato(data.resultado);
+                            resolve(resultado);
+                        } else {
+                            reject(data.error || 'Erro na análise');
                         }
+                    } catch (error) {
+                        console.error('❌ Erro:', error);
+                        reject(error.message);
                     }
-                }
+                });
+            }
+
+            _converterFormato(resultadoBackend) {
+                // Converte o resultado do backend para o formato usado no frontend
+                const metricas = {
+                    total: resultadoBackend.metricas.total,
+                    criticos: resultadoBackend.metricas.criticas,
+                    altos: resultadoBackend.metricas.altas,
+                    medias: resultadoBackend.metricas.medias,
+                    baixas: resultadoBackend.metricas.baixas,
+                    pontuacao: resultadoBackend.metricas.pontuacao,
+                    status: resultadoBackend.metricas.status,
+                    cor: resultadoBackend.metricas.cor
+                };
+
+                // Mapear violações
+                const problemas = resultadoBackend.violacoes.map(v => ({
+                    tipo: v.tipo || 'VIOLAÇÃO',
+                    nome: v.nome,
+                    descricao: v.descricao,
+                    gravidade: v.gravidade,
+                    lei: v.lei,
+                    solucao: v.solucao,
+                    contexto: v.contexto,
+                    penalidade: v.penalidade || 'Não especificada',
+                    jurisprudencia: v.jurisprudencia || 'Não especificada'
+                }));
 
                 return {
                     problemas: problemas,
-                    tipo: tipoDoc,
-                    metricas: this._calcularMetricas(problemas)
-                };
-            }
-
-            _calcularMetricas(problemas) {
-                const total = problemas.length;
-                const criticos = problemas.filter(p => p.gravidade === 'CRÍTICA').length;
-                const altos = problemas.filter(p => p.gravidade === 'ALTA').length;
-                
-                const pontuacao = Math.max(0, 100 - (criticos * 35) - (altos * 20) - (total * 5));
-                
-                let status, cor;
-                if (criticos > 0) {
-                    status = '⚠️ REQUER ATENÇÃO IMEDIATA';
-                    cor = '#E74C3C';
-                } else if (altos > 0) {
-                    status = '⚠️ AJUSTES NECESSÁRIOS';
-                    cor = '#F39C12';
-                } else if (total > 0) {
-                    status = '📋 REVISÃO RECOMENDADA';
-                    cor = '#F1C40F';
-                } else {
-                    status = '✅ DOCUMENTO REGULAR';
-                    cor = '#27AE60';
-                }
-
-                return {
-                    total: total,
-                    criticos: criticos,
-                    altos: altos,
-                    pontuacao: Math.round(pontuacao),
-                    status: status,
-                    cor: cor
+                    tipo: resultadoBackend.tipo_documento,
+                    metricas: metricas,
+                    veredito: resultadoBackend.veredito,
+                    exposicao_risco: resultadoBackend.exposicao_risco,
+                    recomendacoes: resultadoBackend.recomendacoes || []
                 };
             }
         }
@@ -2071,10 +2026,10 @@
         }
 
         // ===== VARIÁVEIS GLOBAIS =====
-        const detector = new SistemaDeteccao();
+        const detector = new SistemaDeteccaoEspecialista();
         let usuarios = [
             {
-                id: 1,
+                id: '550e8400-e29b-41d4-a716-446655440000',
                 nome: 'Pedro Henrique',
                 email: 'pedrohenriquemarques720@gmail.com',
                 senha: 'Liz1808#',
@@ -2099,7 +2054,7 @@
             document.getElementById('auth-titulo').innerHTML = '🔐 Entrar na Conta';
         }
 
-        function fazerLogin() {
+        async function fazerLogin() {
             const email = document.getElementById('login-email').value;
             const senha = document.getElementById('login-password').value;
 
@@ -2108,18 +2063,49 @@
                 return;
             }
 
-            const usuario = usuarios.find(u => u.email === email && u.senha === senha);
-
-            if (usuario) {
-                usuarioAtual = usuario;
-                sessionStorage.setItem('usuarioLogado', JSON.stringify(usuario));
+            try {
+                // Tentar login via API (se implementado)
+                const response = await fetch(`${detector.API_URL}/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, senha })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    usuarioAtual = data.usuario;
+                } else {
+                    // Fallback para usuários locais (apenas para teste)
+                    const usuario = usuarios.find(u => u.email === email && u.senha === senha);
+                    if (usuario) {
+                        usuarioAtual = usuario;
+                    } else {
+                        alert('❌ E-mail ou palavra-passe incorretos');
+                        return;
+                    }
+                }
+                
+                sessionStorage.setItem('usuarioLogado', JSON.stringify(usuarioAtual));
                 atualizarInterfaceUsuario();
                 document.getElementById('tela-login').style.display = 'none';
                 document.getElementById('tela-principal').style.display = 'block';
                 mostrarSecao('inicio');
                 atualizarHistorico();
-            } else {
-                alert('❌ E-mail ou palavra-passe incorretos');
+            } catch (error) {
+                console.error('Erro no login:', error);
+                // Fallback para usuários locais
+                const usuario = usuarios.find(u => u.email === email && u.senha === senha);
+                if (usuario) {
+                    usuarioAtual = usuario;
+                    sessionStorage.setItem('usuarioLogado', JSON.stringify(usuarioAtual));
+                    atualizarInterfaceUsuario();
+                    document.getElementById('tela-login').style.display = 'none';
+                    document.getElementById('tela-principal').style.display = 'block';
+                    mostrarSecao('inicio');
+                    atualizarHistorico();
+                } else {
+                    alert('❌ E-mail ou palavra-passe incorretos');
+                }
             }
         }
 
@@ -2149,8 +2135,9 @@
                 return;
             }
 
+            // Gerar UUID para o novo usuário
             const novoUsuario = {
-                id: usuarios.length + 1,
+                id: crypto.randomUUID ? crypto.randomUUID() : 'user-' + Date.now(),
                 nome: nome,
                 email: email,
                 senha: senha,
@@ -2305,7 +2292,7 @@
             }
         }
 
-        function processarArquivo(file) {
+        async function processarArquivo(file) {
             if (!usuarioAtual) return;
 
             if (file.type !== 'application/pdf') {
@@ -2333,63 +2320,16 @@
             document.getElementById('resultados-analise').style.display = 'none';
             document.getElementById('erro-analise').style.display = 'none';
 
-            setTimeout(() => {
-                const textosSimulados = {
-                    'trabalho': `
-                        CONTRATO DE TRABALHO
-                        
-                        CLÁUSULA PRIMEIRA - DO SALÁRIO
-                        O salário será de R$ 1.200,00 mensais.
-                        
-                        CLÁUSULA SEGUNDA - DA JORNADA
-                        O empregado trabalhará 12 horas por dia, incluindo sábados e domingos.
-                        
-                        CLÁUSULA TERCEIRA - DAS HORAS EXTRAS
-                        As horas extras não serão remuneradas, estando incluídas no salário.
-                        
-                        CLÁUSULA QUARTA - DAS FÉRIAS
-                        As férias serão de 20 dias corridos.
-                    `,
-                    'arrendamento': `
-                        CONTRATO DE ARRENDAMENTO
-                        
-                        CLÁUSULA DO REAJUSTE
-                        O reajuste será livre, conforme decisão do locador.
-                        
-                        CLÁUSULA DA MULTA
-                        Em caso de rescisão antecipada, a multa será de 6 meses de aluguel.
-                        
-                        CLÁUSULA DA CAUÇÃO
-                        A caução será de 4 meses de aluguel.
-                    `
-                };
+            try {
+                // Usar o detector especialista
+                const resultado = await detector.analisarDocumento(file, usuarioAtual.id);
 
-                let textoSimulado = '';
-                if (file.name.toLowerCase().includes('trabalho')) {
-                    textoSimulado = textosSimulados.trabalho;
-                } else if (file.name.toLowerCase().includes('arrendamento')) {
-                    textoSimulado = textosSimulados.arrendamento;
-                } else {
-                    textoSimulado = `
-                        DOCUMENTO PARA ANÁLISE
-                        
-                        CLÁUSULA DE MULTA
-                        A multa será de 50% do valor total em caso de rescisão.
-                        
-                        CLÁUSULA DE GARANTIA
-                        A garantia será de 30 dias.
-                        
-                        CLÁUSULA DE JUROS
-                        Os juros moratórios serão de 5% ao mês.
-                    `;
-                }
-
-                const resultado = detector.analisarDocumento(textoSimulado);
-                
+                // Debita créditos (exceto conta especial)
                 if (!isEspecial) {
                     usuarioAtual.burocreditos -= 10;
                 }
 
+                // Registrar no histórico local
                 const analise = {
                     id: Date.now(),
                     nome: file.name,
@@ -2398,31 +2338,39 @@
                     pontuacao: resultado.metricas.pontuacao,
                     data: new Date().toLocaleDateString('pt-PT')
                 };
-                
+
                 if (!usuarioAtual.historico) {
                     usuarioAtual.historico = [];
                 }
                 usuarioAtual.historico.unshift(analise);
 
-                mostrarResultados(file.name, resultado);
-                
+                // Mostrar resultados
+                mostrarResultadosEspecialista(file.name, resultado);
+
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('resultados-analise').style.display = 'block';
                 atualizarInterfaceUsuario();
                 sessionStorage.setItem('usuarioLogado', JSON.stringify(usuarioAtual));
-            }, 2000);
+
+            } catch (error) {
+                console.error('❌ Erro na análise:', error);
+                mostrarErro('❌ Erro ao analisar documento: ' + error);
+                document.querySelector('.stFileUploader').style.display = 'block';
+                document.getElementById('loading').style.display = 'none';
+            }
         }
 
-        function mostrarResultados(nomeArquivo, resultado) {
+        function mostrarResultadosEspecialista(nomeArquivo, resultado) {
             const metricas = resultado.metricas;
             
             document.getElementById('status-titulo').innerHTML = metricas.status;
-            document.getElementById('status-descricao').innerHTML = `Documento: <strong>${nomeArquivo}</strong>`;
+            document.getElementById('status-descricao').innerHTML = `Documento: <strong>${nomeArquivo}</strong> | Veredito: ${resultado.veredito} (Risco ${resultado.exposicao_risco}%)`;
             document.getElementById('status-card').style.borderLeftColor = metricas.cor;
             
             document.getElementById('total-problemas').innerText = metricas.total;
             document.getElementById('problemas-criticos').innerText = metricas.criticos;
             document.getElementById('pontuacao').innerText = metricas.pontuacao + '%';
+            document.getElementById('creditos-restantes').innerText = usuarioAtual ? (usuarioAtual.email === 'pedrohenriquemarques720@gmail.com' ? '∞' : usuarioAtual.burocreditos) : 0;
 
             const problemasLista = document.getElementById('problemas-lista');
             problemasLista.innerHTML = '';
@@ -2432,7 +2380,10 @@
                     const gravidadeConfig = {
                         'CRÍTICA': { icon: '🔴', cor: '#E74C3C' },
                         'ALTA': { icon: '🟠', cor: '#F39C12' },
-                        'MÉDIA': { icon: '🟡', cor: '#F1C40F' }
+                        'MÉDIA': { icon: '🟡', cor: '#F1C40F' },
+                        'BAIXA': { icon: '🟢', cor: '#27AE60' },
+                        'AMBIGUIDADE': { icon: '🔵', cor: '#3498DB' },
+                        'OMISSÃO': { icon: '⚫', cor: '#95A5A6' }
                     }[problema.gravidade] || { icon: '⚪', cor: '#95A5A6' };
 
                     const problemaEl = document.createElement('div');
@@ -2443,32 +2394,43 @@
                         <div class="problema-header">
                             <span class="problema-icon">${gravidadeConfig.icon}</span>
                             <span class="problema-titulo">
-                                <span style="color: ${gravidadeConfig.cor};">${problema.tipo}</span>
+                                <span style="color: ${gravidadeConfig.cor};">${problema.nome || problema.tipo}</span>
                                 <span class="gravidade-badge" style="background: ${gravidadeConfig.cor};">
                                     ${problema.gravidade}
                                 </span>
                             </span>
                         </div>
                         <div class="problema-descricao">
-                            ${problema.descricao}
+                            <p><strong>📋 Descrição:</strong> ${problema.descricao}</p>
+                            <p><strong>⚖️ Lei:</strong> ${problema.lei}</p>
+                            ${problema.penalidade ? `<p><strong>⚠️ Penalidade:</strong> ${problema.penalidade}</p>` : ''}
+                            ${problema.jurisprudencia ? `<p><strong>📚 Jurisprudência:</strong> ${problema.jurisprudencia}</p>` : ''}
+                            <p><strong>✅ Solução:</strong> ${problema.solucao}</p>
+                            ${problema.contexto ? `<p><strong>📄 Contexto:</strong> "...${problema.contexto}..."</p>` : ''}
                         </div>
                     `;
                     
                     problemasLista.appendChild(problemaEl);
                 });
 
+                // Recomendações
                 const recomendacao = document.getElementById('recomendacao');
-                if (metricas.criticos > 0) {
-                    recomendacao.className = 'alert alert-error';
-                    recomendacao.innerHTML = '💡 <strong>Recomendação:</strong> Consulte um advogado para rever os pontos críticos identificados.';
+                if (resultado.recomendacoes && resultado.recomendacoes.length > 0) {
+                    recomendacao.className = 'alert alert-info';
+                    recomendacao.innerHTML = '<strong>💡 Recomendações:</strong><br>' + resultado.recomendacoes.join('<br>');
                     recomendacao.style.display = 'block';
                 } else {
                     recomendacao.style.display = 'none';
                 }
             } else {
-                problemasLista.innerHTML = '<div class="alert alert-success">✅ Nenhum problema detetado. Documento em conformidade!</div>';
+                problemasLista.innerHTML = '<div class="alert alert-success">✅ Nenhuma violação detectada. Documento em conformidade!</div>';
                 document.getElementById('recomendacao').style.display = 'none';
             }
+        }
+
+        function mostrarResultados(nomeArquivo, resultado) {
+            // Função mantida para compatibilidade, mas não usada
+            mostrarResultadosEspecialista(nomeArquivo, resultado);
         }
 
         function mostrarErro(mensagem) {
@@ -2516,7 +2478,7 @@
                             <strong style="color: var(--color-gold);">${item.nome}</strong>
                             <div style="color: #FFFFFF; font-size: 0.9em; margin-top: 5px;">
                                 <span style="background: var(--color-blue-light); padding: 2px 8px; border-radius: 4px; margin-right: 10px;">
-                                    ${detector.padroes[item.tipo]?.nome || 'Geral'}
+                                    ${item.tipo || 'Documento'}
                                 </span>
                                 <span>📋 ${item.problemas} problemas</span>
                             </div>
